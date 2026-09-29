@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const parts=JSON.parse(fs.readFileSync(new URL('../src/app-parts.json',import.meta.url),'utf8'));
-assert.deepEqual(parts,['ui/core.js','ui/markdown.js','state.js','storage.js','cloud-sync.js','features/settings.js','features/tokenator.js','app.js']);
+assert.deepEqual(parts,['ui/core.js','ui/markdown.js','state.js','storage.js','cloud-sync.js','features/settings.js','features/tokenator.js','features/bestiary.js','app.js']);
 assert.equal(new Set(parts).size,parts.length,'app source parts must be unique');
 
 const sources=Object.fromEntries(parts.map(file=>[file,fs.readFileSync(new URL('../src/'+file,import.meta.url),'utf8')]));
@@ -26,7 +26,8 @@ assert.ok(bundle.indexOf('const CURRENT_SCHEMA_VERSION=1')<bundle.indexOf("const
 assert.ok(bundle.indexOf("const KEY='gm-archive-v2'")<bundle.indexOf("const SYNCED_USER_KEY='initiative-cloud-user-v1'"),'storage must precede cloud sync');
 assert.ok(bundle.indexOf("const SYNCED_USER_KEY='initiative-cloud-user-v1'")<bundle.indexOf('const ACCENT_KEY='),'cloud sync must precede Settings feature');
 assert.ok(bundle.indexOf('const ACCENT_KEY=')<bundle.indexOf('const TOKEN_FRAMES='),'Settings feature must precede Tokenator feature');
-assert.ok(bundle.indexOf('const TOKEN_FRAMES=')<bundle.indexOf("const CHARACTERISTICS_TEMPLATE='"),'Tokenator feature must precede application bootstrap');
+assert.ok(bundle.indexOf('const TOKEN_FRAMES=')<bundle.indexOf('function validTagColor('),'Tokenator feature must precede Bestiary feature');
+assert.ok(bundle.indexOf('function validTagColor(')<bundle.indexOf("const CHARACTERISTICS_TEMPLATE='"),'Bestiary feature must precede application bootstrap');
 
 for(const symbol of ['const CURRENT_SCHEMA_VERSION=1','function archiveSchemaVersion(','function migrateArchive(','function normalize(data)']){
   assert.ok(sources['state.js'].includes(symbol),symbol+' missing from state.js');
@@ -46,6 +47,11 @@ for(const symbol of ["const SUPABASE_URL=","let authSession=","function mergeSyn
 
 for(const symbol of ['const ACCENT_KEY=','function applyAccent(','function applyInterfaceDensity(','let settingsSection=','function renderSettings(']){
   assert.ok(sources['features/settings.js'].includes(symbol),symbol+' missing from features/settings.js');
+  assert.ok(!sources['app.js'].includes(symbol),symbol+' must not remain in app.js');
+}
+
+for(const symbol of ['function validTagColor(','function renderTagFlags(','function creatureMatchesBestiaryQuery(','function renderBestiaryCards(','function renderBestiary(']){
+  assert.ok(sources['features/bestiary.js'].includes(symbol),symbol+' missing from features/bestiary.js');
   assert.ok(!sources['app.js'].includes(symbol),symbol+' must not remain in app.js');
 }
 
