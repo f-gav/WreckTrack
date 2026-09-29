@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
+import {loadAppSource} from './_app-source.mjs';
 import fs from 'node:fs';
 
-const html=fs.readFileSync(new URL('../dist/index.html',import.meta.url),'utf8');
+const html=loadAppSource();
 
 for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
   if(!match[1].trim())continue;
@@ -18,7 +19,7 @@ assert.doesNotMatch(html,/<button class="topnav-button" data-go="settings">На�
 assert.match(html,/class="topbar-settings-button"[^>]*data-go="settings"/);
 assert.match(html,/\.topbar-settings-button\{/);
 assert.match(html,/\.topbar-settings-button svg\{/);
-assert.match(html,/stroke-width:2\.15/);
+assert.match(html,/stroke-width:2\.4/);
 
 
 // The actually-used room renderer must use preview/edit mode too.

@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
+import {loadAppSource} from './_app-source.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
-const html=fs.readFileSync(new URL('../dist/index.html',import.meta.url),'utf8');
+const html=loadAppSource();
 
 for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
   if(!match[1].trim())continue;
@@ -39,7 +40,11 @@ assert.match(html,/tabs=\[\['interface','Интерфейс'\],\['bestiary','Б�
 assert.match(html,/data-settings-section=/);
 assert.match(html,/settingsSection=section\.dataset\.settingsSection;renderSettings\(\)/);
 assert.doesNotMatch(html,/const renderSettingsBase=renderSettings/);
-assert.match(html,/Интерфейс, Бестиарий, Комнаты, Журнал и данные/);
+assert.match(html,/class="topbar-settings-button"[^>]*data-go="settings"/);
+const homeStart=html.indexOf('function renderHome');
+const homeEnd=html.indexOf("let settingsSection='interface'",homeStart);
+assert.ok(homeStart>=0&&homeEnd>homeStart);
+assert.doesNotMatch(html.slice(homeStart,homeEnd),/data-go="settings"/);
 
 // Existing setting controls are preserved in their new sections.
 for(const id of [

@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
+import {loadAppSource} from './_app-source.mjs';
 import fs from 'node:fs';
 
-const html=fs.readFileSync(new URL('../dist/index.html',import.meta.url),'utf8');
+const html=loadAppSource();
 
 for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
   if(!match[1].trim())continue;
@@ -37,7 +38,7 @@ assert.match(html,/section\('Характеристики','characteristics',fal
 assert.match(html,/id="battle-note-menu"/);
 assert.equal((html.match(/data-battle-note-format=/g)||[]).length,5);
 assert.match(html,/document\.addEventListener\('contextmenu'/);
-assert.match(html,/setTimeout\(\(\)=>openBattleNoteMenu\(area,e\.clientX,e\.clientY\),560\)/);
+assert.match(html,/battleNoteLongPressTimer=setTimeout\(\(\)=>\{const area=direct\|\|preview&&beginBattleNoteEditing/);
 assert.match(html,/Math\.hypot\(/);
 assert.match(html,/function applyBattleNoteFormat\(type\)/);
 

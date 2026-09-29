@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
+import {loadAppSource} from './_app-source.mjs';
 import fs from 'node:fs';
 
-const html=fs.readFileSync(new URL('../dist/index.html',import.meta.url),'utf8');
+const html=loadAppSource();
 
 for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
   if(!match[1].trim())continue;
@@ -24,7 +25,10 @@ assert.match(html,/:root\[data-density="1"\]/);
 assert.match(html,/:root\[data-density="2"\]/);
 
 // Density levels change spacing/size of containers, not text size.
-const densityCss=html.slice(html.indexOf(':root[data-density="1"]'),html.lastIndexOf('</style>'));
+const densityStart=html.indexOf(':root[data-density="1"]');
+const densityEnd=html.indexOf('/* Final journal/card formatting pass */',densityStart);
+assert.ok(densityStart>=0&&densityEnd>densityStart,'density CSS block not found');
+const densityCss=html.slice(densityStart,densityEnd);
 assert.doesNotMatch(densityCss,/font-size\s*:/);
 assert.doesNotMatch(densityCss,/font-family\s*:/);
 
