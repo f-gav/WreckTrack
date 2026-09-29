@@ -1,6 +1,7 @@
-name: Deploy GitHub Pages
+name: Verify and Deploy GitHub Pages
 
 on:
+  pull_request:
   push:
     branches: [main]
   workflow_dispatch:
@@ -11,14 +12,11 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  verify:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -42,13 +40,22 @@ jobs:
       - name: Verify dist
         run: npm run verify:dist
 
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload site
+      - name: Upload verified site
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
           path: dist
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: verify
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
 
       - name: Deploy
         id: deployment
