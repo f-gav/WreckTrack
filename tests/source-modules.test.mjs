@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const parts=JSON.parse(fs.readFileSync(new URL('../src/app-parts.json',import.meta.url),'utf8'));
-for(const required of ['ui/core.js','ui/markdown.js','ui/markdown-editing.js','state.js','storage.js','cloud-sync.js','features/settings.js','features/tokenator.js','features/bestiary.js','features/data.js','app.js'])assert.ok(parts.includes(required),'missing source part: '+required);
+for(const required of ['ui/core.js','ui/markdown.js','ui/markdown-editing.js','state.js','storage.js','cloud-sync.js','features/settings.js','features/tokenator.js','features/bestiary.js','features/detail.js','features/data.js','app.js'])assert.ok(parts.includes(required),'missing source part: '+required);
 assert.equal(new Set(parts).size,parts.length,'app source parts must be unique');
 
 const sources=Object.fromEntries(parts.map(file=>[file,fs.readFileSync(new URL('../src/'+file,import.meta.url),'utf8')]));
@@ -72,5 +72,12 @@ for(const symbol of ['function fullBackupSettings(','function createFullBackup('
 }
 assert.ok(parts.indexOf('features/combat.js')<parts.indexOf('features/data.js'),'Data feature must follow Combat');
 assert.ok(parts.indexOf('features/data.js')<parts.indexOf('app.js'),'Data feature must precede application bootstrap');
+
+for(const symbol of ['function renderDetailMarkdown(','function openCreatureDetail(','function updateDetailMarkdownControl(']){
+  assert.ok(sources['features/detail.js'].includes(symbol),symbol+' missing from features/detail.js');
+  assert.ok(!sources['app.js'].includes(symbol),symbol+' must not remain in app.js');
+}
+assert.ok(parts.indexOf('features/combat.js')<parts.indexOf('features/detail.js'),'Detail feature must follow Combat');
+assert.ok(parts.indexOf('features/detail.js')<parts.indexOf('app.js'),'Detail feature must precede application bootstrap');
 
 console.log('source module extraction tests passed');

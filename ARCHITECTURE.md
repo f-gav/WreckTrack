@@ -20,6 +20,7 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 - `src/features/journal.js` — Journal editor state, Markdown live preview, folding and search.
 - `src/features/rooms.js` — room list, entry lifecycle and membership UI.
 - `src/features/combat.js` — initiative rendering, turn flow, HP and battle-note preview.
+- `src/features/detail.js` — creature detail dialog, Markdown content and section navigation.
 - `src/features/data.js` — full archive backup, preview and restore.
 - `src/app.js` — remaining application bootstrap, feature UI and event wiring.
 - `src/service-worker.js` — service-worker template.
@@ -55,6 +56,7 @@ Completed extractions:
 11. room management core;
 12. combat feature core.
 13. full archive backup and restore core.
+14. creature detail card core.
 
 Next safe extractions:
 
