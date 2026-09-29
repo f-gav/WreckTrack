@@ -4,5 +4,6 @@
   "state.js",
   "storage.js",
   "cloud-sync.js",
+  "features/tokenator.js",
   "app.js"
 ]
