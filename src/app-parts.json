@@ -1,6 +1,7 @@
 [
   "ui/core.js",
   "ui/markdown.js",
+  "ui/markdown-editing.js",
   "state.js",
   "storage.js",
   "cloud-sync.js",
