@@ -24,7 +24,7 @@ assert.match(html,/stroke-width:2\.4/);
 
 // The actually-used room renderer must use preview/edit mode too.
 const activeRendererStart=html.indexOf('function renderInitiativeRow(room,x,outside=false)');
-const activeRendererEnd=html.indexOf('function renderRoomWithOutsideCombat',activeRendererStart);
+const activeRendererEnd=html.indexOf('function renderRoom()',activeRendererStart);
 assert.ok(activeRendererStart>=0&&activeRendererEnd>activeRendererStart,'active room renderer not found');
 const activeRenderer=html.slice(activeRendererStart,activeRendererEnd);
 assert.match(activeRenderer,/data-combat-note-preview=/);

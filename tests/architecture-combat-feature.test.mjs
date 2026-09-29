@@ -10,7 +10,7 @@ const bundle=parts.map(file=>fs.readFileSync(new URL('../src/'+file,import.meta.
 assert.ok(parts.indexOf('features/combat.js')<parts.indexOf('app.js'));
 for(const name of [
   'orderedRoomCreatures','combatRoomCreatures','ensureCombatTurn','renderRoom',
-  'renderInitiativeRow','renderRoomWithOutsideCombat','startCombat',
+  'renderInitiativeRow','startCombat',
   'nextCombatTurn','endCombat','renderBattleNotePreview','changeRoomHp'
 ]){
   const declaration=new RegExp('function\\s+'+name+'\\s*\\(','g');
@@ -18,7 +18,7 @@ for(const name of [
   assert.doesNotMatch(app,declaration,name+' should not remain in app.js');
   assert.equal([...bundle.matchAll(declaration)].length,1,name+' should have one declaration');
 }
-assert.match(combat,/renderRoom=renderRoomWithOutsideCombat;/,'the active renderer must remain selected');
+assert.doesNotMatch(combat,/renderRoomBase|renderRoomWithOutsideCombat|renderRoom=function\(/,'room renderer must have one implementation');
 assert.match(combat,/changeRoomHp=function\(/,'bonus HP wrapper must remain in this extraction');
 assert.doesNotThrow(()=>new Function(bundle));
 
