@@ -7,6 +7,7 @@
   "cloud-sync.js",
   "features/settings.js",
   "features/tokenator.js",
+  "features/tokenator-events.js",
   "features/bestiary.js",
   "features/bestiary-editor.js",
   "features/journal.js",
