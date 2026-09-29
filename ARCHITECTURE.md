@@ -18,6 +18,7 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 - `src/features/bestiary.js` — Bestiary display, search, filters, sorting and main page rendering.
 - `src/features/bestiary-editor.js` — Bestiary editor, tags, import/export and Long Story Short import.
 - `src/features/journal.js` — Journal editor state, Markdown live preview, folding and search.
+- `src/features/rooms.js` — room list, entry lifecycle and membership UI.
 - `src/app.js` — remaining application bootstrap, feature UI and event wiring.
 - `src/service-worker.js` — service-worker template.
 - `scripts/build.mjs` — deterministic build into `dist`.
@@ -48,11 +49,12 @@ Completed extractions:
 7. Tokenator feature core;
 8. Bestiary display/search core;
 9. Bestiary editor/import/export layer;
-10. Journal editor core.
+10. Journal editor core;
+11. room management core.
 
 Next safe extractions:
 
-1. Rooms/combat feature;
+1. Room renderer and combat feature;
 2. remaining application bootstrap/event wiring.
 
 Each extraction must keep storage keys, cloud merge semantics and visible behavior unchanged, and must pass the full regression/build pipeline before merge.
