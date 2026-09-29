@@ -12,6 +12,7 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 - `src/ui/core.js` — small shared UI helpers.
 - `src/ui/markdown.js` — shared Markdown rendering/editing helpers.
 - `src/ui/form-events.js` — form submissions and file selection wiring.
+- `src/ui/action-events.js` — shared delegated actions and mixed feature input dispatch.
 - `src/state.js` — archive schema and normalization.
 - `src/storage.js` — local persistence and mutation scheduling.
 - `src/cloud-sync.js` — Supabase auth, merge and cloud synchronization.
@@ -24,9 +25,11 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 - `src/features/journal.js` — Journal editor state, Markdown live preview, folding and search.
 - `src/features/rooms.js` — room list, entry lifecycle and membership UI.
 - `src/features/combat.js` — initiative rendering, turn flow, HP and battle-note preview.
+- `src/features/combat-events.js` — HP and battle-note interactions.
 - `src/features/detail.js` — creature detail dialog, Markdown content and section navigation.
 - `src/features/detail-events.js` — detail card interactive control wiring.
 - `src/features/data.js` — full archive backup, preview and restore.
+- `src/features/data-events.js` — backup file selection wiring.
 - `src/app.js` — remaining application bootstrap, feature UI and event wiring.
 - `src/service-worker.js` — service-worker template.
 - `scripts/build.mjs` — deterministic build into `dist`.
@@ -64,6 +67,7 @@ Completed extractions:
 14. creature detail card core.
 15. Tokenator event wiring.
 16. forms, settings, Bestiary and detail event wiring.
+17. shared actions, combat and Data event wiring.
 
 Next safe extractions:
 

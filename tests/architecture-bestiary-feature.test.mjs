@@ -5,6 +5,7 @@ const parts=JSON.parse(fs.readFileSync(new URL('../src/app-parts.json',import.me
 const feature=fs.readFileSync(new URL('../src/features/bestiary.js',import.meta.url),'utf8');
 const editor=fs.readFileSync(new URL('../src/features/bestiary-editor.js',import.meta.url),'utf8');
 const events=fs.readFileSync(new URL('../src/features/bestiary-events.js',import.meta.url),'utf8');
+const actions=fs.readFileSync(new URL('../src/ui/action-events.js',import.meta.url),'utf8');
 const app=fs.readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
 const combined=parts.map(file=>fs.readFileSync(new URL('../src/'+file,import.meta.url),'utf8')).join('\n');
 
@@ -30,8 +31,8 @@ for(const symbol of [
 }
 
 assert.match(events,/#grid-new-creature/);
-assert.match(app,/bestiary-search/);
-assert.match(app,/data-bestiary-tag/);
+assert.match(actions,/bestiary-search/);
+assert.match(actions,/data-bestiary-tag/);
 assert.match(editor,/function openCreatureDialog\(/);
 assert.match(editor,/function duplicateCreature\(/);
 assert.doesNotMatch(app,/function openCreatureDialog\(/);
