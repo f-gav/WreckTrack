@@ -9,10 +9,13 @@ for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
   assert.doesNotThrow(()=>new Function(match[1]),'inline JavaScript must remain syntactically valid');
 }
 
-// Journal heading hierarchy is intentionally reduced.
-for(const [level,size] of [[1,1.45],[2,1.3],[3,1.18],[4,1.08]]){
-  const rules=[...html.matchAll(new RegExp('\\.journal-live-editor h'+level+'\\{font-size:([\\d.]+)em\\}','g'))];
-  assert.equal(rules.length,1,'Journal heading '+level+' should have one size rule');
+// Font choices use !important on h1 and .dialog-form h3. Journal rules need
+// stronger specificity as well as !important to win for every font choice.
+assert.match(html,/:root\[data-font="neuzeit"\] h1\{font-size:[^}]+!important\}/);
+assert.match(html,/:root\[data-font="neuzeit"\] \.dialog-form h3\{font-size:[^}]+!important\}/);
+for(const [level,size] of [[1,1.45],[2,1.3],[3,1.18],[4,1.08],[5,1],[6,.94]]){
+  const rules=[...html.matchAll(new RegExp('#journal-live-editor h'+level+'\\{font-size:([\\d.]+)em!important\\}','g'))];
+  assert.equal(rules.length,1,'Journal heading '+level+' must override global font rules');
   assert.equal(Number(rules[0][1]),size,'Journal heading '+level+' should match the reduced hierarchy');
 }
 
