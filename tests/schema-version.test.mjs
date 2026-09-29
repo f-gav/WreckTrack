@@ -24,7 +24,7 @@ const { archiveSchemaVersion, migrateArchive } = context;
   assert.equal(archiveSchemaVersion(legacy), 0);
   const migrated = migrateArchive(legacy);
   assert.equal(migrated.schemaVersion, CURRENT_SCHEMA_VERSION);
-  assert.deepEqual(migrated.tags, []);
+  assert.deepEqual(JSON.parse(JSON.stringify(migrated.tags)), []);
 }
 
 {
@@ -37,9 +37,9 @@ const { archiveSchemaVersion, migrateArchive } = context;
 {
   const malformed = migrateArchive(null);
   assert.equal(malformed.schemaVersion, CURRENT_SCHEMA_VERSION);
-  assert.deepEqual(malformed.rooms, []);
-  assert.deepEqual(malformed.bestiary, []);
-  assert.deepEqual(malformed.tags, []);
+  assert.deepEqual(JSON.parse(JSON.stringify(malformed.rooms)), []);
+  assert.deepEqual(JSON.parse(JSON.stringify(malformed.bestiary)), []);
+  assert.deepEqual(JSON.parse(JSON.stringify(malformed.tags)), []);
 }
 
 {
