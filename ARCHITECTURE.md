@@ -13,6 +13,7 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 - `src/ui/markdown.js` — shared Markdown parsing/rendering helpers.
 - `src/state.js` — archive schema versioning, migrations and normalization.
 - `src/storage.js` — local archive loading, delayed persistence and mutation tracking.
+- `src/cloud-sync.js` — Supabase auth/sync, IndexedDB merge base, optimistic concurrency and offline retry.
 - `src/app.js` — remaining transitional application JavaScript.
 - `src/service-worker.js` — service-worker template.
 - `scripts/build.mjs` — deterministic build into `dist`.
@@ -36,7 +37,7 @@ The next safe order is:
 
 1. ~~pure UI/Markdown utilities~~ — extracted in Architecture Part 2A;
 2. ~~schema/state/storage~~ — extracted in Architecture Part 2B;
-3. cloud sync;
+3. ~~cloud sync~~ — extracted in Architecture Part 2C;
 4. feature modules (Bestiary, Rooms/Combat, Journal, Tokenator, Settings);
 5. shared event wiring / application bootstrap.
 
