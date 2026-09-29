@@ -12,6 +12,7 @@
   "features/journal.js",
   "features/rooms.js",
   "features/combat.js",
+  "features/detail.js",
   "features/data.js",
   "app.js"
 ]
