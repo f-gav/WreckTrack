@@ -10,10 +10,11 @@ for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
 }
 
 // Journal heading hierarchy is intentionally reduced.
-assert.match(html,/\.journal-live-editor h1\{font-size:1\.62em\}/);
-assert.match(html,/\.journal-live-editor h2\{font-size:1\.4em\}/);
-assert.match(html,/\.journal-live-editor h3\{font-size:1\.22em\}/);
-assert.match(html,/\.journal-live-editor h4\{font-size:1\.08em\}/);
+for(const [level,size] of [[1,1.45],[2,1.3],[3,1.18],[4,1.08]]){
+  const rules=[...html.matchAll(new RegExp('\\.journal-live-editor h'+level+'\\{font-size:([\\d.]+)em\\}','g'))];
+  assert.equal(rules.length,1,'Journal heading '+level+' should have one size rule');
+  assert.equal(Number(rules[0][1]),size,'Journal heading '+level+' should match the reduced hierarchy');
+}
 
 // Journal toolbar contains exactly the requested five action types.
 for(const type of ['bold','italic','strikeThrough','task','resource']){
