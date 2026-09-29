@@ -8,7 +8,10 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 
 - `src/index.html` — HTML shell/template.
 - `src/styles/app.css` — transitional application stylesheet.
-- `src/app.js` — transitional application JavaScript.
+- `src/app-parts.json` — ordered list of JavaScript source parts used by the concatenating build.
+- `src/ui/core.js` — shared DOM/escaping/plural/toast helpers.
+- `src/ui/markdown.js` — shared Markdown parsing/rendering helpers.
+- `src/app.js` — remaining transitional application JavaScript.
 - `src/service-worker.js` — service-worker template.
 - `scripts/build.mjs` — deterministic build into `dist`.
 - `tests/` — regression coverage against source files.
@@ -29,7 +32,7 @@ The build writes content-hashed CSS/JS assets and injects their names into `dist
 
 The next safe order is:
 
-1. pure UI/Markdown utilities;
+1. ~~pure UI/Markdown utilities~~ — extracted in Architecture Part 2A;
 2. schema/state/storage;
 3. cloud sync;
 4. feature modules (Bestiary, Rooms/Combat, Journal, Tokenator, Settings);
