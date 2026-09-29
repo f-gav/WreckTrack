@@ -22,3 +22,7 @@
     document.addEventListener('click',e=>{const action=e.target.closest('[data-battle-note-format]');if(!action)return;e.preventDefault();applyBattleNoteFormat(action.dataset.battleNoteFormat)})
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!el('battle-note-menu')?.hidden)closeBattleNoteMenu()})
     }
+
+    function registerOutsideCombatToggleEvents(){
+    document.addEventListener('click',e=>{if(!e.target.closest('#toggle-outside-combat'))return;const room=roomById(view.roomId);if(!room)return;room.outsideCombatCollapsed=!room.outsideCombatCollapsed;save();render()})
+    }

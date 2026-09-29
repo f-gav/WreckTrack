@@ -4,6 +4,7 @@ import fs from 'node:fs';
 const parts=JSON.parse(fs.readFileSync(new URL('../src/app-parts.json',import.meta.url),'utf8'));
 const journal=fs.readFileSync(new URL('../src/features/journal.js',import.meta.url),'utf8');
 const app=fs.readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
+const events=fs.readFileSync(new URL('../src/features/journal-events.js',import.meta.url),'utf8');
 const bundle=parts.map(file=>fs.readFileSync(new URL('../src/'+file,import.meta.url),'utf8')).join('\n');
 
 assert.ok(parts.indexOf('features/settings.js')<parts.indexOf('features/journal.js'));
@@ -20,7 +21,8 @@ for(const name of [
 }
 assert.match(journal,/let journalLines=\[''\]/);
 assert.match(app,/createJournalDialog\(\);/);
-assert.match(app,/document\.addEventListener\('click',e=>\{if\(e\.target\.closest\('#open-journal'\)\)openJournal\(\)\}\)/);
+assert.match(events,/document\.addEventListener\('click',e=>\{if\(e\.target\.closest\('#open-journal'\)\)openJournal\(\)\}\)/);
+assert.match(app,/registerJournalOpenEvents\(\);/);
 assert.ok(bundle.indexOf('function openJournal(')<bundle.indexOf('createJournalDialog();'));
 assert.doesNotThrow(()=>new Function(bundle));
 
