@@ -59,8 +59,10 @@ for(const name of editorFunctions){
 }
 
 // Backup/restore belongs to Data settings and must not move with Bestiary.
+const data=fs.readFileSync(new URL('../src/features/data.js',import.meta.url),'utf8');
 for(const name of ['fullBackupSettings','createFullBackup','restoreFullBackup']){
-  assert.match(app,new RegExp('function\\s+'+name+'\\s*\\('),name+' must remain in app.js during this extraction');
+  assert.match(data,new RegExp('function\\s+'+name+'\\s*\\('),name+' must live in Data feature');
+  assert.doesNotMatch(app,new RegExp('function\\s+'+name+'\\s*\\('),name+' must not remain in app.js');
   assert.doesNotMatch(feature,new RegExp('function\\s+'+name+'\\s*\\('),name+' must not leak into Bestiary editor feature');
 }
 

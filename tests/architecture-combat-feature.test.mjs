@@ -7,7 +7,7 @@ const combat=fs.readFileSync(new URL('../src/features/combat.js',import.meta.url
 const app=fs.readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
 const bundle=parts.map(file=>fs.readFileSync(new URL('../src/'+file,import.meta.url),'utf8')).join('\n');
 
-assert.equal(parts.indexOf('features/combat.js'),parts.indexOf('app.js')-1);
+assert.ok(parts.indexOf('features/combat.js')<parts.indexOf('app.js'));
 for(const name of [
   'orderedRoomCreatures','combatRoomCreatures','ensureCombatTurn','renderRoom',
   'renderInitiativeRow','renderRoomWithOutsideCombat','startCombat',
