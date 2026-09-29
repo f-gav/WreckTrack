@@ -13,9 +13,11 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 - `src/ui/markdown.js` — shared Markdown rendering/editing helpers.
 - `src/ui/form-events.js` — form submissions and file selection wiring.
 - `src/ui/action-events.js` — shared delegated actions and mixed feature input dispatch.
+- `src/ui/agent-tools.js` — optional archive actions exposed to host integrations.
 - `src/state.js` — archive schema and normalization.
 - `src/storage.js` — local persistence and mutation scheduling.
 - `src/cloud-sync.js` — Supabase auth, merge and cloud synchronization.
+- `src/cloud-sync-events.js` — network and page lifecycle synchronization wiring.
 - `src/features/tokenator.js` — Tokenator state/rendering/image processing/export.
 - `src/features/tokenator-events.js` — Tokenator input and pointer event wiring.
 - `src/features/bestiary.js` — Bestiary display, search, filters, sorting and main page rendering.
@@ -23,6 +25,7 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 - `src/features/bestiary-events.js` — Bestiary cards and tag interactions.
 - `src/features/settings-events.js` — settings controls and section navigation.
 - `src/features/journal.js` — Journal editor state, Markdown live preview, folding and search.
+- `src/features/journal-events.js` — Journal and Markdown toolbar event wiring.
 - `src/features/rooms.js` — room list, entry lifecycle and membership UI.
 - `src/features/combat.js` — initiative rendering, turn flow, HP and battle-note preview.
 - `src/features/combat-events.js` — HP and battle-note interactions.
@@ -30,7 +33,7 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 - `src/features/detail-events.js` — detail card interactive control wiring.
 - `src/features/data.js` — full archive backup, preview and restore.
 - `src/features/data-events.js` — backup file selection wiring.
-- `src/app.js` — remaining application bootstrap, feature UI and event wiring.
+- `src/app.js` — application state, navigation, ordered registration calls and bootstrap.
 - `src/service-worker.js` — service-worker template.
 - `scripts/build.mjs` — deterministic build into `dist`.
 - `tests/` — regression coverage against source files.
@@ -68,10 +71,10 @@ Completed extractions:
 15. Tokenator event wiring.
 16. forms, settings, Bestiary and detail event wiring.
 17. shared actions, combat and Data event wiring.
+18. Journal, network lifecycle and host integration wiring; compact app bootstrap.
 
 Next safe extractions:
 
-1. remaining application bootstrap/event wiring;
-2. consolidate historical function wrappers in focused follow-up patches.
+1. consolidate historical `renderRoom` and `changeRoomHp` function wrappers in focused follow-up patches.
 
 Each extraction must keep storage keys, cloud merge semantics and visible behavior unchanged, and must pass the full regression/build pipeline before merge.

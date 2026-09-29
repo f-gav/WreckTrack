@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const parts=JSON.parse(fs.readFileSync(new URL('../src/app-parts.json',import.meta.url),'utf8'));
-for(const required of ['ui/core.js','ui/markdown.js','ui/markdown-editing.js','ui/form-events.js','ui/action-events.js','state.js','storage.js','cloud-sync.js','features/settings.js','features/tokenator.js','features/tokenator-events.js','features/bestiary.js','features/detail.js','features/combat-events.js','features/data.js','features/data-events.js','app.js'])assert.ok(parts.includes(required),'missing source part: '+required);
+for(const required of ['ui/core.js','ui/markdown.js','ui/markdown-editing.js','ui/form-events.js','ui/action-events.js','ui/agent-tools.js','state.js','storage.js','cloud-sync.js','cloud-sync-events.js','features/settings.js','features/tokenator.js','features/tokenator-events.js','features/bestiary.js','features/journal-events.js','features/detail.js','features/combat-events.js','features/data.js','features/data-events.js','app.js'])assert.ok(parts.includes(required),'missing source part: '+required);
 assert.equal(new Set(parts).size,parts.length,'app source parts must be unique');
 
 const sources=Object.fromEntries(parts.map(file=>[file,fs.readFileSync(new URL('../src/'+file,import.meta.url),'utf8')]));
@@ -87,6 +87,10 @@ assert.ok(sources['app.js'].includes('registerTokenatorEvents();'));
 assert.ok(!sources['app.js'].includes("const frame=e.target.closest('[data-token-frame]')"));
 
 for(const [part,registration] of [['ui/action-events.js','registerPrimaryActionEvents'],['features/combat-events.js','registerBattleNotePreviewEvents'],['features/data-events.js','registerDataFileEvents']]){
+  assert.ok(sources[part].includes('function '+registration+'(){'));
+  assert.ok(sources['app.js'].includes(registration+'();'));
+}
+for(const [part,registration] of [['features/journal-events.js','registerJournalFormattingEvents'],['cloud-sync-events.js','registerPersistenceNetworkEvents'],['ui/agent-tools.js','installArchiveActions']]){
   assert.ok(sources[part].includes('function '+registration+'(){'));
   assert.ok(sources['app.js'].includes(registration+'();'));
 }
