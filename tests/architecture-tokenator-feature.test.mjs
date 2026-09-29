@@ -10,6 +10,7 @@ assert.deepEqual(parts,[
   'cloud-sync.js',
   'features/settings.js',
   'features/tokenator.js',
+  'features/bestiary.js',
   'app.js'
 ]);
 

@@ -9,10 +9,8 @@ for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
   assert.doesNotThrow(()=>new Function(match[1]),'inline JavaScript must remain syntactically valid');
 }
 
-const start=html.indexOf('const TOKEN_FRAMES=');
-const end=html.indexOf('function updateBestiaryTagSummary',start);
-assert.ok(start>=0&&end>start,'Tokenator source block not found');
-const tokenator=html.slice(start,end);
+const tokenator=fs.readFileSync(new URL('../src/features/tokenator.js',import.meta.url),'utf8');
+assert.match(tokenator,/const TOKEN_FRAMES=/);
 
 assert.match(tokenator,/const TOKENATOR_USE_FRAME_SCHEDULER=true/);
 assert.match(tokenator,/function scheduleTokenatorDraw\(\)/);
@@ -32,9 +30,9 @@ assert.ok(drawStart>=0&&loadStart>drawStart);
 assert.doesNotMatch(tokenator.slice(drawStart,loadStart),/document\.createElement\('canvas'\)/);
 
 // High-frequency interactions should schedule, not draw immediately.
-assert.match(tokenator,/addEventListener\('wheel'[\s\S]*?scheduleTokenatorDraw\(\)/);
-assert.match(tokenator,/addEventListener\('pointermove'[\s\S]*?scheduleTokenatorDraw\(\)/);
-assert.match(tokenator,/id==='tokenator-scale'[\s\S]*?scheduleTokenatorDraw\(\)/);
+assert.match(html,/addEventListener\('wheel'[\s\S]*?scheduleTokenatorDraw\(\)/);
+assert.match(html,/addEventListener\('pointermove'[\s\S]*?scheduleTokenatorDraw\(\)/);
+assert.match(html,/id==='tokenator-scale'[\s\S]*?scheduleTokenatorDraw\(\)/);
 
 // PNG export must flush queued work and render synchronously.
 assert.match(tokenator,/function downloadToken\(\)[\s\S]*?flushTokenatorDraw\(\)/);

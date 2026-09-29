@@ -15,6 +15,7 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 - `src/storage.js` — local persistence and mutation scheduling.
 - `src/cloud-sync.js` — Supabase auth, merge and cloud synchronization.
 - `src/features/tokenator.js` — Tokenator state/rendering/image processing/export.
+- `src/features/bestiary.js` — Bestiary display, search, filters, sorting and main page rendering.
 - `src/app.js` — remaining application bootstrap, feature UI and event wiring.
 - `src/service-worker.js` — service-worker template.
 - `scripts/build.mjs` — deterministic build into `dist`.
@@ -42,11 +43,12 @@ Completed extractions:
 4. local storage;
 5. cloud/auth synchronization;
 6. Settings feature core;
-7. Tokenator feature core.
+7. Tokenator feature core;
+8. Bestiary display/search core.
 
 Next safe extractions:
 
-1. Bestiary feature;
+1. Bestiary editor/import/export layer;
 2. Journal feature;
 3. Rooms/combat feature;
 4. remaining application bootstrap/event wiring.
