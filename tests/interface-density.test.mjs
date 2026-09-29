@@ -25,7 +25,10 @@ assert.match(html,/:root\[data-density="1"\]/);
 assert.match(html,/:root\[data-density="2"\]/);
 
 // Density levels change spacing/size of containers, not text size.
-const densityCss=html.slice(html.indexOf(':root[data-density="1"]'),html.lastIndexOf('</style>'));
+const densityStart=html.indexOf(':root[data-density="1"]');
+const densityEnd=html.indexOf('/* Final journal/card formatting pass */',densityStart);
+assert.ok(densityStart>=0&&densityEnd>densityStart,'density CSS block not found');
+const densityCss=html.slice(densityStart,densityEnd);
 assert.doesNotMatch(densityCss,/font-size\s*:/);
 assert.doesNotMatch(densityCss,/font-family\s*:/);
 
