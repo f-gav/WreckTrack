@@ -72,9 +72,8 @@ Completed extractions:
 16. forms, settings, Bestiary and detail event wiring.
 17. shared actions, combat and Data event wiring.
 18. Journal, network lifecycle and host integration wiring; compact app bootstrap.
+19. consolidation of the active room renderer and HP adjustment logic.
 
-Next safe extractions:
-
-1. consolidate the historical `changeRoomHp` function wrapper in a focused follow-up patch.
+Stage 2 is complete. The remaining `src/app.js` contains application state, navigation, registration and bootstrap; feature logic and event wiring live in the ordered source parts. End-to-end browser coverage is the next roadmap stage.
 
 Each extraction must keep storage keys, cloud merge semantics and visible behavior unchanged, and must pass the full regression/build pipeline before merge.
