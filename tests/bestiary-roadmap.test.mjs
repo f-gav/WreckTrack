@@ -47,6 +47,37 @@ assert.match(html,/>Удалить</);
 assert.doesNotMatch(html,/class="mini delete-icon" data-delete-creature="\$\{c\.id\}"/);
 assert.match(html,/!e\.target\.closest\('button,\.card-more-menu'\)/);
 
+const duplicateStart=html.indexOf('function duplicateCreature');
+const duplicateEnd=html.indexOf('function renderTagEditor',duplicateStart);
+assert.ok(duplicateStart>=0&&duplicateEnd>duplicateStart);
+const duplicateSrc=html.slice(duplicateStart,duplicateEnd);
+{
+  const result=Function('source',`
+    const state={bestiary:[{id:'original',name:'Волк',description:'',hp:'11',ac:'13',characteristics:'',abilities:'Укус',notes:'',tagIds:['tag-a']}]};
+    const cloneJson=value=>JSON.parse(JSON.stringify(value));
+    const makeId=()=> 'copy-id';
+    const creatureById=id=>state.bestiary.find(c=>c.id===id);
+    const save=()=>{};
+    const render=()=>{};
+    let opened='';
+    const openCreatureDialog=id=>{opened=id};
+    eval(source);
+    const copy=duplicateCreature('original');
+    copy.tagIds.push('tag-b');
+    return {copy,original:state.bestiary[0],opened,count:state.bestiary.length};
+  `)(duplicateSrc);
+  assert.equal(result.count,2);
+  assert.equal(result.copy.id,'copy-id');
+  assert.equal(result.opened,'copy-id');
+  assert.deepEqual(result.original.tagIds,['tag-a']);
+  assert.deepEqual(result.copy.tagIds,['tag-a','tag-b']);
+}
+
+// Advanced search preference must participate in cloud/backup settings.
+assert.match(html,/function cloudSettings\(\)\{return\{[^}]*bestiaryAdvancedSearch/);
+assert.match(html,/applyBestiaryAdvancedSearch\(typeof settings\.bestiaryAdvancedSearch==='boolean'/);
+assert.match(html,/localStorage\.setItem\(BESTIARY_ADVANCED_SEARCH_KEY,String\(bestiaryAdvancedSearch\)\)/);
+
 // Import preview and three strategies.
 assert.match(html,/id="import-preview-dialog"/);
 assert.match(html,/id="import-add-all"/);
