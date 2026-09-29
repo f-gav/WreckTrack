@@ -7,7 +7,7 @@ const rooms=fs.readFileSync(new URL('../src/features/rooms.js',import.meta.url),
 const app=fs.readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
 const bundle=parts.map(file=>fs.readFileSync(new URL('../src/'+file,import.meta.url),'utf8')).join('\n');
 
-assert.equal(parts.indexOf('features/rooms.js'),parts.indexOf('app.js')-1);
+assert.ok(parts.indexOf('features/rooms.js')<parts.indexOf('app.js'));
 for(const name of [
   'removeRoomEntry','renderRooms','newRoomEntry','openRoomDialog',
   'editRoomEntry','addNpcToBestiary','openMembership',
@@ -19,8 +19,7 @@ for(const name of [
   assert.doesNotMatch(app,declaration,name+' should not remain in app.js');
   assert.equal([...bundle.matchAll(declaration)].length,1,name+' should have one definition');
 }
-assert.match(app,/function renderRoomWithOutsideCombat\(/,'combat renderer stays in app.js for the next step');
-assert.match(app,/function startCombat\(/,'combat actions stay in app.js for the next step');
+assert.ok(parts.indexOf('features/rooms.js')<parts.indexOf('features/combat.js'));
 assert.doesNotThrow(()=>new Function(bundle));
 
 const entrySource=rooms.split('\n').filter(line=>/function (?:newRoomEntry|removeRoomEntry)\(/.test(line)).join('\n');

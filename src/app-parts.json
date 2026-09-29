@@ -11,5 +11,6 @@
   "features/bestiary-editor.js",
   "features/journal.js",
   "features/rooms.js",
+  "features/combat.js",
   "app.js"
 ]
