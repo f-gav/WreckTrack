@@ -19,7 +19,8 @@ function hashText(value){
 
 const template=fs.readFileSync(path.join(src,'index.html'),'utf8');
 const css=fs.readFileSync(path.join(src,'styles','app.css'),'utf8');
-const js=fs.readFileSync(path.join(src,'app.js'),'utf8');
+const appParts=JSON.parse(fs.readFileSync(path.join(src,'app-parts.json'),'utf8'));
+const js=appParts.map(file=>fs.readFileSync(path.join(src,file),'utf8')).join('\n');
 const swTemplate=fs.readFileSync(path.join(src,'service-worker.js'),'utf8');
 
 const cssHash=hashText(css);
