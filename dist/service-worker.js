@@ -1,9 +1,9 @@
-const CACHE_NAME='wreckage-static-3c0b72594374';
+const CACHE_NAME='wreckage-static-ef3376ca2b77';
 const APP_SHELL=[
   './',
   './index.html',
   './assets/app.1be72dc7cd23.css',
-  './assets/app.61f3414aba95.js',
+  './assets/app.b073f77a17f5.js',
   './manifest.webmanifest',
   './icon16x16.png',
   './icon32x32.png',
