@@ -3,6 +3,7 @@
   "ui/markdown.js",
   "ui/markdown-editing.js",
   "ui/form-events.js",
+  "ui/action-events.js",
   "state.js",
   "storage.js",
   "cloud-sync.js",
@@ -16,8 +17,10 @@
   "features/journal.js",
   "features/rooms.js",
   "features/combat.js",
+  "features/combat-events.js",
   "features/detail.js",
   "features/detail-events.js",
   "features/data.js",
+  "features/data-events.js",
   "app.js"
 ]
