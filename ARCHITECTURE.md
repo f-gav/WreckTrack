@@ -16,6 +16,7 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 - `src/cloud-sync.js` — Supabase auth, merge and cloud synchronization.
 - `src/features/tokenator.js` — Tokenator state/rendering/image processing/export.
 - `src/features/bestiary.js` — Bestiary display, search, filters, sorting and main page rendering.
+- `src/features/bestiary-editor.js` — Bestiary editor, tags, import/export and Long Story Short import.
 - `src/app.js` — remaining application bootstrap, feature UI and event wiring.
 - `src/service-worker.js` — service-worker template.
 - `scripts/build.mjs` — deterministic build into `dist`.
@@ -44,13 +45,13 @@ Completed extractions:
 5. cloud/auth synchronization;
 6. Settings feature core;
 7. Tokenator feature core;
-8. Bestiary display/search core.
+8. Bestiary display/search core;
+9. Bestiary editor/import/export layer.
 
 Next safe extractions:
 
-1. Bestiary editor/import/export layer;
-2. Journal feature;
-3. Rooms/combat feature;
-4. remaining application bootstrap/event wiring.
+1. Journal feature;
+2. Rooms/combat feature;
+3. remaining application bootstrap/event wiring.
 
 Each extraction must keep storage keys, cloud merge semantics and visible behavior unchanged, and must pass the full regression/build pipeline before merge.

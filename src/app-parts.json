@@ -8,5 +8,6 @@
   "features/settings.js",
   "features/tokenator.js",
   "features/bestiary.js",
+  "features/bestiary-editor.js",
   "app.js"
 ]
