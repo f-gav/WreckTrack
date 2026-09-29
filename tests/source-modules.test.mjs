@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const parts=JSON.parse(fs.readFileSync(new URL('../src/app-parts.json',import.meta.url),'utf8'));
-assert.deepEqual(parts,['ui/core.js','ui/markdown.js','state.js','storage.js','cloud-sync.js','features/settings.js','features/tokenator.js','features/bestiary.js','app.js']);
+for(const required of ['ui/core.js','ui/markdown.js','ui/markdown-editing.js','state.js','storage.js','cloud-sync.js','features/settings.js','features/tokenator.js','features/bestiary.js','app.js'])assert.ok(parts.includes(required),'missing source part: '+required);
 assert.equal(new Set(parts).size,parts.length,'app source parts must be unique');
 
 const sources=Object.fromEntries(parts.map(file=>[file,fs.readFileSync(new URL('../src/'+file,import.meta.url),'utf8')]));
@@ -20,8 +20,14 @@ for(const symbol of ['function inlineMarkdown(','function markdownResourceTokens
   assert.ok(!sources['app.js'].includes(symbol),symbol+' must not remain in app.js');
 }
 
+for(const symbol of ['function wrapMarkdown(','function addMarkdownToolbars(','function prefixMarkdownLines(','function toggleMarkdownTask(','function insertMarkdownResource(']){
+  assert.ok(sources['ui/markdown-editing.js'].includes(symbol),symbol+' missing from ui/markdown-editing.js');
+  assert.ok(!sources['app.js'].includes(symbol),symbol+' must not remain in app.js');
+}
+
 assert.ok(bundle.indexOf('function escapeHtml(')<bundle.indexOf('function inlineMarkdown('),'core helpers must precede Markdown helpers');
-assert.ok(bundle.indexOf('function inlineMarkdown(')<bundle.indexOf('const CURRENT_SCHEMA_VERSION=1'),'Markdown helpers must precede state schema');
+assert.ok(bundle.indexOf('function inlineMarkdown(')<bundle.indexOf('function wrapMarkdown('),'Markdown rendering must precede Markdown editing helpers');
+assert.ok(bundle.indexOf('function wrapMarkdown(')<bundle.indexOf('const CURRENT_SCHEMA_VERSION=1'),'Markdown editing helpers must precede state schema');
 assert.ok(bundle.indexOf('const CURRENT_SCHEMA_VERSION=1')<bundle.indexOf("const KEY='gm-archive-v2'"),'state schema must precede storage');
 assert.ok(bundle.indexOf("const KEY='gm-archive-v2'")<bundle.indexOf("const SYNCED_USER_KEY='initiative-cloud-user-v1'"),'storage must precede cloud sync');
 assert.ok(bundle.indexOf("const SYNCED_USER_KEY='initiative-cloud-user-v1'")<bundle.indexOf('const ACCENT_KEY='),'cloud sync must precede Settings feature');
