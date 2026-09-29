@@ -9,10 +9,8 @@ for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
   assert.doesNotThrow(()=>new Function(match[1]),'inline JavaScript must remain syntactically valid');
 }
 
-const start=html.indexOf('const TOKEN_FRAMES=');
-const end=html.indexOf('function updateBestiaryTagSummary',start);
-assert.ok(start>=0&&end>start,'Tokenator source block not found');
-const tokenator=html.slice(start,end);
+const tokenator=fs.readFileSync(new URL('../src/features/tokenator.js',import.meta.url),'utf8');
+assert.match(tokenator,/const TOKEN_FRAMES=/);
 
 assert.match(tokenator,/TOKENATOR_USE_FRAME_SCHEDULER=true/);
 assert.match(tokenator,/TOKENATOR_MAX_SOURCE_DIMENSION=4096/);
@@ -25,9 +23,9 @@ assert.match(tokenator,/canvas\.toBlob\(/);
 assert.match(tokenator,/const loadToken=\+\+tokenatorLoadToken/);
 
 assert.match(tokenator,/data-token-color-delete=/);
-assert.match(tokenator,/tokenatorFavoriteColors=tokenatorFavoriteColors\.filter/);
-assert.match(tokenator,/persistTokenColors\(\);markLocalMutation\(false\);scheduleCloudSave\(\)/);
-assert.match(tokenator,/Цвет удалён из закладок/);
+assert.match(html,/tokenatorFavoriteColors=tokenatorFavoriteColors\.filter/);
+assert.match(html,/persistTokenColors\(\);markLocalMutation\(false\);scheduleCloudSave\(\)/);
+assert.match(html,/Цвет удалён из закладок/);
 
 assert.doesNotMatch(tokenator,/localStorage\.setItem\(['"]tokenatorPortrait/);
 
