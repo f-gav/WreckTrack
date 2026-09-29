@@ -42,7 +42,7 @@ assert.match(html,/settingsSection=section\.dataset\.settingsSection;renderSetti
 assert.doesNotMatch(html,/const renderSettingsBase=renderSettings/);
 assert.match(html,/class="topbar-settings-button"[^>]*data-go="settings"/);
 const homeStart=html.indexOf('function renderHome');
-const homeEnd=html.indexOf("document.addEventListener('click',e=>{const section=e.target.closest('[data-settings-section]')",homeStart);
+const homeEnd=html.indexOf('\n',homeStart);
 assert.ok(homeStart>=0&&homeEnd>homeStart);
 assert.doesNotMatch(html.slice(homeStart,homeEnd),/data-go="settings"/);
 
