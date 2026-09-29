@@ -20,9 +20,9 @@ assert.ok(searchStart>=0&&searchEnd>searchStart);
 const searchSrc=html.slice(searchStart,searchEnd);
 {
   const state={tags:[{id:'t1',name:'Нежить'}]};
-  const result=Function('state',\`
+  const result=Function('state',`
     let bestiaryAdvancedSearch=false;
-    \${searchSrc}
+    ${searchSrc}
     const c={name:'Скелет',description:'Страж',characteristics:'СИЛ 10',abilities:'Удар мечом',notes:'Боится света',tagIds:['t1']};
     const basic=creatureMatchesBestiaryQuery(c,'света');
     bestiaryAdvancedSearch=true;
@@ -32,7 +32,7 @@ const searchSrc=html.slice(searchStart,searchEnd);
       abilities:creatureMatchesBestiaryQuery(c,'мечом'),
       tags:creatureMatchesBestiaryQuery(c,'нежить')
     };
-  \`)(state);
+  `)(state);
   assert.equal(result.basic,false);
   assert.equal(result.notes,true);
   assert.equal(result.abilities,true);
@@ -62,7 +62,7 @@ let importSrc=html.slice(importStart,importEnd);
 importSrc=importSrc.replace(/function renderCreatureImportPreview\(\)\{[\s\S]*?\}\n    async function importCreaturesFile\(file\)\{[\s\S]*?\}\n    /,'');
 
 function runImport(mode){
-  return Function('source','mode',\`
+  return Function('source','mode',`
     let idCounter=0;
     const makeId=()=> 'new-'+(++idCounter);
     const validTagColor=v=>/^#[0-9a-f]{6}$/i.test(String(v||''))?String(v):'#d6a85f';
@@ -84,7 +84,7 @@ function runImport(mode){
     };
     applyCreatureImport(mode);
     return state.bestiary.map(c=>({id:c.id,name:c.name,description:c.description}));
-  \`)(importSrc,mode);
+  `)(importSrc,mode);
 }
 
 {
