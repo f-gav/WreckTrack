@@ -41,14 +41,14 @@ Completed extractions:
 3. schema/state normalization;
 4. local storage;
 5. cloud/auth synchronization;
-6. Tokenator feature core.
+6. Settings feature core;
+7. Tokenator feature core.
 
 Next safe extractions:
 
-1. Settings feature;
-2. Bestiary feature;
-3. Journal feature;
-4. Rooms/combat feature;
-5. remaining application bootstrap/event wiring.
+1. Bestiary feature;
+2. Journal feature;
+3. Rooms/combat feature;
+4. remaining application bootstrap/event wiring.
 
 Each extraction must keep storage keys, cloud merge semantics and visible behavior unchanged, and must pass the full regression/build pipeline before merge.
