@@ -9,10 +9,8 @@ for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
   assert.doesNotThrow(()=>new Function(match[1]),'inline JavaScript must remain syntactically valid');
 }
 
-const start=html.indexOf('const TOKEN_FRAMES=');
-const end=html.indexOf('function updateBestiaryTagSummary',start);
-assert.ok(start>=0&&end>start,'Tokenator source block not found');
-const tokenator=html.slice(start,end);
+const tokenator=fs.readFileSync(new URL('../src/features/tokenator.js',import.meta.url),'utf8');
+assert.match(tokenator,/const TOKEN_FRAMES=/);
 
 assert.match(tokenator,/TOKENATOR_USE_FRAME_SCHEDULER=true/);
 assert.match(tokenator,/id="tokenator-scale"/);
@@ -22,12 +20,12 @@ assert.match(tokenator,/function resetTokenatorTransform\(\)\{tokenatorScale=1;t
 assert.match(tokenator,/if\(reset\)reset\.disabled=!tokenatorPortrait/);
 
 assert.match(tokenator,/Нажмите для загрузки или вставьте Ctrl\+V/);
-assert.match(tokenator,/document\.addEventListener\('paste'/);
-assert.match(tokenator,/if\(view\.name!=='tokenator'\)return/);
-assert.match(tokenator,/input,textarea,select,\[contenteditable="true"\]/);
-assert.match(tokenator,/loadTokenatorImage\(file,'Изображение вставлено'\)/);
+assert.match(html,/document\.addEventListener\('paste'/);
+assert.match(html,/if\(view\.name!=='tokenator'\)return/);
+assert.match(html,/input,textarea,select,\[contenteditable="true"\]/);
+assert.match(html,/loadTokenatorImage\(file,'Изображение вставлено'\)/);
 
 assert.match(tokenator,/function loadTokenatorImage\(/);
-assert.match(tokenator,/id!=='tokenator-file'[\s\S]*?loadTokenatorImage\(file\)/);
+assert.match(html,/id!=='tokenator-file'[\s\S]*?loadTokenatorImage\(file\)/);
 
 console.log('Tokenator reset and clipboard paste smoke tests passed');
