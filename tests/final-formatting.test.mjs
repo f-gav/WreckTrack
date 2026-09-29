@@ -13,7 +13,7 @@ for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
 // stronger specificity as well as !important to win for every font choice.
 assert.match(html,/:root\[data-font="neuzeit"\] h1\{font-size:[^}]+!important\}/);
 assert.match(html,/:root\[data-font="neuzeit"\] \.dialog-form h3\{font-size:[^}]+!important\}/);
-for(const [level,size,weight] of [[1,1.82,400],[2,1.43,400],[3,1.22,400],[4,1.1,400],[5,1,700],[6,.85,700]]){
+for(const [level,size,weight] of [[1,1.82,700],[2,1.43,700],[3,1.22,700],[4,1.1,700],[5,1,700],[6,.85,700]]){
   const rules=[...html.matchAll(new RegExp('#journal-live-editor \\.journal-heading-row h'+level+'\\{font-size:([\\d.]+)em!important;font-weight:(\\d+)\\}','g'))];
   assert.equal(rules.length,1,'Journal heading '+level+' must override global font rules');
   assert.equal(Number(rules[0][1]),size,'Journal heading '+level+' should match the requested hierarchy');
