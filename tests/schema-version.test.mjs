@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
+import {loadAppSource} from './_app-source.mjs';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
-const html = fs.readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
+const html=loadAppSource();
 const versionMatch = html.match(/CURRENT_SCHEMA_VERSION=(\d+)/);
 assert.ok(versionMatch, 'CURRENT_SCHEMA_VERSION not found');
 const CURRENT_SCHEMA_VERSION = Number(versionMatch[1]);
