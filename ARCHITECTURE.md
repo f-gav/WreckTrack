@@ -7,20 +7,21 @@ WreckTrack remains a framework-free, local-first static application.
 Do not hand-edit generated application code inside `dist/index.html` or `dist/assets/app.*`.
 
 - `src/index.html` — HTML shell/template.
-- `src/styles/app.css` — transitional application stylesheet.
-- `src/app-parts.json` — ordered list of JavaScript source parts used by the concatenating build.
-- `src/ui/core.js` — shared DOM/escaping/plural/toast helpers.
-- `src/ui/markdown.js` — shared Markdown parsing/rendering helpers.
-- `src/state.js` — archive schema versioning, migrations and normalization.
-- `src/storage.js` — local archive loading, delayed persistence and mutation tracking.
-- `src/cloud-sync.js` — Supabase auth/sync, IndexedDB merge base, optimistic concurrency and offline retry.
-- `src/app.js` — remaining transitional application JavaScript.
+- `src/styles/app.css` — application stylesheet.
+- `src/app-parts.json` — deterministic runtime concatenation order.
+- `src/ui/core.js` — small shared UI helpers.
+- `src/ui/markdown.js` — shared Markdown rendering/editing helpers.
+- `src/state.js` — archive schema and normalization.
+- `src/storage.js` — local persistence and mutation scheduling.
+- `src/cloud-sync.js` — Supabase auth, merge and cloud synchronization.
+- `src/features/tokenator.js` — Tokenator state/rendering/image processing/export.
+- `src/app.js` — remaining application bootstrap, feature UI and event wiring.
 - `src/service-worker.js` — service-worker template.
 - `scripts/build.mjs` — deterministic build into `dist`.
 - `tests/` — regression coverage against source files.
 - `dist/` — deploy output plus static binary assets.
 
-The first architecture stage intentionally extracts the monolith without changing runtime semantics. Feature/module splitting comes after this boundary is stable.
+The architecture migration intentionally preserves one browser script/runtime scope for now. The build concatenates source parts in `app-parts.json`, which lets us extract responsibilities gradually without changing global initialization order or introducing import/export regressions.
 
 ## Build
 
@@ -29,16 +30,25 @@ npm ci
 npm run check
 ```
 
-The build writes content-hashed CSS/JS assets and injects their names into `dist/index.html` and the service worker.
+The build concatenates source parts in declared order, writes content-hashed CSS/JS assets, and injects their names into `dist/index.html` and the service worker.
 
-## Next module split
+## Architecture stage 2
 
-The next safe order is:
+Completed extractions:
 
-1. ~~pure UI/Markdown utilities~~ — extracted in Architecture Part 2A;
-2. ~~schema/state/storage~~ — extracted in Architecture Part 2B;
-3. ~~cloud sync~~ — extracted in Architecture Part 2C;
-4. feature modules (Bestiary, Rooms/Combat, Journal, Tokenator, Settings);
-5. shared event wiring / application bootstrap.
+1. shared UI helpers;
+2. shared Markdown helpers;
+3. schema/state normalization;
+4. local storage;
+5. cloud/auth synchronization;
+6. Tokenator feature core.
 
-Each extraction should preserve current data keys, cloud merge semantics and visible behavior, and should be covered by regression tests before deleting the old source block.
+Next safe extractions:
+
+1. Settings feature;
+2. Bestiary feature;
+3. Journal feature;
+4. Rooms/combat feature;
+5. remaining application bootstrap/event wiring.
+
+Each extraction must keep storage keys, cloud merge semantics and visible behavior unchanged, and must pass the full regression/build pipeline before merge.
