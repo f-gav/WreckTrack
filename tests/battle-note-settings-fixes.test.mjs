@@ -19,7 +19,7 @@ assert.doesNotMatch(html,/<button class="topnav-button" data-go="settings">На�
 assert.match(html,/class="topbar-settings-button"[^>]*data-go="settings"/);
 assert.match(html,/\.topbar-settings-button\{/);
 assert.match(html,/\.topbar-settings-button svg\{/);
-assert.match(html,/stroke-width:2\.15/);
+assert.match(html,/stroke-width:2\.4/);
 
 
 // The actually-used room renderer must use preview/edit mode too.
