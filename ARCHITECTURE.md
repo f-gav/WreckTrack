@@ -75,6 +75,6 @@ Completed extractions:
 
 Next safe extractions:
 
-1. consolidate historical `renderRoom` and `changeRoomHp` function wrappers in focused follow-up patches.
+1. consolidate the historical `changeRoomHp` function wrapper in a focused follow-up patch.
 
 Each extraction must keep storage keys, cloud merge semantics and visible behavior unchanged, and must pass the full regression/build pipeline before merge.
