@@ -20,6 +20,16 @@ assert.match(html,/\.topbar-settings-button\{/);
 assert.match(html,/\.topbar-settings-button svg\{/);
 assert.match(html,/stroke-width:2\.15/);
 
+
+// The actually-used room renderer must use preview/edit mode too.
+const activeRendererStart=html.indexOf('function renderInitiativeRow(room,x,outside=false)');
+const activeRendererEnd=html.indexOf('function renderRoomWithOutsideCombat',activeRendererStart);
+assert.ok(activeRendererStart>=0&&activeRendererEnd>activeRendererStart,'active room renderer not found');
+const activeRenderer=html.slice(activeRendererStart,activeRendererEnd);
+assert.match(activeRenderer,/data-combat-note-preview=/);
+assert.match(activeRenderer,/data-combat-note="\$\{key\}" hidden/);
+assert.doesNotMatch(activeRenderer,/aria-label="Боевая заметка: \$\{escapeHtml\(x\.creature\.name\|\|'NPC'\)\}" data-combat-note=/);
+
 // Battle note has a rendered preview plus an edit textarea.
 assert.match(html,/function renderBattleNotePreview\(value,entryId\)/);
 assert.match(html,/data-combat-note-preview=/);
