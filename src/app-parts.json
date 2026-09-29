@@ -10,5 +10,6 @@
   "features/bestiary.js",
   "features/bestiary-editor.js",
   "features/journal.js",
+  "features/rooms.js",
   "app.js"
 ]

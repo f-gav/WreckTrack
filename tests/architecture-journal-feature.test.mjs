@@ -7,7 +7,7 @@ const app=fs.readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
 const bundle=parts.map(file=>fs.readFileSync(new URL('../src/'+file,import.meta.url),'utf8')).join('\n');
 
 assert.ok(parts.indexOf('features/settings.js')<parts.indexOf('features/journal.js'));
-assert.equal(parts.indexOf('features/journal.js'),parts.indexOf('app.js')-1);
+assert.ok(parts.indexOf('features/journal.js')<parts.indexOf('app.js'));
 for(const name of [
   'journalInlineTokens','journalInlinePreviewHtml','journalFoldRange',
   'toggleJournalTask','toggleJournalResource','renderJournalEditor',
