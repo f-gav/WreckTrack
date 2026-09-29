@@ -15,6 +15,7 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 - `src/storage.js` — local persistence and mutation scheduling.
 - `src/cloud-sync.js` — Supabase auth, merge and cloud synchronization.
 - `src/features/tokenator.js` — Tokenator state/rendering/image processing/export.
+- `src/features/tokenator-events.js` — Tokenator input and pointer event wiring.
 - `src/features/bestiary.js` — Bestiary display, search, filters, sorting and main page rendering.
 - `src/features/bestiary-editor.js` — Bestiary editor, tags, import/export and Long Story Short import.
 - `src/features/journal.js` — Journal editor state, Markdown live preview, folding and search.
@@ -57,6 +58,7 @@ Completed extractions:
 12. combat feature core.
 13. full archive backup and restore core.
 14. creature detail card core.
+15. Tokenator event wiring.
 
 Next safe extractions:
 

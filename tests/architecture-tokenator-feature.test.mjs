@@ -19,6 +19,7 @@ assert.ok(parts.indexOf('features/tokenator.js')<parts.indexOf('features/bestiar
 assert.ok(parts.indexOf('features/bestiary.js')<parts.indexOf('app.js'));
 
 const feature=fs.readFileSync(new URL('../src/features/tokenator.js',import.meta.url),'utf8');
+const events=fs.readFileSync(new URL('../src/features/tokenator-events.js',import.meta.url),'utf8');
 const app=fs.readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
 const combined=parts.map(file=>fs.readFileSync(new URL('../src/'+file,import.meta.url),'utf8')).join('\n');
 
@@ -29,7 +30,8 @@ assert.match(feature,/function downloadToken\(/);
 assert.match(feature,/TOKENATOR_MAX_SOURCE_DIMENSION=4096/);
 assert.doesNotMatch(app,/const TOKEN_FRAMES=/);
 assert.doesNotMatch(app,/function renderTokenator\(/);
-assert.match(app,/data-token-frame/);
-assert.match(app,/tokenator-file/);
+assert.match(events,/data-token-frame/);
+assert.match(events,/tokenator-file/);
+assert.match(app,/registerTokenatorEvents\(\);/);
 
 console.log('Tokenator feature architecture split tests passed');
