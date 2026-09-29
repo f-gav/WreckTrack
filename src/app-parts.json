@@ -9,5 +9,6 @@
   "features/tokenator.js",
   "features/bestiary.js",
   "features/bestiary-editor.js",
+  "features/journal.js",
   "app.js"
 ]
