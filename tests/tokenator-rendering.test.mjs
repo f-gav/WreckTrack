@@ -20,8 +20,12 @@ assert.match(tokenator,/function flushTokenatorDraw\(\)/);
 assert.match(tokenator,/tokenatorPortraitLayer=null/);
 assert.match(tokenator,/tokenatorFrameLayer=null/);
 
-// Offscreen layers are created lazily and reused.
-assert.equal((tokenator.match(/document\.createElement\('canvas'\)/g)||[]).length,2);
+// The two render layers are created lazily and reused. A separate third canvas
+// is allowed only for one-off downscaling of oversized source images.
+assert.match(tokenator,/if\(!tokenatorPortraitLayer\)tokenatorPortraitLayer=document\.createElement\('canvas'\)/);
+assert.match(tokenator,/if\(!tokenatorFrameLayer\)tokenatorFrameLayer=document\.createElement\('canvas'\)/);
+assert.match(tokenator,/TOKENATOR_MAX_SOURCE_DIMENSION=4096/);
+assert.match(tokenator,/canvas=document\.createElement\('canvas'\);canvas\.width=targetWidth/);
 const drawStart=tokenator.indexOf('function drawTokenator(){');
 const loadStart=tokenator.indexOf('function loadTokenatorAssets()',drawStart);
 assert.ok(drawStart>=0&&loadStart>drawStart);
