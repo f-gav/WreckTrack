@@ -8,6 +8,7 @@ assert.deepEqual(parts,[
   'state.js',
   'storage.js',
   'cloud-sync.js',
+  'features/settings.js',
   'features/tokenator.js',
   'app.js'
 ]);

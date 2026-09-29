@@ -15,7 +15,7 @@ assert.match(html,/view\.name==='settings'/);
 assert.match(html,/function renderSettings\(/);
 assert.match(html,/class="topbar-settings-button"/);
 const homeStart=html.indexOf('function renderHome');
-const homeEnd=html.indexOf("let settingsSection='interface'",homeStart);
+const homeEnd=html.indexOf("document.addEventListener('click',e=>{const section=e.target.closest('[data-settings-section]')",homeStart);
 assert.ok(homeStart>=0&&homeEnd>homeStart);
 assert.doesNotMatch(html.slice(homeStart,homeEnd),/data-go="settings"/);
 assert.match(html,/settings-grid/);
