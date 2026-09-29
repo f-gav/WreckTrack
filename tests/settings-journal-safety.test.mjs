@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
+import {loadAppSource} from './_app-source.mjs';
 import fs from 'node:fs';
 
-const html=fs.readFileSync(new URL('../dist/index.html',import.meta.url),'utf8');
+const html=loadAppSource();
 
 for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
   if(!match[1].trim())continue;
@@ -12,7 +13,11 @@ for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
 assert.match(html,/data-go="settings"/);
 assert.match(html,/view\.name==='settings'/);
 assert.match(html,/function renderSettings\(/);
-assert.match(html,/settings-portal/);
+assert.match(html,/class="topbar-settings-button"/);
+const homeStart=html.indexOf('function renderHome');
+const homeEnd=html.indexOf("let settingsSection='interface'",homeStart);
+assert.ok(homeStart>=0&&homeEnd>homeStart);
+assert.doesNotMatch(html.slice(homeStart,homeEnd),/data-go="settings"/);
 assert.match(html,/settings-grid/);
 assert.match(html,/settings-section-title/);
 assert.doesNotMatch(html,/data-go="appearance"/);
