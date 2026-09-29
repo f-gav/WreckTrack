@@ -1,0 +1,15 @@
+const CURRENT_SCHEMA_VERSION=1;
+
+function archiveSchemaVersion(data){if(!data||typeof data!=='object'||Array.isArray(data))return 0;const version=Number(data.schemaVersion);return Number.isInteger(version)&&version>=0?version:0}
+    function migrateArchive(data){
+      if(!data||typeof data!=='object'||Array.isArray(data))data={};
+      let version=archiveSchemaVersion(data);
+      if(version>CURRENT_SCHEMA_VERSION)throw new Error(`Версия архива ${version} новее поддерживаемой ${CURRENT_SCHEMA_VERSION}`);
+      while(version<CURRENT_SCHEMA_VERSION){
+        if(version===0){if(!Array.isArray(data.rooms))data.rooms=[];if(!Array.isArray(data.bestiary))data.bestiary=[];if(!Array.isArray(data.tags))data.tags=[];data.schemaVersion=1;version=1;continue}
+        throw new Error(`Нет миграции архива v${version} -> v${version+1}`);
+      }
+      data.schemaVersion=CURRENT_SCHEMA_VERSION;
+      return data;
+    }
+function normalize(data){data=migrateArchive(data);const normalizeCreature=c=>{if(c.description==null)c.description='';if(c.hp==null)c.hp='';if(c.ac==null)c.ac='';if(c.characteristics==null)c.characteristics='';if(c.abilities==null)c.abilities='';if(c.notes==null)c.notes='';if(!Array.isArray(c.tagIds))c.tagIds=[];return c};if(!Array.isArray(data.tags))data.tags=[];data.tags=data.tags.map(t=>({id:t.id||makeId(),name:String(t.name||'Тег').slice(0,30),color:validTagColor(t.color)}));data.bestiary.forEach(normalizeCreature);data.rooms.forEach(r=>{if(r.journal==null)r.journal='';if(!r.initiatives||typeof r.initiatives!=='object')r.initiatives={};if(!r.combatNotes||typeof r.combatNotes!=='object')r.combatNotes={};if(!r.currentHp||typeof r.currentHp!=='object')r.currentHp={};if(!r.bonusHp||typeof r.bonusHp!=='object')r.bonusHp={};if(!Array.isArray(r.entries)){const used=new Set;r.entries=(Array.isArray(r.creatureIds)?r.creatureIds:[]).map(creatureId=>{let id=creatureId;if(used.has(id)){id=makeId();if(Object.prototype.hasOwnProperty.call(r.initiatives,creatureId))r.initiatives[id]=r.initiatives[creatureId];if(Object.prototype.hasOwnProperty.call(r.combatNotes,creatureId))r.combatNotes[id]=r.combatNotes[creatureId];if(Object.prototype.hasOwnProperty.call(r.currentHp,creatureId))r.currentHp[id]=r.currentHp[creatureId];if(Object.prototype.hasOwnProperty.call(r.bonusHp,creatureId))r.bonusHp[id]=r.bonusHp[creatureId]}used.add(id);return{id,creatureId}})}r.entries=r.entries.map(entry=>{const normalized={id:entry.id||makeId(),creatureId:entry.creatureId||null};if(!normalized.creatureId)normalized.npc=normalizeCreature(entry.npc&&typeof entry.npc==='object'?entry.npc:{name:'',description:'',hp:'',ac:'',characteristics:'',abilities:'',notes:'',tagIds:[]});return normalized});delete r.creatureIds;if(!r.combat||typeof r.combat!=='object')r.combat={active:false,round:1,turnCreatureId:null};r.combat.active=Boolean(r.combat.active);r.combat.round=Math.max(1,Math.trunc(Number(r.combat.round)||1));if(r.combat.turnCreatureId==null)r.combat.turnCreatureId=null});return data}

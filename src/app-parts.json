@@ -1,5 +1,7 @@
 [
   "ui/core.js",
   "ui/markdown.js",
+  "state.js",
+  "storage.js",
   "app.js"
 ]
