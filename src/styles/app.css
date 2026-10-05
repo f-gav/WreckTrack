@@ -213,6 +213,6 @@
     }
     @media(max-width:430px){
       .topbar{gap:3px;padding-inline:5px}
-      .brand-mark,.brand-mark img{width:28px;height:28px}
+      .brand-mark,.brand-mark img{width:32px;height:32px}
       .topnav-button{font-size:7px;padding-inline:2px;letter-spacing:.02em}
     }
