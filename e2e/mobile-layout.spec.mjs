@@ -130,7 +130,7 @@ test('mobile settings tabs remain reachable by horizontal scrolling',async({page
   await page.getByRole('button',{name:'Настройки'}).click();
   const nav=page.locator('.settings-nav');
   await expect(nav).toBeVisible();
-  await expect(page.locator('.settings-nav-button')).toHaveCount(5);
+  await expect(page.locator('.settings-nav-button')).toHaveCount(6);
   await page.locator('.settings-nav-button').last().scrollIntoViewIfNeeded();
   await page.locator('.settings-nav-button').last().click();
   await expect(page.locator('.settings-nav-button').last()).toHaveClass(/current/);
