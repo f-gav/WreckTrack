@@ -236,3 +236,27 @@ test('keyboard navigation exposes visible focus and escape closes modal',async({
   await page.keyboard.press('Escape');
   await expect(page.locator('#creature-dialog')).not.toBeVisible();
 });
+
+
+test('mobile primary controls keep practical touch targets',async({page})=>{
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('/');
+  const selectors=['#brand-home','.topnav-button','.topbar-settings-button','.account-button'];
+  for(const selector of selectors){
+    const items=page.locator(selector);
+    for(let i=0;i<await items.count();i++){
+      const box=await items.nth(i).boundingBox();
+      expect(box.width,selector+' width').toBeGreaterThanOrEqual(32);
+      expect(box.height,selector+' height').toBeGreaterThanOrEqual(32);
+    }
+  }
+  await page.getByRole('button',{name:'Бестиарий'}).first().click();
+  const addButton=page.locator('#grid-new-creature');
+  const addBox=await addButton.boundingBox();
+  expect(addBox.height).toBeGreaterThanOrEqual(44);
+  await addButton.click();
+  for(const button of await page.locator('#creature-dialog .dialog-actions .button').all()){
+    const box=await button.boundingBox();
+    expect(box.height).toBeGreaterThanOrEqual(44);
+  }
+});
