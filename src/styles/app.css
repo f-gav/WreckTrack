@@ -180,6 +180,7 @@
       .topbar{width:100%;box-sizing:border-box;padding-inline:10px;gap:5px;overflow:hidden}
       .brand{flex:0 0 auto;min-width:0}
       .brand-name{display:block!important;font-size:14px!important;white-space:nowrap}
+      :root[data-font] .brand-name{font-size:14px!important;letter-spacing:.02em!important}
       .brand-mark,.brand-mark img{width:32px;height:32px}
       .topnav{min-width:0;margin-left:2px;gap:1px}
       .topnav-button{min-width:0;padding-inline:4px;font-size:8.5px;letter-spacing:.04em}
