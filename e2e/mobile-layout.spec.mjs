@@ -268,7 +268,11 @@ test('wider phone landscape keeps header, bestiary menu and Tokenator inside vie
   const brand=page.locator('.brand-name');
   await expect(brand).toHaveText('WreckTrack');
   await expect(brand).toBeVisible();
-  await expectNoHorizontalOverflow(page);
+  for(const font of ['neuzeit','belarus','ebbe','old-town']){
+    await page.evaluate(value=>document.documentElement.dataset.font=value,font);
+    await expect(brand).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+  }
 
   await page.getByRole('button',{name:'Бестиарий'}).first().click();
   const menu=page.locator('.bestiary-card .card-more-menu').first();
