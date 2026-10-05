@@ -5,7 +5,7 @@ function updateSaveStatus(){if(typeof updateCloudStatus==='function')updateCloud
 
 
 function loadState(){
-      try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved&&Array.isArray(saved.rooms)&&Array.isArray(saved.bestiary)){const previousVersion=archiveSchemaVersion(saved),normalized=normalize(saved);if(previousVersion!==CURRENT_SCHEMA_VERSION)localStorage.setItem(KEY,JSON.stringify(normalized));return normalized}}catch(_){}
+      try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved&&Array.isArray(saved.rooms)&&Array.isArray(saved.bestiary)){const previousVersion=archiveSchemaVersion(saved),libraryIncomplete=!saved.library||typeof saved.library!=='object'||!Array.isArray(saved.library.conditions)||!Array.isArray(saved.library.artifacts)||!Array.isArray(saved.library.tags),normalized=normalize(saved);if(previousVersion!==CURRENT_SCHEMA_VERSION||libraryIncomplete)localStorage.setItem(KEY,JSON.stringify(normalized));return normalized}}catch(_){}
       try{const old=JSON.parse(localStorage.getItem(OLD_KEY));if(old&&Array.isArray(old.rooms)){const bestiary=[],rooms=old.rooms.map(room=>{const creatureIds=[];(room.creatures||[]).forEach(c=>{const id=c.id||makeId();bestiary.push({id,name:c.name||'Без имени',description:'',hp:'',ac:'',characteristics:'',abilities:'',notes:c.notes||''});creatureIds.push(id)});return{id:room.id||makeId(),name:room.name||'Без названия',creatureIds,initiatives:{},combatNotes:{},currentHp:{}}});const migrated=normalize({rooms,bestiary,tags:[]});localStorage.setItem(KEY,JSON.stringify(migrated));return migrated}}catch(_){}
       return normalize({rooms:[],bestiary:[],tags:[]});
     }
