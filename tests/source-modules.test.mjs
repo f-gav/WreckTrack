@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const parts=JSON.parse(fs.readFileSync(new URL('../src/app-parts.json',import.meta.url),'utf8'));
-for(const required of ['ui/core.js','ui/markdown.js','ui/markdown-editing.js','ui/form-events.js','ui/action-events.js','ui/agent-tools.js','state.js','storage.js','cloud-sync.js','cloud-sync-events.js','features/settings.js','features/tokenator.js','features/tokenator-events.js','features/bestiary.js','features/journal-events.js','features/detail.js','features/combat-events.js','features/data.js','features/data-events.js','app.js'])assert.ok(parts.includes(required),'missing source part: '+required);
+for(const required of ['ui/core.js','ui/markdown.js','ui/markdown-editing.js','ui/form-events.js','ui/action-events.js','ui/agent-tools.js','state.js','storage.js','cloud-sync.js','cloud-sync-events.js','features/settings.js','features/tokenator.js','features/tokenator-events.js','features/bestiary.js','features/library.js','features/library-events.js','features/journal-events.js','features/detail.js','features/combat-events.js','features/data.js','features/data-events.js','app.js'])assert.ok(parts.includes(required),'missing source part: '+required);
 assert.equal(new Set(parts).size,parts.length,'app source parts must be unique');
 
 const sources=Object.fromEntries(parts.map(file=>[file,fs.readFileSync(new URL('../src/'+file,import.meta.url),'utf8')]));
@@ -56,6 +56,14 @@ for(const symbol of ['const ACCENT_KEY=','function applyAccent(','function apply
   assert.ok(!sources['app.js'].includes(symbol),symbol+' must not remain in app.js');
 }
 
+for(const symbol of ['function renderLibrary(','function renderLibrarySection(','function openLibraryItemDialog(','function setLibraryTagSync(']){
+  assert.ok(sources['features/library.js'].includes(symbol),symbol+' missing from features/library.js');
+  assert.ok(!sources['app.js'].includes(symbol),symbol+' must not remain in app.js');
+}
+assert.ok(parts.indexOf('features/bestiary-events.js')<parts.indexOf('features/library.js'),'Library feature must follow Bestiary helpers');
+assert.ok(parts.indexOf('features/library.js')<parts.indexOf('features/library-events.js'),'Library events must follow Library core');
+assert.ok(parts.indexOf('features/library-events.js')<parts.indexOf('app.js'),'Library events must precede bootstrap');
+
 for(const symbol of ['function validTagColor(','function renderTagFlags(','function creatureMatchesBestiaryQuery(','function renderBestiaryCards(','function renderBestiary(']){
   assert.ok(sources['features/bestiary.js'].includes(symbol),symbol+' missing from features/bestiary.js');
   assert.ok(!sources['app.js'].includes(symbol),symbol+' must not remain in app.js');
@@ -86,7 +94,7 @@ assert.ok(sources['features/tokenator-events.js'].includes('function registerTok
 assert.ok(sources['app.js'].includes('registerTokenatorEvents();'));
 assert.ok(!sources['app.js'].includes("const frame=e.target.closest('[data-token-frame]')"));
 
-for(const [part,registration] of [['ui/action-events.js','registerPrimaryActionEvents'],['features/combat-events.js','registerBattleNotePreviewEvents'],['features/data-events.js','registerDataFileEvents']]){
+for(const [part,registration] of [['ui/action-events.js','registerPrimaryActionEvents'],['features/library-events.js','registerLibraryEvents'],['features/combat-events.js','registerBattleNotePreviewEvents'],['features/data-events.js','registerDataFileEvents']]){
   assert.ok(sources[part].includes('function '+registration+'(){'));
   assert.ok(sources['app.js'].includes(registration+'();'));
 }

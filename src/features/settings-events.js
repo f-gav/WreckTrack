@@ -11,6 +11,7 @@
     function registerSettingsToggleEvents(){
     document.addEventListener('change',e=>{if(e.target.id!=='bold-as-section')return;applyBoldSections(e.target.checked);renderSettings();showToast(e.target.checked?'Жирный текст добавлен в разделы':'Жирный текст исключён из разделов')})
     document.addEventListener('change',e=>{if(e.target.id!=='combat-tracking')return;applyCombatTracking(e.target.checked);renderSettings();showToast(e.target.checked?'Отслеживание существа включено':'Отслеживание существа выключено')})
+    document.addEventListener('change',e=>{if(e.target.id!=='library-sync-tags')return;setLibraryTagSync(e.target.checked);renderSettings()})
     document.addEventListener('change',e=>{if(e.target.id!=='bestiary-advanced-search')return;applyBestiaryAdvancedSearch(e.target.checked);renderSettings();showToast(e.target.checked?'Расширенный поиск Бестиария включён':'Расширенный поиск Бестиария выключен')})
     document.addEventListener('change',e=>{if(e.target.id!=='journal-enabled')return;applyJournalEnabled(e.target.checked);renderSettings();showToast(e.target.checked?'Журнал включён':'Журнал выключен')})
     document.addEventListener('change',e=>{if(e.target.id!=='journal-search-enabled')return;applyJournalSearch(e.target.checked);renderSettings();showToast(e.target.checked?'Поиск в Журнале включён':'Поиск в Журнале выключен')})

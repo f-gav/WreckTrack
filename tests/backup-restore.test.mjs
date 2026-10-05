@@ -40,7 +40,7 @@ assert.deepEqual(
       {entries:[{npc:{name:'NPC'}}]}
     ]
   }))),
-  {rooms:2,bestiary:2,tags:1,npcs:2}
+  {rooms:2,bestiary:2,tags:1,npcs:2,conditions:0,artifacts:0}
 );
 
 assert.match(html,/format:'wrecktrack-data'/);
