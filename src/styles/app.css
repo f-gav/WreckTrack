@@ -128,3 +128,15 @@
       dialog:has(input:focus,textarea:focus,select:focus){max-height:calc(100dvh - 12px)}
       .creature-dialog-actions{position:sticky;bottom:0;z-index:2}
     }
+
+    /* Stability: compact header before the phone breakpoint so landscape/tablet widths never widen the document. */
+    @media(min-width:701px) and (max-width:900px){
+      .topbar{padding-inline:12px;gap:6px;overflow:hidden}
+      .brand-name{display:none}
+      .topnav{min-width:0;margin-left:4px;gap:2px}
+      .topnav-button{min-width:0;padding-inline:6px;font-size:10px;letter-spacing:.08em}
+      .save-status,.topbar-settings-button,.account-button{flex-shrink:0}
+    }
+    @media(max-width:430px){
+      .brand-mark,.brand-mark img{width:32px;height:32px}
+    }
