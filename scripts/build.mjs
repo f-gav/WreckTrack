@@ -32,6 +32,14 @@ const cssRel='./assets/'+cssName;
 const jsRel='./assets/'+jsName;
 
 fs.mkdirSync(assets,{recursive:true});
+const legacyFonts=path.join(dist,'fonts');
+const assetFonts=path.join(assets,'fonts');
+if(fs.existsSync(legacyFonts)){
+  fs.mkdirSync(assetFonts,{recursive:true});
+  for(const name of fs.readdirSync(legacyFonts)){
+    fs.copyFileSync(path.join(legacyFonts,name),path.join(assetFonts,name));
+  }
+}
 for(const name of fs.readdirSync(assets)){
   if(/^app\.[0-9a-f]{12}\.(?:css|js)$/.test(name))fs.rmSync(path.join(assets,name));
 }
