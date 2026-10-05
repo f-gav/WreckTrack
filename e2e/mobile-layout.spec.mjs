@@ -189,3 +189,50 @@ test('mobile backup restore dialog fits narrow and short screens',async({page})=
   expect(box.x+box.width).toBeLessThanOrEqual(361);
   expect(box.height).toBeLessThanOrEqual(640);
 });
+
+
+test('mobile focus remains usable with keyboard-sized viewport',async({page})=>{
+  await page.setViewportSize({width:390,height:500});
+  await page.goto('/');
+  await page.getByRole('button',{name:'Бестиарий'}).first().click();
+  await page.locator('#grid-new-creature').click();
+  const name=page.locator('#creature-name');
+  await name.focus();
+  await expect(name).toBeFocused();
+  await name.fill('Фокус на мобильном');
+  await page.locator('#creature-notes').focus();
+  await page.locator('#creature-notes').fill('Длинная заметка '.repeat(20));
+  await page.locator('#creature-dialog .creature-dialog-actions').scrollIntoViewIfNeeded();
+  await expect(page.locator('#creature-dialog .creature-dialog-actions')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#creature-dialog')).not.toBeVisible();
+});
+
+test('landscape core sections stay usable',async({page})=>{
+  await page.setViewportSize({width:844,height:390});
+  await page.goto('/');
+  for(const name of ['Бестиарий','Комнаты','Токенатор']){
+    await page.getByRole('button',{name}).first().click();
+    await expectNoHorizontalOverflow(page);
+  }
+  await page.getByRole('button',{name:'Настройки'}).click();
+  await expect(page.locator('.settings-nav')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});
+
+test('keyboard navigation exposes visible focus and escape closes modal',async({page})=>{
+  await page.goto('/');
+  await page.keyboard.press('Tab');
+  const focused=page.locator(':focus');
+  await expect(focused).toBeVisible();
+  const outline=await focused.evaluate(el=>{const s=getComputedStyle(el);return {outline:s.outline,boxShadow:s.boxShadow}});
+  expect(outline.outline!=='none'||outline.boxShadow!=='none').toBeTruthy();
+  await page.getByRole('button',{name:'Бестиарий'}).first().click();
+  const trigger=page.locator('#grid-new-creature');
+  await trigger.focus();
+  await trigger.press('Enter');
+  await expect(page.locator('#creature-dialog')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#creature-dialog')).not.toBeVisible();
+});
