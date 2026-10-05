@@ -100,3 +100,25 @@
       .export-toolbar{grid-template-columns:1fr}.export-toolbar .button{width:100%}
       .toast{left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));text-align:center}
     }
+
+    @media(max-width:700px){
+      #journal-dialog{width:calc(100vw - 20px);max-width:calc(100vw - 20px);height:94dvh;max-height:94dvh}
+      .journal-form{height:100%;min-width:0;padding:16px}
+      .journal-head,.journal-searchbar,.journal-workspace,.journal-editor,.journal-live-editor{min-width:0}
+      .journal-workspace{grid-template-columns:1fr}
+      .journal-toc{display:none}
+      .journal-live-editor{overflow-wrap:anywhere}
+      .tokenator-canvas-wrap{width:min(100%,520px);margin-inline:auto}
+      .tokenator-canvas{max-width:100%;height:auto}
+      .tokenator-actions{flex-wrap:wrap}
+      .tokenator-actions>*{min-width:0}
+      #backup-restore-dialog{width:calc(100vw - 20px);max-width:calc(100vw - 20px);max-height:94dvh;overflow:auto}
+    }
+    @media(max-width:700px) and (orientation:landscape){
+      main{padding-top:24px}
+      .tokenator-layout{grid-template-columns:minmax(180px,.72fr) minmax(0,1.28fr);align-items:start}
+      .tokenator-panel{max-height:calc(100dvh - 92px);overflow:auto}
+      .tokenator-stage{min-width:0}
+      .tokenator-canvas-wrap{max-height:calc(100dvh - 170px)}
+      .tokenator-canvas{max-height:calc(100dvh - 170px);width:auto;max-width:100%;margin:auto}
+    }
