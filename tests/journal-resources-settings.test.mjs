@@ -36,7 +36,7 @@ assert.deepEqual(
 assert.equal(context.journalResourceTokens('Вдохновение: [ ]').length,1);
 
 // Settings are split into the requested sections.
-assert.match(html,/tabs=\[\['interface','Интерфейс'\],\['bestiary','Бестиарий'\],\['rooms','Комнаты'\],\['journal','Журнал'\],\['data','Данные'\]\]/);
+assert.match(html,/tabs=\[\['interface','Интерфейс'\],\['bestiary','Бестиарий'\],\['library','Библиотека'\],\['rooms','Комнаты'\],\['journal','Журнал'\],\['data','Данные'\]\]/);
 assert.match(html,/data-settings-section=/);
 assert.match(html,/settingsSection=section\.dataset\.settingsSection;renderSettings\(\)/);
 assert.doesNotMatch(html,/const renderSettingsBase=renderSettings/);
@@ -50,6 +50,7 @@ assert.doesNotMatch(html.slice(homeStart,homeEnd),/data-go="settings"/);
 for(const id of [
   'bestiary-advanced-search',
   'bold-as-section',
+  'library-sync-tags',
   'combat-tracking',
   'bonus-hp-enabled',
   'journal-enabled',
