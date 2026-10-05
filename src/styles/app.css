@@ -205,6 +205,14 @@
     .library-card:hover{border-color:var(--gold2)}
     .library-card .card-footer{justify-content:flex-end}
     #library-item-dialog{width:min(92vw,680px)}
+    #library-detail-dialog{width:min(92vw,720px);max-height:90dvh}
+    .library-detail-form{max-height:90dvh;overflow:auto}
+    .library-detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+    .library-detail-head h3{margin:0 0 8px}
+    .library-detail-description{margin:0;color:var(--muted);font-size:15px;line-height:1.5}
+    .library-detail-tags{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 4px}
+    .library-detail-tag{display:inline-flex;align-items:center;gap:7px;padding:6px 9px;border:1px solid var(--line);border-radius:999px;background:#121216;color:#c8c4cc;font-size:12px}
+    .library-detail-body{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
     .home-grid .tokenator-portal{grid-column:auto;justify-self:stretch;width:auto}
     @media(max-width:700px){
       .library-home-grid{grid-template-columns:1fr;gap:12px;margin-top:24px}
