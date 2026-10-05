@@ -7,6 +7,10 @@
     "test": "node scripts/run-tests.mjs",
     "build": "node scripts/build.mjs",
     "verify:dist": "node scripts/verify-dist.mjs",
-    "check": "npm test && npm run build && npm run verify:dist"
+    "check": "npm test && npm run build && npm run verify:dist",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.1"
   }
 }
