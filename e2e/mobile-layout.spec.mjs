@@ -259,3 +259,49 @@ test('mobile primary controls keep practical touch targets',async({page})=>{
     expect(box.height).toBeGreaterThanOrEqual(44);
   }
 });
+
+
+test('wider phone landscape keeps header, bestiary menu and Tokenator inside viewport',async({page})=>{
+  await page.addInitScript(()=>localStorage.setItem('gm-archive-v2',JSON.stringify({schemaVersion:1,tags:[],bestiary:[{id:'landscape-card',name:'Очень длинное название существа для проверки меню',description:'Проверка меню в горизонтальной ориентации.',hp:'20',ac:'13',characteristics:'',abilities:'',notes:'',tagIds:[]}],rooms:[]})));
+  await page.setViewportSize({width:844,height:390});
+  await page.goto('/');
+  const brand=page.locator('.brand-name');
+  await expect(brand).toHaveText('WreckTrack');
+  await expect(brand).toBeVisible();
+  for(const font of ['neuzeit','belarus','ebbe','old-town']){
+    await page.evaluate(value=>document.documentElement.dataset.font=value,font);
+    await expect(brand).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+  }
+
+  await page.getByRole('button',{name:'Бестиарий'}).first().click();
+  const menu=page.locator('.bestiary-card .card-more-menu').first();
+  await menu.locator('summary').click();
+  const popover=menu.locator('.card-more-popover');
+  await expect(popover).toBeVisible();
+  const popBox=await popover.boundingBox();
+  const width=await page.evaluate(()=>innerWidth);
+  expect(popBox.x).toBeGreaterThanOrEqual(0);
+  expect(popBox.x+popBox.width).toBeLessThanOrEqual(width+1);
+  await expectNoHorizontalOverflow(page);
+
+  await page.getByRole('button',{name:'Токенатор'}).first().click();
+  const layout=page.locator('.tokenator-layout');
+  const layoutBox=await layout.boundingBox();
+  expect(layoutBox.x).toBeGreaterThanOrEqual(0);
+  expect(layoutBox.x+layoutBox.width).toBeLessThanOrEqual(width+1);
+  await expectNoHorizontalOverflow(page);
+});
+
+test('bundled display fonts are loadable in the built site',async({page})=>{
+  await page.goto('/');
+  const loaded=await page.evaluate(async()=>{
+    const families=['Neuzeit Antiqua','Belarus','Ebbe','Old Town'];
+    const result={};
+    for(const family of families){
+      try{result[family]=(await document.fonts.load('16px "'+family+'"')).length>0}catch{result[family]=false}
+    }
+    return result;
+  });
+  expect(loaded).toEqual({'Neuzeit Antiqua':true,'Belarus':true,'Ebbe':true,'Old Town':true});
+});
