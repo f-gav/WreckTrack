@@ -62,6 +62,7 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
   await expect(page.locator('.library-card')).toHaveCount(1);
   await expect(page.locator('.library-card')).toContainText('Артефакт 01');
   await expect(page.locator('.library-card')).toContainText('Сфера Рассвета');
+  await expect(page.locator('#save-status')).toHaveAttribute('data-state','saved',{timeout:3000});
 
   await page.reload();
   await page.getByRole('button',{name:'Библиотека'}).first().click();
@@ -79,7 +80,7 @@ test('Library tag synchronization merges Library tags into Bestiary tags',async(
   await page.locator('#tags-form').getByRole('button',{name:'Сохранить теги'}).click();
 
   await page.locator('.topbar-settings-button').click();
-  await page.getByRole('button',{name:'Библиотека'}).click();
+  await page.locator('[data-settings-section="library"]').click();
   const toggle=page.locator('#library-sync-tags');
   await expect(toggle).not.toBeChecked();
   await toggle.check();
