@@ -10,7 +10,7 @@ const bundle=parts.map(file=>fs.readFileSync(new URL('../src/'+file,import.meta.
 assert.ok(parts.indexOf('features/combat.js')<parts.indexOf('app.js'));
 for(const name of [
   'orderedRoomCreatures','combatRoomCreatures','ensureCombatTurn','renderRoom',
-  'renderInitiativeRow','startCombat',
+  'renderInitiativeRow','startCombat','canUndoCombat','undoCombatAction',
   'nextCombatTurn','endCombat','renderBattleNotePreview','changeRoomHp'
 ]){
   const declaration=new RegExp('function\\s+'+name+'\\s*\\(','g');
@@ -28,7 +28,8 @@ const room={entries:[{id:'a'},{id:'b'},{id:'c'}],initiatives:{a:12,b:12,c:0},com
 let saves=0,renders=0;
 const context={
   entryCreature:entry=>({name:entry.id}),roomById:()=>room,view:{roomId:'room'},
-  save:()=>{saves++},render:()=>{renders++},showToast:()=>{},combatTrackingEnabled:false
+  save:()=>{saves++},render:()=>{renders++},showToast:()=>{},combatTrackingEnabled:false,
+  clearCombatUndo:()=>{},recordCombatUndo:()=>{}
 };
 vm.createContext(context);
 vm.runInContext(logic+'\nObject.assign(this,{orderedRoomCreatures,combatRoomCreatures,ensureCombatTurn,startCombat,nextCombatTurn,endCombat});',context);
@@ -58,7 +59,7 @@ let hpSaves=0;
 const hpContext={
   view:{roomId:'room'},bonusHpEnabled:true,
   roomById:()=>hpRoom,roomEntryById:(room,id)=>room.entries.find(entry=>entry.id===id),
-  entryCreature:()=>({hp:20}),save:()=>{hpSaves++},showToast:message=>hpMessages.push(message),
+  entryCreature:()=>({hp:20}),save:()=>{hpSaves++},showToast:message=>hpMessages.push(message),recordCombatUndo:()=>{},
   document:{querySelectorAll:selector=>selector==='[data-bonus-hp]'?[bonusInput]:[currentInput]},
   applyHealthState:()=>{}
 };

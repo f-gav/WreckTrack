@@ -35,6 +35,7 @@
     registerMarkdownPointerEvents();
     registerJournalOpenEvents();
     registerOutsideCombatToggleEvents();
+    registerCombatUndoEvents();
     registerJournalFormattingEvents();
     registerBattleNoteMenuEvents();
     registerPersistenceNetworkEvents();
