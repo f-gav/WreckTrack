@@ -87,3 +87,16 @@
       .combat-actions{grid-template-columns:1fr}.initiative-row.is-turn:before{display:none}
       .journal-actions{display:grid;grid-template-columns:1fr 1fr}.journal-actions .button{min-width:0}
     }
+
+    @media(max-width:700px){
+      #detail-dialog{width:calc(100vw - 20px);height:94dvh;max-width:calc(100vw - 20px)}
+      .detail-card{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}
+      .detail-main{padding:20px}
+      .detail-toc{max-height:32dvh;padding:14px 16px;border-left:0;border-top:1px solid var(--line)}
+      .detail-toc-list{grid-template-columns:repeat(2,minmax(0,1fr));border-left:0;gap:4px}
+      .detail-toc-link{padding:7px;border-radius:7px}
+      .bestiary-tools,.membership-tools{grid-template-columns:1fr}
+      .bestiary-tag-select .tag-option-list,.membership-tag-select .tag-option-list{position:static}
+      .export-toolbar{grid-template-columns:1fr}.export-toolbar .button{width:100%}
+      .toast{left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));text-align:center}
+    }
