@@ -168,3 +168,27 @@
     @media(max-width:430px){
       .card-more-popover{right:0;left:auto}
     }
+
+
+    /* Post real-device hardening: cover wider phone landscape viewports and keep Bestiary menus bounded. */
+    @media(max-width:900px){
+      .bestiary-grid,.bestiary-card,.card-footer,.card-more-menu{min-width:0}
+      .card-more-popover{right:0;left:auto;width:min(164px,calc(100vw - 32px));max-width:calc(100vw - 32px)}
+    }
+    @media(max-width:900px) and (orientation:landscape){
+      html,body{max-width:100%;overflow-x:hidden}
+      .topbar{width:100%;box-sizing:border-box;padding-inline:10px;gap:5px;overflow:hidden}
+      .brand{flex:0 0 auto;min-width:0}
+      .brand-name{display:block!important;font-size:14px!important;white-space:nowrap}
+      .brand-mark,.brand-mark img{width:32px;height:32px}
+      .topnav{min-width:0;margin-left:2px;gap:1px}
+      .topnav-button{min-width:0;padding-inline:4px;font-size:8.5px;letter-spacing:.04em}
+      .save-status{display:none}
+      .topbar-settings-button{width:36px;min-width:36px;height:36px;min-height:36px;padding:5px;flex:0 0 36px}
+      .account-button{width:36px;min-width:36px;max-width:36px;height:36px;min-height:36px;padding:6px;justify-content:center;overflow:hidden;flex:0 0 36px}
+      .account-label{display:none}
+      .tokenator-layout{grid-template-columns:1fr;grid-template-areas:"preview" "frames";width:min(100%,760px);margin-inline:auto}
+      .tokenator-stage,.tokenator-panel{width:100%;box-sizing:border-box;margin-inline:auto}
+      .tokenator-canvas-wrap{width:min(100%,520px);height:auto;aspect-ratio:1;margin-inline:auto;max-height:none}
+      .tokenator-canvas{width:100%;height:100%;max-height:none}
+    }
