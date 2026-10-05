@@ -27,6 +27,7 @@ for(const name of ['neuzeit-antiqua.ttf','belarus-regular.ttf','ebbe-regular.ttf
   assert.ok(fs.existsSync(fontPath),'built font asset missing: '+name);
   assert.ok(fs.statSync(fontPath).size>1000,'built font asset unexpectedly small: '+name);
 }
+assert.ok(!fs.existsSync(path.join(dist,'fonts')),'legacy dist/fonts directory must not survive the build');
 
 assert.match(sw,/wreckage-static-[0-9a-f]{12}/);
 assert.ok(sw.includes(css[1]),'service worker does not precache built CSS');
