@@ -37,17 +37,21 @@ jobs:
       - name: Build site
         run: npm run build
 
+      - name: Install E2E browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Browser E2E
+        run: npm run test:e2e
+
       - name: Verify dist
         run: npm run verify:dist
 
       - name: Upload verified site
-        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
           path: dist
 
   deploy:
-    if: github.event_name != 'pull_request'
     needs: verify
     environment:
       name: github-pages
