@@ -47,7 +47,7 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
   await burning.locator('[data-edit-library-item]').click();
   await page.locator('#library-item-tag-checks input').last().check();
   await page.locator('#library-item-form').getByRole('button',{name:'Сохранить'}).click();
-  await page.locator('#library-tag-select').click();
+  await page.locator('#library-tag-select summary').click();
   await page.getByText('Контроль',{exact:true}).last().click();
   await expect(page.locator('.library-card')).toHaveCount(1);
   await expect(page.locator('.library-card')).toContainText('Горение');
