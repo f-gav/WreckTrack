@@ -30,6 +30,7 @@ const cssName='app.'+cssHash+'.css';
 const jsName='app.'+jsHash+'.js';
 const cssRel='./assets/'+cssName;
 const jsRel='./assets/'+jsName;
+const directRoutes=['rooms','bestiary','library','tokenator','settings'];
 
 fs.mkdirSync(assets,{recursive:true});
 const sourceFonts=path.join(src,'fonts');
@@ -48,6 +49,13 @@ fs.writeFileSync(path.join(assets,jsName),js);
 
 const outHtml=template.replaceAll('{{APP_CSS}}',cssRel).replaceAll('{{APP_JS}}',jsRel);
 fs.writeFileSync(path.join(dist,'index.html'),outHtml);
+for(const route of directRoutes){
+  const routeDir=path.join(dist,route);
+  fs.rmSync(routeDir,{recursive:true,force:true});
+  fs.mkdirSync(routeDir,{recursive:true});
+  const routeHtml=outHtml.replace('<head>','<head>\n  <base href="../">');
+  fs.writeFileSync(path.join(routeDir,'index.html'),routeHtml);
+}
 
 const outSw=swTemplate
   .replaceAll('{{CACHE_NAME}}','wreckage-static-'+buildId)

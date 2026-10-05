@@ -28,6 +28,14 @@ for(const name of ['neuzeit-antiqua.ttf','belarus-regular.ttf','ebbe-regular.ttf
   assert.ok(fs.statSync(fontPath).size>1000,'built font asset unexpectedly small: '+name);
 }
 assert.ok(!fs.existsSync(path.join(dist,'fonts')),'legacy dist/fonts directory must not survive the build');
+for(const route of ['rooms','bestiary','library','tokenator','settings']){
+  const routePath=path.join(dist,route,'index.html');
+  assert.ok(fs.existsSync(routePath),'direct route entry missing: '+route);
+  const routeHtml=fs.readFileSync(routePath,'utf8');
+  assert.match(routeHtml,/<base href="\.\.\/">/,'direct route base missing: '+route);
+  assert.ok(routeHtml.includes(css[1]),'direct route CSS hash mismatch: '+route);
+  assert.ok(routeHtml.includes(js[1]),'direct route JS hash mismatch: '+route);
+}
 
 assert.match(sw,/wreckage-static-[0-9a-f]{12}/);
 assert.ok(sw.includes(css[1]),'service worker does not precache built CSS');
