@@ -16,6 +16,8 @@
   "features/bestiary.js",
   "features/bestiary-editor.js",
   "features/bestiary-events.js",
+  "features/library.js",
+  "features/library-events.js",
   "features/journal.js",
   "features/journal-events.js",
   "features/rooms.js",
