@@ -26,3 +26,7 @@
     function registerOutsideCombatToggleEvents(){
     document.addEventListener('click',e=>{if(!e.target.closest('#toggle-outside-combat'))return;const room=roomById(view.roomId);if(!room)return;room.outsideCombatCollapsed=!room.outsideCombatCollapsed;save();render()})
     }
+
+    function registerCombatUndoEvents(){
+    document.addEventListener('keydown',e=>{if(!e.ctrlKey||e.altKey||e.metaKey||e.shiftKey)return;const key=String(e.key||'').toLocaleLowerCase('ru'),isUndo=e.code==='KeyZ'||key==='z'||key==='я';if(!isUndo)return;const target=e.target;if(target?.closest?.('input,textarea,select,[contenteditable="true"]'))return;const room=roomById(view.roomId);if(view.name!=='room'||!room?.combat?.active||!canUndoCombat(room))return;e.preventDefault();undoCombatAction()})
+    }
