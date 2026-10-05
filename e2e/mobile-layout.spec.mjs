@@ -77,9 +77,10 @@ test('narrow mobile survives dense combat, hp popover and journal editing',async
 
   const first=page.locator('.initiative-row').first();
   await first.locator('[data-current-hp]').click();
-  await expect(page.locator('.hp-popover')).toBeVisible();
+  const visiblePopover=first.locator('.hp-popover:not([hidden])');
+  await expect(visiblePopover).toBeVisible();
   await expectNoHorizontalOverflow(page);
-  const pop=await page.locator('.hp-popover').boundingBox();
+  const pop=await visiblePopover.boundingBox();
   expect(pop.x).toBeGreaterThanOrEqual(0);
   expect(pop.x+pop.width).toBeLessThanOrEqual((await page.evaluate(()=>innerWidth))+1);
   await page.keyboard.press('Escape');
@@ -141,11 +142,12 @@ test('mobile settings tabs remain reachable by horizontal scrolling',async({page
 
 
 test('mobile journal keeps long markdown and controls inside viewport',async({page})=>{
-  await page.addInitScript(()=>localStorage.setItem('gm-archive-v2',JSON.stringify({schemaVersion:1,tags:[],bestiary:[],rooms:[{id:'journal-room',name:'Комната журнала',journal:'# Очень длинный заголовок журнала для мобильного экрана\n## Второй раздел\n- [ ] Длинная задача, которая должна корректно переноситься на несколько строк\n[ ] Ресурс экспедиции\n\n'+('Длинный текст заметки для проверки переноса. '.repeat(18)),entries:[],initiatives:{},currentHp:{},bonusHp:{},combatNotes:{},combat:{active:false,round:1,turnCreatureId:null}}]})));
+  await page.addInitScript(()=>{localStorage.setItem('initiative-journal-v1','true');localStorage.setItem('gm-archive-v2',JSON.stringify({schemaVersion:1,tags:[],bestiary:[],rooms:[{id:'journal-room',name:'Комната журнала',journal:'# Очень длинный заголовок журнала для мобильного экрана\n## Второй раздел\n- [ ] Длинная задача, которая должна корректно переноситься на несколько строк\n[ ] Ресурс экспедиции\n\n'+('Длинный текст заметки для проверки переноса. '.repeat(18)),entries:[],initiatives:{},currentHp:{},bonusHp:{},combatNotes:{},combat:{active:false,round:1,turnCreatureId:null}}]}));});
   await page.goto('/');
   await page.getByRole('button',{name:'Комнаты'}).first().click();
   await page.getByText('Комната журнала',{exact:true}).click();
-  const journalButton=page.getByRole('button',{name:/Журнал/}).last();
+  const journalButton=page.locator('#open-journal');
+  await expect(journalButton).toBeVisible();
   await journalButton.click();
   await expect(page.locator('#journal-dialog')).toBeVisible();
   await expect(page.locator('#journal-live-editor')).toBeVisible();
