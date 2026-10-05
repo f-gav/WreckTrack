@@ -10,7 +10,7 @@ const bundle=parts.map(file=>fs.readFileSync(new URL('../src/'+file,import.meta.
 assert.ok(parts.indexOf('features/combat.js')<parts.indexOf('app.js'));
 for(const name of [
   'orderedRoomCreatures','combatRoomCreatures','ensureCombatTurn','renderRoom',
-  'renderInitiativeRow','startCombat',
+  'renderInitiativeRow','startCombat','canUndoCombat','undoCombatAction',
   'nextCombatTurn','endCombat','renderBattleNotePreview','changeRoomHp'
 ]){
   const declaration=new RegExp('function\\s+'+name+'\\s*\\(','g');
