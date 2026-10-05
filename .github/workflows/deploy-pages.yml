@@ -1,5 +1,7 @@
 name: Verify and Deploy GitHub Pages
 
+# Deployment refresh after stability merge
+
 on:
   pull_request:
   push:
