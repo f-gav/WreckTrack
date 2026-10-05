@@ -39,6 +39,7 @@ fs.mkdirSync(assetFonts,{recursive:true});
 for(const name of fs.readdirSync(sourceFonts)){
   fs.copyFileSync(path.join(sourceFonts,name),path.join(assetFonts,name));
 }
+fs.rmSync(path.join(dist,'fonts'),{recursive:true,force:true});
 for(const name of fs.readdirSync(assets)){
   if(/^app\.[0-9a-f]{12}\.(?:css|js)$/.test(name))fs.rmSync(path.join(assets,name));
 }
