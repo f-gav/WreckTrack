@@ -6,9 +6,10 @@ function registerLibraryEvents(){
     const duplicate=e.target.closest('[data-duplicate-library-item]');if(duplicate&&type){duplicateLibraryItem(type,duplicate.dataset.duplicateLibraryItem);return}
     const remove=e.target.closest('[data-delete-library-item]');if(remove&&type){deleteLibraryItem(type,remove.dataset.deleteLibraryItem);return}
     if(e.target.closest('#manage-library-tags')){openTagsDialog('library');return}
-    const card=e.target.closest('.library-card[data-open-library-item]');if(card&&!e.target.closest('button,.card-more-menu')&&type)openLibraryItemDialog(type,card.dataset.openLibraryItem)
+    const detailEdit=e.target.closest('[data-edit-library-detail]');if(detailEdit){el('library-detail-dialog').close();openLibraryItemDialog(detailEdit.dataset.libraryDetailType,detailEdit.dataset.editLibraryDetail);return}
+    const card=e.target.closest('.library-card[data-open-library-item]');if(card&&!e.target.closest('button,.card-more-menu')&&type)openLibraryItemDetail(type,card.dataset.openLibraryItem)
   });
-  document.addEventListener('keydown',e=>{const type=libraryTypeFromView(),card=e.target.closest?.('.library-card[data-open-library-item]');if(type&&card&&e.target===card&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openLibraryItemDialog(type,card.dataset.openLibraryItem)}});
+  document.addEventListener('keydown',e=>{const type=libraryTypeFromView(),card=e.target.closest?.('.library-card[data-open-library-item]');if(type&&card&&e.target===card&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openLibraryItemDetail(type,card.dataset.openLibraryItem)}});
   document.addEventListener('input',e=>{if(e.target.id!=='library-search')return;const type=libraryTypeFromView();if(!type)return;librarySearch[type]=e.target.value;renderLibraryCards(type)});
   document.addEventListener('change',e=>{
     const type=libraryTypeFromView();if(!type)return;
