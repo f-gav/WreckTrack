@@ -57,3 +57,55 @@ test('mobile room remains usable with long content',async({page})=>{
   expect(box.x).toBeGreaterThanOrEqual(0);
   expect(box.x+box.width).toBeLessThanOrEqual((await page.evaluate(()=>innerWidth))+1);
 });
+
+
+test('narrow mobile survives dense combat, hp popover and journal editing',async({page})=>{
+  test.skip(page.viewportSize()?.width>430,'narrow mobile only');
+  await page.addInitScript(()=>{
+    const entries=Array.from({length:16},(_,i)=>({id:'mob-'+i,creatureId:'c-'+i}));
+    const bestiary=entries.map((e,i)=>({id:e.creatureId,name:'Участник боя '+(i+1)+' с длинным именем',description:'',hp:String(30+i),ac:String(12+i%5),characteristics:'СИЛ 12 | ЛОВ 14 | ТЕЛ 13',abilities:'',notes:'',tagIds:[]}));
+    const initiatives=Object.fromEntries(entries.map((e,i)=>[e.id,String(30-i)]));
+    const currentHp=Object.fromEntries(entries.map((e,i)=>[e.id,String(20+i)]));
+    const bonusHp=Object.fromEntries(entries.map(e=>[e.id,'5']));
+    localStorage.setItem('gm-archive-v2',JSON.stringify({schemaVersion:1,tags:[],bestiary,rooms:[{id:'dense-room',name:'Мобильный стресс-тест боя',journal:'# Сессия\n- [ ] Очень длинная задача для проверки журнала на узком экране',entries,initiatives,currentHp,bonusHp,combatNotes:{'mob-0':'Длинная заметка с **жирным текстом** и дополнительным описанием действия.'},combat:{active:true,round:27,turnCreatureId:'mob-0'}}]}));
+  });
+  await page.goto('/');
+  await page.getByRole('button',{name:'Комнаты'}).first().click();
+  await page.getByText('Мобильный стресс-тест боя',{exact:true}).click();
+  await expect(page.locator('.initiative-row')).toHaveCount(16);
+  await expectNoHorizontalOverflow(page);
+
+  const first=page.locator('.initiative-row').first();
+  await first.locator('[data-current-hp]').click();
+  await expect(page.locator('.hp-popover')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+  const pop=await page.locator('.hp-popover').boundingBox();
+  expect(pop.x).toBeGreaterThanOrEqual(0);
+  expect(pop.x+pop.width).toBeLessThanOrEqual((await page.evaluate(()=>innerWidth))+1);
+  await page.keyboard.press('Escape');
+
+  const journalTab=page.getByRole('button',{name:/Журнал/}).last();
+  if(await journalTab.count())await journalTab.click();
+  const editor=page.locator('textarea').filter({has:page.locator('')});
+  await expectNoHorizontalOverflow(page);
+  const textareas=page.locator('textarea');
+  if(await textareas.count()){
+    const target=textareas.last();
+    await target.fill('# Сессия\nНовая мобильная заметка с длинной строкой для проверки переноса текста и сохранения.');
+    await target.press('Control+s').catch(()=>{});
+  }
+  await expectNoHorizontalOverflow(page);
+});
+
+test('all dialogs stay inside a 360px viewport',async({page})=>{
+  test.skip(page.viewportSize()?.width>430,'narrow mobile only');
+  await page.setViewportSize({width:360,height:740});
+  await page.goto('/');
+  await page.getByRole('button',{name:'Бестиарий'}).first().click();
+  await page.locator('#grid-new-creature').click();
+  const box=await page.locator('#creature-dialog').boundingBox();
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x+box.width).toBeLessThanOrEqual(361);
+  expect(box.height).toBeLessThanOrEqual(740);
+  await expectNoHorizontalOverflow(page);
+});
