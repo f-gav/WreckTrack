@@ -37,6 +37,12 @@ jobs:
       - name: Build site
         run: npm run build
 
+      - name: Install E2E browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Browser E2E
+        run: npm run test:e2e
+
       - name: Verify dist
         run: npm run verify:dist
 
