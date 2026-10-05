@@ -52,6 +52,7 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
 
   const burning=page.locator('.library-card').filter({hasText:'Горение'});
   await burning.locator('[data-edit-library-item]').click();
+  await page.locator('#library-item-tag-select summary').click();
   await page.locator('#library-item-tag-checks input').last().check();
   await page.locator('#library-item-form').getByRole('button',{name:'Сохранить'}).click();
   await page.locator('#library-tag-select summary').click();
@@ -95,5 +96,5 @@ test('Library tag synchronization merges Library tags into Bestiary tags',async(
 
   await page.getByRole('button',{name:'Бестиарий'}).first().click();
   await page.locator('#manage-tags').click();
-  await expect(page.locator('#tag-editor-list')).toContainText('Общий тег');
+  await expect(page.locator('#tag-editor-list [data-tag-name]').last()).toHaveValue('Общий тег');
 });
