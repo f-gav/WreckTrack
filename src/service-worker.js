@@ -2,6 +2,11 @@ const CACHE_NAME='{{CACHE_NAME}}';
 const APP_SHELL=[
   './',
   './index.html',
+  './rooms/',
+  './bestiary/',
+  './library/',
+  './tokenator/',
+  './settings/',
   '{{APP_CSS}}',
   '{{APP_JS}}',
   './manifest.webmanifest',
@@ -40,9 +45,9 @@ self.addEventListener('fetch',event=>{
   if(url.origin!==self.location.origin)return;
   if(request.mode==='navigate'){
     event.respondWith(fetch(request).then(response=>{
-      if(response.ok)caches.open(CACHE_NAME).then(cache=>cache.put('./index.html',response.clone()));
+      if(response.ok)caches.open(CACHE_NAME).then(cache=>cache.put(request,response.clone()));
       return response;
-    }).catch(()=>caches.match('./index.html')));
+    }).catch(()=>caches.match(request).then(cached=>cached||caches.match('./index.html'))));
     return;
   }
   event.respondWith(caches.match(request).then(cached=>{
