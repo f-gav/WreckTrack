@@ -86,7 +86,6 @@ test('narrow mobile survives dense combat, hp popover and journal editing',async
 
   const journalTab=page.getByRole('button',{name:/Журнал/}).last();
   if(await journalTab.count())await journalTab.click();
-  const editor=page.locator('textarea').filter({has:page.locator('')});
   await expectNoHorizontalOverflow(page);
   const textareas=page.locator('textarea');
   if(await textareas.count()){
