@@ -138,3 +138,54 @@ test('mobile settings tabs remain reachable by horizontal scrolling',async({page
   await expect(page.locator('.settings-nav-button').last()).toHaveClass(/current/);
   await expectNoHorizontalOverflow(page);
 });
+
+
+test('mobile journal keeps long markdown and controls inside viewport',async({page})=>{
+  await page.addInitScript(()=>localStorage.setItem('gm-archive-v2',JSON.stringify({schemaVersion:1,tags:[],bestiary:[],rooms:[{id:'journal-room',name:'Комната журнала',journal:'# Очень длинный заголовок журнала для мобильного экрана\n## Второй раздел\n- [ ] Длинная задача, которая должна корректно переноситься на несколько строк\n[ ] Ресурс экспедиции\n\n'+('Длинный текст заметки для проверки переноса. '.repeat(18)),entries:[],initiatives:{},currentHp:{},bonusHp:{},combatNotes:{},combat:{active:false,round:1,turnCreatureId:null}}]})));
+  await page.goto('/');
+  await page.getByRole('button',{name:'Комнаты'}).first().click();
+  await page.getByText('Комната журнала',{exact:true}).click();
+  const journalButton=page.getByRole('button',{name:/Журнал/}).last();
+  await journalButton.click();
+  await expect(page.locator('#journal-dialog')).toBeVisible();
+  await expect(page.locator('#journal-live-editor')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+  const box=await page.locator('#journal-dialog').boundingBox();
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x+box.width).toBeLessThanOrEqual((await page.evaluate(()=>innerWidth))+1);
+  await page.setViewportSize({width:390,height:500});
+  await expect(page.locator('#journal-live-editor')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});
+
+test('mobile tokenator canvas controls and frame grid fit narrow and landscape screens',async({page})=>{
+  await page.goto('/');
+  await page.getByRole('button',{name:'Токенатор'}).first().click();
+  await expect(page.locator('#tokenator-canvas')).toBeVisible();
+  await expect(page.locator('#tokenator-scale')).toBeVisible();
+  await expect(page.locator('.token-frame-grid')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+  await page.setViewportSize({width:740,height:390});
+  await expect(page.locator('#tokenator-canvas')).toBeVisible();
+  await expect(page.locator('.tokenator-actions')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});
+
+test('mobile backup restore dialog fits narrow and short screens',async({page})=>{
+  await page.setViewportSize({width:360,height:640});
+  await page.goto('/');
+  await page.getByRole('button',{name:'Настройки'}).click();
+  const dataTab=page.locator('.settings-nav-button').last();
+  await dataTab.scrollIntoViewIfNeeded();
+  await dataTab.click();
+  await expectNoHorizontalOverflow(page);
+  const restore=page.locator('#backup-restore-file');
+  await expect(restore).toBeAttached();
+  await page.evaluate(()=>document.querySelector('#backup-restore-dialog').showModal());
+  await expect(page.locator('#backup-restore-dialog')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+  const box=await page.locator('#backup-restore-dialog').boundingBox();
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x+box.width).toBeLessThanOrEqual(361);
+  expect(box.height).toBeLessThanOrEqual(640);
+});
