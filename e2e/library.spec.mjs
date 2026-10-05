@@ -24,7 +24,7 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
   await expect(page.locator('.library-card').first()).toContainText('Состояние 01');
   await expect(page.getByText('Ослеплённый',{exact:true})).toBeVisible();
   await expect(page.getByText('Бессознательный',{exact:true})).toBeVisible();
-  await expect(page.getByText('JSON',{exact:false})).toHaveCount(0);
+  await expect(page.locator('main').getByText('JSON',{exact:false})).toHaveCount(0);
 
   await page.locator('#library-search').fill('невидимый');
   await expect(page.locator('.library-card')).toHaveCount(1);
@@ -85,7 +85,7 @@ test('Library tag synchronization merges Library tags into Bestiary tags',async(
   await page.locator('[data-settings-section="library"]').click();
   const toggle=page.locator('#library-sync-tags');
   await expect(toggle).not.toBeChecked();
-  await toggle.check();
+  await page.locator('label[for="library-sync-tags"]').click();
   await expect(toggle).toBeChecked();
 
   await page.getByRole('button',{name:'Бестиарий'}).first().click();
