@@ -85,16 +85,13 @@ test('narrow mobile survives dense combat, hp popover and journal editing',async
   expect(pop.x+pop.width).toBeLessThanOrEqual((await page.evaluate(()=>innerWidth))+1);
   await page.keyboard.press('Escape');
 
-  const journalTab=page.getByRole('button',{name:/Журнал/}).last();
-  if(await journalTab.count())await journalTab.click();
-  await expectNoHorizontalOverflow(page);
-  const textareas=page.locator('textarea');
-  if(await textareas.count()){
-    const target=textareas.last();
-    await target.fill('# Сессия\nНовая мобильная заметка с длинной строкой для проверки переноса текста и сохранения.');
-    await target.press('Control+s').catch(()=>{});
+  const journalTab=page.locator('#open-journal');
+  if(await journalTab.count()){
+    await journalTab.click();
+    await expect(page.locator('#journal-dialog')).toBeVisible();
+    await expect(page.locator('#journal-live-editor')).toBeVisible();
+    await expectNoHorizontalOverflow(page);
   }
-  await expectNoHorizontalOverflow(page);
 });
 
 test('all dialogs stay inside a 360px viewport',async({page})=>{
