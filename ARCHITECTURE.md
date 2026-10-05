@@ -23,6 +23,8 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 - `src/features/bestiary.js` — Bestiary display, search, filters, sorting and main page rendering.
 - `src/features/bestiary-editor.js` — Bestiary editor, tags, import/export and Long Story Short import.
 - `src/features/bestiary-events.js` — Bestiary cards and tag interactions.
+- `src/features/library.js` — Library landing page, Conditions/Artifacts collections, filtering, CRUD and tag synchronization.
+- `src/features/library-events.js` — Library card, search, sort, tag and editor interactions.
 - `src/features/settings-events.js` — settings controls and section navigation.
 - `src/features/journal.js` — Journal editor state, Markdown live preview, folding and search.
 - `src/features/journal-events.js` — Journal and Markdown toolbar event wiring.
