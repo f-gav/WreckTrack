@@ -7,6 +7,8 @@ test.beforeEach(async({page})=>{
 
 test('Library ships standard conditions and supports CRUD, search, tags and artifacts',async({page})=>{
   await page.goto('/');
+  const overflow=await page.evaluate(()=>Math.max(document.documentElement.scrollWidth,document.body.scrollWidth)-innerWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
 
   const navLabels=await page.locator('.topnav-button').allTextContents();
   expect(navLabels).toEqual(['Бестиарий','Комнаты','Библиотека','Токенатор']);
