@@ -44,8 +44,7 @@ test('critical local combat flow survives reload',async({page})=>{
   await expect(page.locator('#save-status')).toHaveAttribute('data-state','saved',{timeout:3000});
 
   await page.reload();
-  await page.getByRole('button',{name:'Комнаты'}).first().click();
-  await page.getByText('E2E Room',{exact:true}).click();
+  await expect(page.getByRole('heading',{name:'E2E Room'})).toBeVisible();
   await expect(page.locator('[data-current-hp]')).toHaveValue('15');
   await expect(page.locator('.initiative-row.is-turn')).toContainText('E2E Goblin');
   await expect(page.locator('.round-step.current')).toHaveText('1');
