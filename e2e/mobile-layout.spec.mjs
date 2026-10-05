@@ -108,3 +108,33 @@ test('all dialogs stay inside a 360px viewport',async({page})=>{
   expect(box.height).toBeLessThanOrEqual(740);
   await expectNoHorizontalOverflow(page);
 });
+
+
+test('mobile bestiary handles many long cards and detail view',async({page})=>{
+  await page.addInitScript(()=>{
+    const bestiary=Array.from({length:24},(_,i)=>({id:'card-'+i,name:'Существо '+(i+1)+' — очень длинное название для мобильной карточки',description:'Длинное описание существа для проверки обрезки и устойчивости сетки.',hp:String(40+i),ac:String(10+i%9),characteristics:'# Характеристики\nСИЛ 16 | ЛОВ 14 | ТЕЛ 15',abilities:'## Способности\n**Особая атака.** Длинное описание способности.',notes:'### Заметки\nДополнительный длинный текст.',tagIds:[]}));
+    localStorage.setItem('gm-archive-v2',JSON.stringify({schemaVersion:1,tags:[],bestiary,rooms:[]}));
+  });
+  await page.goto('/');
+  await page.getByRole('button',{name:'Бестиарий'}).first().click();
+  await expect(page.locator('.bestiary-card')).toHaveCount(24);
+  await expectNoHorizontalOverflow(page);
+  await page.locator('.bestiary-card').first().click();
+  await expect(page.locator('#detail-dialog')).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+  const box=await page.locator('#detail-dialog').boundingBox();
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x+box.width).toBeLessThanOrEqual((await page.evaluate(()=>innerWidth))+1);
+});
+
+test('mobile settings tabs remain reachable by horizontal scrolling',async({page})=>{
+  await page.goto('/');
+  await page.getByRole('button',{name:'Настройки'}).click();
+  const nav=page.locator('.settings-nav');
+  await expect(nav).toBeVisible();
+  await expect(page.locator('.settings-nav-button')).toHaveCount(5);
+  await page.locator('.settings-nav-button').last().scrollIntoViewIfNeeded();
+  await page.locator('.settings-nav-button').last().click();
+  await expect(page.locator('.settings-nav-button').last()).toHaveClass(/current/);
+  await expectNoHorizontalOverflow(page);
+});
