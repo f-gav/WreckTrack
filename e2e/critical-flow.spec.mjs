@@ -2,8 +2,11 @@ import {test,expect} from '@playwright/test';
 
 test.beforeEach(async({page})=>{
   await page.addInitScript(()=>{
-    localStorage.clear();
-    indexedDB.deleteDatabase('initiative-cloud-sync-v1');
+    if(!sessionStorage.getItem('e2e-initialized')){
+      localStorage.clear();
+      indexedDB.deleteDatabase('initiative-cloud-sync-v1');
+      sessionStorage.setItem('e2e-initialized','1');
+    }
   });
   await page.route('https://cdn.jsdelivr.net/**',route=>route.abort());
 });
