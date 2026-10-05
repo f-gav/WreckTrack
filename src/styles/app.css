@@ -122,3 +122,9 @@
       .tokenator-canvas-wrap{max-height:calc(100dvh - 170px)}
       .tokenator-canvas{max-height:calc(100dvh - 170px);width:auto;max-width:100%;margin:auto}
     }
+
+    :where(button,a,input,textarea,select,summary,[tabindex]):focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+    @media(max-width:700px){
+      dialog:has(input:focus,textarea:focus,select:focus){max-height:calc(100dvh - 12px)}
+      .creature-dialog-actions{position:sticky;bottom:0;z-index:2}
+    }
