@@ -47,13 +47,11 @@ jobs:
         run: npm run verify:dist
 
       - name: Upload verified site
-        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4
         with:
           path: dist
 
   deploy:
-    if: github.event_name != 'pull_request'
     needs: verify
     environment:
       name: github-pages
