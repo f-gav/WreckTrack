@@ -12,6 +12,7 @@ assert.equal(standardIds.length,30,'both D&D condition presets should contain 15
 assert.match(state,/const CONDITION_PRESET_SYSTEM_VERSION=3/,'condition preset system version should be tracked');
 assert.match(state,/const DND_CONDITIONS_5E14=\[/);
 assert.match(state,/const DND_CONDITIONS_5E24=\[/);
+assert.match(state,/const DND_CONDITIONS_BOTH=\[/);
 assert.ok(state.includes('**Влияние на тесты к20.** Когда вы совершаете Тест к20, результат броска уменьшается на уровень Истощения, умноженный на 2.'),'5e24 Exhaustion should use the supplied exact wording');
 assert.ok(state.includes('| 1 | Помеха при проверках характеристик |'),'5e14 Exhaustion should expose the exact six-level table');
 assert.ok(state.includes("name:'Сбитый с ног / Лежащий ничком (5е14)'"),'5e14 Prone label should be versioned');
@@ -28,6 +29,7 @@ assert.ok(state.includes('**Бездеятельность.** У вас есть
 for(const symbol of ['function renderLibrary(','function renderLibrarySection(','function renderLibraryCards(','function openLibraryItemDialog(','function duplicateLibraryItem(','function deleteLibraryItem(','function installConditionPreset(','function setLibraryTagSync('])assert.ok(library.includes(symbol),symbol+' missing');
 assert.match(library,/Предустановить состояния 5е14/);
 assert.match(library,/Предустановить состояния 5е24/);
+assert.match(library,/Предустановить 5е14 и 5е24/);
 assert.match(settings,/\['library','Библиотека'\]/);
 assert.match(settings,/id="library-sync-tags"/);
 assert.match(settings,/Синхронизировать Тэги с Бестиарием/);
