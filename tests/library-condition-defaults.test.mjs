@@ -9,17 +9,18 @@ const context={
   validTagColor:value=>value||'#d6a85f'
 };
 vm.createContext(context);
-vm.runInContext(source+'\nthis.normalize=normalize;this.standardConditions=DND_STANDARD_CONDITIONS;this.conditionVersion=DND_CONDITIONS_VERSION;',context);
+vm.runInContext(source+'\nthis.normalize=normalize;this.presets=DND_CONDITION_PRESETS;this.presetSystemVersion=CONDITION_PRESET_SYSTEM_VERSION;',context);
 
-const {normalize,standardConditions,conditionVersion}=context;
-assert.equal(conditionVersion,2);
-assert.equal(standardConditions.length,15);
+const {normalize,presets,presetSystemVersion}=context;
+assert.equal(presetSystemVersion,1);
+assert.equal(presets['5e14'].length,15);
+assert.equal(presets['5e24'].length,15);
 
 {
   const fresh=normalize({schemaVersion:1,rooms:[],bestiary:[],tags:[]});
-  assert.equal(fresh.library.conditionsVersion,conditionVersion);
-  assert.equal(fresh.library.conditions.length,15);
-  assert.ok(fresh.library.conditions.some(item=>item.name==='Опрокинутый'));
+  assert.equal(fresh.library.conditionPresetSystemVersion,presetSystemVersion);
+  assert.equal(fresh.library.conditionPreset,null);
+  assert.equal(fresh.library.conditions.length,0,'new archives should not receive a preset automatically');
 }
 
 {
@@ -32,11 +33,12 @@ assert.equal(standardConditions.length,15);
       syncTags:false,
       tags:[],
       artifacts:[],
+      conditionsVersion:2,
       conditions:[
         {
           id:'dnd-condition-prone',
-          name:'Сбитый с ног',
-          description:'Старое описание',
+          name:'Опрокинутый',
+          description:'Старая предустановленная версия',
           details:'Старые правила',
           tagIds:['tag-prone'],
           builtin:true
@@ -53,21 +55,33 @@ assert.equal(standardConditions.length,15);
     }
   });
 
-  assert.equal(legacy.library.conditionsVersion,conditionVersion);
-  assert.equal(legacy.library.conditions.length,16,'all 15 defaults plus custom conditions should survive migration');
-  const prone=legacy.library.conditions.find(item=>item.id==='dnd-condition-prone');
-  assert.equal(prone.name,'Опрокинутый');
-  assert.deepEqual(Array.from(prone.tagIds),['tag-prone'],'existing tags on a built-in condition should survive refresh');
-  assert.match(prone.details,/половине Скорости/);
-  assert.ok(legacy.library.conditions.some(item=>item.id==='custom-burning'),'custom conditions must survive the default refresh');
-
-  prone.description='Моя пользовательская формулировка';
-  const normalizedAgain=normalize(legacy);
-  assert.equal(
-    normalizedAgain.library.conditions.find(item=>item.id==='dnd-condition-prone').description,
-    'Моя пользовательская формулировка',
-    'built-in conditions should remain editable after the one-time defaults migration'
-  );
+  assert.equal(legacy.library.conditionPresetSystemVersion,presetSystemVersion);
+  assert.equal(legacy.library.conditionPreset,null);
+  assert.equal(legacy.library.conditions.length,1,'legacy built-in defaults should be cleaned during migration');
+  assert.equal(legacy.library.conditions[0].id,'custom-burning','custom conditions must survive cleanup');
+  assert.equal('conditionsVersion' in legacy.library,false,'obsolete forced-default version should be removed');
 }
 
-console.log('Library condition default migration tests passed');
+{
+  const installed=normalize({
+    schemaVersion:1,
+    rooms:[],
+    bestiary:[],
+    tags:[],
+    library:{
+      syncTags:false,
+      tags:[],
+      artifacts:[],
+      conditionPresetSystemVersion:1,
+      conditionPreset:'5e14',
+      conditions:[
+        {...presets['5e14'][0],tagIds:['tag-visible']}
+      ]
+    }
+  });
+  assert.equal(installed.library.conditionPreset,'5e14');
+  assert.equal(installed.library.conditions.length,1);
+  assert.deepEqual(Array.from(installed.library.conditions[0].tagIds),['tag-visible'],'installed preset entries should persist normally');
+}
+
+console.log('Library condition preset migration tests passed');
