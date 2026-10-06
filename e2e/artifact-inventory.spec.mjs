@@ -71,7 +71,7 @@ test('artifacts can be assigned to creatures and appear above inventory on page 
   await expect(page.locator('.detail-toc-link').nth(0)).toContainText('Копьё Рассвета');
   await expect(page.locator('.detail-toc-link').nth(1)).toContainText('Инвентарь');
   await expect(page.locator('.detail-toc-mark')).toHaveText(['H1','H1']);
-  await expect(page.locator('.detail-toc')).not.toContainText('Способности');
+  await expect(page.locator('#detail-dialog .detail-toc')).not.toContainText('Способности');
   await expect(page.locator('.detail-artifact-body')).not.toBeVisible();
 
   await page.locator('.detail-artifact summary').click();
