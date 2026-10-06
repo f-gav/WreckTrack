@@ -30,3 +30,10 @@
     function registerCombatUndoEvents(){
     document.addEventListener('keydown',e=>{if(!e.ctrlKey||e.altKey||e.metaKey||e.shiftKey)return;const key=String(e.key||'').toLocaleLowerCase('ru'),isUndo=e.code==='KeyZ'||key==='z'||key==='я';if(!isUndo)return;const target=e.target;if(target?.closest?.('input,textarea,select,[contenteditable="true"]'))return;const room=roomById(view.roomId);if(view.name!=='room'||!room?.combat?.active||!canUndoCombat(room))return;e.preventDefault();undoCombatAction()})
     }
+
+    function registerCombatConditionEvents(){
+    document.addEventListener('click',e=>{const manage=e.target.closest('[data-manage-combat-conditions]');if(manage){openCombatConditionDialog(manage.dataset.manageCombatConditions);return}const open=e.target.closest('[data-open-combat-condition]');if(open){openLibraryItemDetail('conditions',open.dataset.openCombatCondition);return}const remove=e.target.closest('[data-remove-combat-condition]');if(remove){removeCombatCondition(remove.dataset.conditionEntry,remove.dataset.removeCombatCondition);return}})
+    document.addEventListener('input',e=>{const search=e.target.closest('#combat-condition-search');if(!search)return;combatConditionSearch=search.value;renderCombatConditionOptions()})
+    const form=el('combat-condition-form');if(form)form.addEventListener('submit',e=>{e.preventDefault();const changed=saveCombatConditionSelection();el('combat-condition-dialog').close();combatConditionEntryId=null;combatConditionSearch='';if(changed)render()})
+    const dialog=el('combat-condition-dialog');if(dialog)dialog.addEventListener('close',()=>{combatConditionEntryId=null;combatConditionSearch=''})
+    }
