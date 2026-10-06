@@ -247,3 +247,18 @@
         width:100%;
       }
     }
+
+
+    /* Keep the Conditions preset dropdown fully inside the phone viewport. */
+    @media(max-width:430px){
+      .page-head .actions:has(.library-preset-menu):has(#manage-library-tags) .library-preset-popover{
+        left:0;
+        right:auto;
+        width:calc(200% + 10px);
+        max-width:calc(100vw - 36px);
+      }
+      .page-head .actions:has(.library-preset-menu):has(#manage-library-tags) .library-preset-popover .button{
+        white-space:normal;
+        overflow-wrap:anywhere;
+      }
+    }

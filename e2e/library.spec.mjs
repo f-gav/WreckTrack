@@ -32,6 +32,13 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
     expect(Math.abs(presetBox.width-tagsBox.width)).toBeLessThanOrEqual(2);
   }
   await page.getByText('Предустановить',{exact:true}).click();
+  if(viewport&&viewport.width<=430){
+    const menuBox=await page.locator('.library-preset-popover').boundingBox();
+    expect(menuBox).toBeTruthy();
+    expect(menuBox.x).toBeGreaterThanOrEqual(0);
+    expect(menuBox.x+menuBox.width).toBeLessThanOrEqual(viewport.width+1);
+    expect(menuBox.width).toBeGreaterThan(viewport.width*0.75);
+  }
   await page.getByRole('button',{name:'Предустановить состояния 5е24'}).click();
   await expect(page.locator('.library-card')).toHaveCount(15);
   await expect(page.locator('.library-card').first()).toContainText('Состояние 01');
