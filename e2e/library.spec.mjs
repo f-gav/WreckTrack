@@ -29,7 +29,7 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
   await expect(page.locator('.library-card').first()).toContainText('Состояние 5е24');
   await expect(page.getByText('Ослеплённый (5е24)',{exact:true})).toBeVisible();
   await expect(page.getByText('Бессознательный (5е24)',{exact:true})).toBeVisible();
-  await page.locator('.library-card').first().click();
+  await page.locator('.library-card').filter({hasText:'Ослеплённый (5е24)'}).click();
   await expect(page.locator('#library-detail-dialog')).toBeVisible();
   await expect(page.locator('#library-detail-dialog')).toContainText('Ослеплённый (5е24)');
   await expect(page.locator('#library-detail-dialog')).toContainText('Не можете видеть. Вы не можете видеть и автоматически проваливаете проверки характеристик, требующие зрения.');
