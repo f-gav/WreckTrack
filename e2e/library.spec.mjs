@@ -20,6 +20,10 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
 
   await page.getByRole('button',{name:/Состояния/}).click();
   await expect(page.locator('main h1')).toHaveText('Состояния');
+  await expect(page.locator('.library-card')).toHaveCount(0);
+  await expect(page.getByText('Предустановить',{exact:true})).toBeVisible();
+  await page.getByText('Предустановить',{exact:true}).click();
+  await page.getByRole('button',{name:'Предустановить состояния 5e24'}).click();
   await expect(page.locator('.library-card')).toHaveCount(15);
   await expect(page.locator('.library-card').first()).toContainText('Состояние 01');
   await expect(page.getByText('Ослеплённый',{exact:true})).toBeVisible();
@@ -43,6 +47,14 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
   await page.locator('#library-item-form').getByRole('button',{name:'Сохранить'}).click();
   await expect(page.getByText('Горение',{exact:true})).toBeVisible();
   await expect(page.locator('.library-card').filter({hasText:'Горение'})).toContainText('Состояние 16');
+
+  page.once('dialog',dialog=>dialog.accept());
+  await page.getByText('Предустановить',{exact:true}).click();
+  await page.getByRole('button',{name:'Предустановить состояния 5e14'}).click();
+  await expect(page.locator('.library-card')).toHaveCount(16);
+  await expect(page.getByText('Сбитый с ног',{exact:true})).toBeVisible();
+  await expect(page.getByText('Горение',{exact:true})).toBeVisible();
+  await expect(page.getByText('Опрокинутый',{exact:true})).toHaveCount(0);
 
   await page.locator('#manage-library-tags').click();
   await page.locator('#add-tag').click();
