@@ -63,6 +63,19 @@ test('conditions stay in one horizontal row and room can use compact add control
   expect(Math.max(...chipBoxes.map(box=>box.y))-Math.min(...chipBoxes.map(box=>box.y))).toBeLessThanOrEqual(2);
   for(let i=1;i<chipBoxes.length;i++)expect(chipBoxes[i].x).toBeGreaterThan(chipBoxes[i-1].x);
 
+  const viewport=page.viewportSize();
+  if(viewport&&viewport.width>900){
+    const stripBox=await page.locator('.combat-condition-strip').boundingBox();
+    const creatureBox=await page.locator('.initiative-creature').boundingBox();
+    const noteBox=await page.locator('.battle-note-shell').boundingBox();
+    expect(stripBox).toBeTruthy();
+    expect(creatureBox).toBeTruthy();
+    expect(noteBox).toBeTruthy();
+    expect(Math.abs(stripBox.x-creatureBox.x)).toBeLessThanOrEqual(2);
+    expect(stripBox.y).toBeGreaterThanOrEqual(creatureBox.y+creatureBox.height-2);
+    expect(stripBox.x+stripBox.width).toBeGreaterThan(noteBox.x+noteBox.width*0.6);
+  }
+
   await page.getByRole('button',{name:'Настройки комнаты'}).click();
   await expect(page.getByText('Уменьшенный значок добавления состояний',{exact:true})).toBeVisible();
   const compactToggle=page.locator('#room-compact-condition-add');
