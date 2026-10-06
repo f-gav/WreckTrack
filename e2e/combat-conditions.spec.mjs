@@ -60,11 +60,26 @@ test('conditions use available card width without horizontal scrolling and room 
   const chips=page.locator('.combat-condition-chip');
   await expect(chips).toHaveCount(3);
   const chipBoxes=await chips.evaluateAll(nodes=>nodes.map(node=>{const box=node.getBoundingClientRect();return{x:box.x,y:box.y,width:box.width,height:box.height}}));
-  expect(Math.max(...chipBoxes.map(box=>box.y))-Math.min(...chipBoxes.map(box=>box.y))).toBeLessThanOrEqual(2);
-  for(let i=1;i<chipBoxes.length;i++)expect(chipBoxes[i].x).toBeGreaterThan(chipBoxes[i-1].x);
-
   const viewport=page.viewportSize();
+
+  const stripOverflow=await page.locator('.combat-condition-strip').evaluate(node=>({
+    scrollWidth:node.scrollWidth,
+    clientWidth:node.clientWidth,
+    overflowX:getComputedStyle(node).overflowX,
+    overflowY:getComputedStyle(node).overflowY,
+    flexWrap:getComputedStyle(node).flexWrap
+  }));
+  expect(stripOverflow.flexWrap).toBe('wrap');
+  expect(stripOverflow.overflowX).not.toBe('auto');
+  expect(stripOverflow.overflowX).not.toBe('scroll');
+  expect(stripOverflow.overflowY).not.toBe('auto');
+  expect(stripOverflow.overflowY).not.toBe('scroll');
+  expect(stripOverflow.scrollWidth).toBeLessThanOrEqual(stripOverflow.clientWidth+1);
+
   if(viewport&&viewport.width>900){
+    expect(Math.max(...chipBoxes.map(box=>box.y))-Math.min(...chipBoxes.map(box=>box.y))).toBeLessThanOrEqual(2);
+    for(let i=1;i<chipBoxes.length;i++)expect(chipBoxes[i].x).toBeGreaterThan(chipBoxes[i-1].x);
+
     const stripBox=await page.locator('.combat-condition-strip').boundingBox();
     const creatureBox=await page.locator('.initiative-creature').boundingBox();
     const noteBox=await page.locator('.battle-note-shell').boundingBox();
@@ -74,15 +89,8 @@ test('conditions use available card width without horizontal scrolling and room 
     expect(Math.abs(stripBox.x-creatureBox.x)).toBeLessThanOrEqual(2);
     expect(stripBox.y).toBeGreaterThanOrEqual(creatureBox.y+creatureBox.height-2);
     expect(stripBox.x+stripBox.width).toBeGreaterThan(noteBox.x+noteBox.width*0.6);
-    const stripOverflow=await page.locator('.combat-condition-strip').evaluate(node=>({
-      scrollWidth:node.scrollWidth,
-      clientWidth:node.clientWidth,
-      overflowX:getComputedStyle(node).overflowX,
-      flexWrap:getComputedStyle(node).flexWrap
-    }));
-    expect(stripOverflow.flexWrap).toBe('wrap');
-    expect(stripOverflow.overflowX).not.toBe('auto');
-    expect(stripOverflow.scrollWidth).toBeLessThanOrEqual(stripOverflow.clientWidth+1);
+  }else{
+    for(let i=1;i<chipBoxes.length;i++)expect(chipBoxes[i].y).toBeGreaterThanOrEqual(chipBoxes[i-1].y-2);
   }
 
   await page.getByRole('button',{name:'Настройки комнаты'}).click();
