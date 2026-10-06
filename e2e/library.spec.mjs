@@ -60,6 +60,14 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
 
   page.once('dialog',dialog=>dialog.accept());
   await page.getByText('Предустановить',{exact:true}).click();
+  await page.getByRole('button',{name:'Предустановить 5е14 и 5е24'}).click();
+  await expect(page.locator('.library-card')).toHaveCount(31);
+  await expect(page.getByText('Оглохший (5е14)',{exact:true})).toBeVisible();
+  await expect(page.getByText('Оглохший (5е24)',{exact:true})).toBeVisible();
+  await expect(page.getByText('Горение',{exact:true})).toBeVisible();
+
+  page.once('dialog',dialog=>dialog.accept());
+  await page.getByText('Предустановить',{exact:true}).click();
   await page.getByRole('button',{name:'Предустановить состояния 5е14'}).click();
   await expect(page.locator('.library-card')).toHaveCount(16);
   await expect(page.getByText('Сбитый с ног / Лежащий ничком (5е14)',{exact:true})).toBeVisible();
