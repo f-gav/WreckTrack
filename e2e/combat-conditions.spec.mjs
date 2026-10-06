@@ -2,8 +2,10 @@ import {test,expect} from '@playwright/test';
 
 test.beforeEach(async({page})=>{
   await page.addInitScript(()=>{
+    if(sessionStorage.getItem('__wrecktrack_combat_conditions_ready')==='1')return;
     localStorage.clear();
     sessionStorage.clear();
+    sessionStorage.setItem('__wrecktrack_combat_conditions_ready','1');
     localStorage.setItem('gm-archive-v2',JSON.stringify({
       schemaVersion:1,
       tags:[],
