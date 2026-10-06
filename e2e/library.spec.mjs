@@ -27,7 +27,7 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
   await page.locator('.library-card').first().click();
   await expect(page.locator('#library-detail-dialog')).toBeVisible();
   await expect(page.locator('#library-detail-dialog')).toContainText('Ослеплённый');
-  await expect(page.locator('#library-detail-dialog')).toContainText('Проверки, зависящие от зрения');
+  await expect(page.locator('#library-detail-dialog')).toContainText('автоматически проваливает проверки характеристик');
   await page.locator('#library-detail-dialog [data-close="library-detail-dialog"]').first().click();
   await expect(page.locator('main').getByText('JSON',{exact:false})).toHaveCount(0);
 
