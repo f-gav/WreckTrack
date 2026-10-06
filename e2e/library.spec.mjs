@@ -26,18 +26,19 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
   await page.getByRole('button',{name:'Предустановить состояния 5е24'}).click();
   await expect(page.locator('.library-card')).toHaveCount(15);
   await expect(page.locator('.library-card').first()).toContainText('Состояние 01');
-  await expect(page.getByText('Ослеплённый',{exact:true})).toBeVisible();
-  await expect(page.getByText('Бессознательный',{exact:true})).toBeVisible();
+  await expect(page.locator('.library-card').first()).toContainText('Состояние 5е24');
+  await expect(page.getByText('Ослеплённый (5е24)',{exact:true})).toBeVisible();
+  await expect(page.getByText('Бессознательный (5е24)',{exact:true})).toBeVisible();
   await page.locator('.library-card').first().click();
   await expect(page.locator('#library-detail-dialog')).toBeVisible();
-  await expect(page.locator('#library-detail-dialog')).toContainText('Ослеплённый');
-  await expect(page.locator('#library-detail-dialog')).toContainText('автоматически проваливает проверки характеристик');
+  await expect(page.locator('#library-detail-dialog')).toContainText('Ослеплённый (5е24)');
+  await expect(page.locator('#library-detail-dialog')).toContainText('Не можете видеть. Вы не можете видеть и автоматически проваливаете проверки характеристик, требующие зрения.');
   await page.locator('#library-detail-dialog [data-close="library-detail-dialog"]').first().click();
   await expect(page.locator('main').getByText('JSON',{exact:false})).toHaveCount(0);
 
   await page.locator('#library-search').fill('невидимый');
   await expect(page.locator('.library-card')).toHaveCount(1);
-  await expect(page.locator('.library-card')).toContainText('Невидимый');
+  await expect(page.locator('.library-card')).toContainText('Невидимый (5е24)');
   await page.locator('#library-search').fill('');
 
   await page.locator('#new-library-item').click();
@@ -53,8 +54,9 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
   await page.getByRole('button',{name:'Предустановить состояния 5е14'}).click();
   await expect(page.locator('.library-card')).toHaveCount(16);
   await expect(page.getByText('Сбитый с ног / Лежащий ничком (5е14)',{exact:true})).toBeVisible();
+  await expect(page.locator('.library-card').first()).toContainText('Состояние 5е14');
   await expect(page.getByText('Горение',{exact:true})).toBeVisible();
-  await expect(page.getByText('Опрокинутый',{exact:true})).toHaveCount(0);
+  await expect(page.getByText('Опрокинутый (5е24)',{exact:true})).toHaveCount(0);
   await page.locator('#library-search').fill('оглохший');
   await expect(page.locator('.library-card')).toHaveCount(1);
   await expect(page.getByText('Оглохший (5е14)',{exact:true})).toBeVisible();
