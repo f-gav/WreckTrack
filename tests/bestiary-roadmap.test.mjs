@@ -13,7 +13,7 @@ for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
 assert.match(html,/BESTIARY_ADVANCED_SEARCH_KEY='initiative-bestiary-advanced-search-v1'/);
 assert.match(html,/id="bestiary-advanced-search"/);
 assert.match(html,/bestiaryAdvancedSearch,journal/);
-assert.match(html,/c\.characteristics,c\.abilities,c\.notes,\.\.\.tagNames/);
+assert.match(html,/c\.characteristics,c\.abilities,c\.notes,c\.inventory,\.\.\.tagNames/);
 
 const searchStart=html.indexOf('function creatureMatchesQuery');
 const searchEnd=html.indexOf('function filteredBestiary',searchStart);
@@ -24,19 +24,21 @@ const searchSrc=html.slice(searchStart,searchEnd);
   const result=Function('state',`
     let bestiaryAdvancedSearch=false;
     ${searchSrc}
-    const c={name:'Скелет',description:'Страж',characteristics:'СИЛ 10',abilities:'Удар мечом',notes:'Боится света',tagIds:['t1']};
+    const c={name:'Скелет',description:'Страж',characteristics:'СИЛ 10',abilities:'Удар мечом',notes:'Боится света',inventory:'Серебряный ключ',tagIds:['t1']};
     const basic=creatureMatchesBestiaryQuery(c,'света');
     bestiaryAdvancedSearch=true;
     return {
       basic,
       notes:creatureMatchesBestiaryQuery(c,'света'),
       abilities:creatureMatchesBestiaryQuery(c,'мечом'),
+      inventory:creatureMatchesBestiaryQuery(c,'серебряный'),
       tags:creatureMatchesBestiaryQuery(c,'нежить')
     };
   `)(state);
   assert.equal(result.basic,false);
   assert.equal(result.notes,true);
   assert.equal(result.abilities,true);
+  assert.equal(result.inventory,true);
   assert.equal(result.tags,true);
 }
 
@@ -98,8 +100,8 @@ function runImport(mode){
     let idCounter=0;
     const makeId=()=> 'new-'+(++idCounter);
     const validTagColor=v=>/^#[0-9a-f]{6}$/i.test(String(v||''))?String(v):'#d6a85f';
-    let state={tags:[],bestiary:[
-      {id:'a',name:'Гоблин',description:'старый',hp:'5',ac:'12',characteristics:'',abilities:'',notes:'',tagIds:[]}
+    let state={tags:[],library:{artifacts:[]},bestiary:[
+      {id:'a',name:'Гоблин',description:'старый',hp:'5',ac:'12',characteristics:'',abilities:'',notes:'',inventory:'',artifactIds:[],tagIds:[]}
     ]};
     const creatureById=id=>state.bestiary.find(c=>c.id===id);
     let pendingCreatureImport=null;

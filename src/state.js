@@ -55,7 +55,7 @@ function archiveSchemaVersion(data){if(!data||typeof data!=='object'||Array.isAr
     }
 function normalize(data){
   data=migrateArchive(data);
-  const normalizeCreature=c=>{if(c.description==null)c.description='';if(c.hp==null)c.hp='';if(c.ac==null)c.ac='';if(c.characteristics==null)c.characteristics='';if(c.abilities==null)c.abilities='';if(c.notes==null)c.notes='';if(!Array.isArray(c.tagIds))c.tagIds=[];return c};
+  const normalizeCreature=c=>{if(c.description==null)c.description='';if(c.hp==null)c.hp='';if(c.ac==null)c.ac='';if(c.characteristics==null)c.characteristics='';if(c.abilities==null)c.abilities='';if(c.notes==null)c.notes='';if(c.inventory==null)c.inventory='';if(!Array.isArray(c.tagIds))c.tagIds=[];if(!Array.isArray(c.artifactIds))c.artifactIds=[];c.artifactIds=[...new Set(c.artifactIds.map(id=>String(id||'')).filter(Boolean))];return c};
   const normalizeLibraryItem=item=>{if(!item||typeof item!=='object')item={};if(!item.id)item.id=makeId();item.name=String(item.name||'Без названия').slice(0,80);item.description=String(item.description||'').slice(0,240);item.details=String(item.details||'').slice(0,6000);if(!Array.isArray(item.tagIds))item.tagIds=[];item.builtin=Boolean(item.builtin);return item};
   if(!Array.isArray(data.tags))data.tags=[];
   data.tags=data.tags.map(t=>({id:t.id||makeId(),name:String(t.name||'Тег').slice(0,30),color:validTagColor(t.color)}));
@@ -85,5 +85,8 @@ function normalize(data){
   }
   if(!Array.isArray(data.library.artifacts))data.library.artifacts=[];
   data.library.artifacts=data.library.artifacts.map(normalizeLibraryItem);
+  const knownArtifactIds=new Set(data.library.artifacts.map(item=>item.id)),cleanArtifactRefs=creature=>{creature.artifactIds=(creature.artifactIds||[]).filter(id=>knownArtifactIds.has(id))};
+  data.bestiary.forEach(cleanArtifactRefs);
+  data.rooms.forEach(room=>room.entries.forEach(entry=>{if(entry.npc)cleanArtifactRefs(entry.npc)}));
   return data
 }
