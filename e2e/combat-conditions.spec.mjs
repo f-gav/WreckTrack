@@ -54,7 +54,7 @@ test('conditions stay in one horizontal row and room can use compact add control
   await page.locator('[data-open-room="room-1"]').first().click();
 
   await page.getByRole('button',{name:'Изменить состояния'}).click();
-  await page.locator('#combat-condition-checks input').check();
+  for(const input of await page.locator('#combat-condition-checks input').all())await input.check();
   await page.locator('#combat-condition-save').click();
 
   const chips=page.locator('.combat-condition-chip');
