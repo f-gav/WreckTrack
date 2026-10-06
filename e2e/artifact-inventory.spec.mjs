@@ -1,7 +1,12 @@
 import {test,expect} from '@playwright/test';
 
 test.beforeEach(async({page})=>{
-  await page.addInitScript(()=>{localStorage.clear();sessionStorage.clear()});
+  await page.addInitScript(()=>{
+    if(sessionStorage.getItem('__wrecktrack_artifact_e2e_ready')==='1')return;
+    localStorage.clear();
+    sessionStorage.clear();
+    sessionStorage.setItem('__wrecktrack_artifact_e2e_ready','1');
+  });
   await page.route('https://cdn.jsdelivr.net/**',route=>route.abort());
 });
 
@@ -91,7 +96,7 @@ test('artifact assignment can target a room NPC',async({page})=>{
   await page.locator('#artifact-assignment-save').click();
 
   await page.getByRole('button',{name:'Комнаты'}).first().click();
-  await page.getByText('Таверна',{exact:true}).click();
+  await page.locator('.room-card').filter({hasText:'Таверна'}).first().click();
   await page.getByText('Хозяин таверны',{exact:true}).first().click();
   await page.locator('[data-detail-page="2"]').click();
   await expect(page.locator('.detail-artifact summary')).toContainText('Старый медальон');
