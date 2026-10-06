@@ -163,6 +163,10 @@ test('mobile tokenator canvas controls and frame grid fit narrow and landscape s
   await expect(page.locator('#tokenator-canvas')).toBeVisible();
   await expect(page.locator('#tokenator-scale')).toBeVisible();
   await expect(page.locator('.token-frame-grid')).toBeVisible();
+  const customPreview=page.locator('[data-token-frame="custom"] img.custom-token-preview');
+  await expect(customPreview).toBeVisible();
+  expect(await customPreview.evaluate(img=>img.naturalWidth)).toBeGreaterThan(0);
+  expect(await customPreview.evaluate(img=>getComputedStyle(img).filter)).toContain('invert(1)');
   await expectNoHorizontalOverflow(page);
   await page.setViewportSize({width:740,height:390});
   await expect(page.locator('#tokenator-canvas')).toBeVisible();
