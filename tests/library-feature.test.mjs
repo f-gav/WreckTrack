@@ -18,7 +18,9 @@ assert.ok(state.includes("name:'Сбитый с ног'"),'5e14 Prone label shou
 assert.ok(state.includes("name:'Опрокинутый'"),'5e24 Prone label should be present');
 
 for(const symbol of ['function renderLibrary(','function renderLibrarySection(','function renderLibraryCards(','function openLibraryItemDialog(','function duplicateLibraryItem(','function deleteLibraryItem(','function installConditionPreset(','function setLibraryTagSync('])assert.ok(library.includes(symbol),symbol+' missing');
-assert.match(library,/Предустановить состояния 5e14/);\nassert.match(library,/Предустановить состояния 5e24/);\nassert.match(settings,/\['library','Библиотека'\]/);
+assert.match(library,/Предустановить состояния 5e14/);
+assert.match(library,/Предустановить состояния 5e24/);
+assert.match(settings,/\['library','Библиотека'\]/);
 assert.match(settings,/id="library-sync-tags"/);
 assert.match(settings,/Синхронизировать Тэги с Бестиарием/);
 
