@@ -1,6 +1,6 @@
 const CURRENT_SCHEMA_VERSION=1;
 
-const CONDITION_PRESET_SYSTEM_VERSION=1;
+const CONDITION_PRESET_SYSTEM_VERSION=2;
 const DND_CONDITIONS_5E24=[
   {id:'dnd-condition-blinded',name:'Ослеплённый',description:'Не видит; свои атаки — с Помехой, атаки по нему — с Преимуществом.',details:'- **Зрение:** не видит и автоматически проваливает проверки характеристик, требующие зрения.\n- **Атаки:** броски атаки существа совершаются с Помехой; броски атаки по нему — с Преимуществом.',builtin:true},
   {id:'dnd-condition-charmed',name:'Очарованный',description:'Не может вредить очаровавшему; очаровавший получает Преимущество в социальных проверках.',details:'- **Запрет вредить:** нельзя атаковать очаровавшее существо или выбирать его целью наносящих урон способностей и магических эффектов.\n- **Социальное влияние:** очаровавший совершает с Преимуществом проверки характеристик при социальном взаимодействии с целью.',builtin:true},
@@ -67,8 +67,13 @@ function normalize(data){
   data.library.conditions=data.library.conditions.map(normalizeLibraryItem);
   const presetSystemVersion=Math.max(0,Math.trunc(Number(data.library.conditionPresetSystemVersion)||0));
   if(presetSystemVersion<CONDITION_PRESET_SYSTEM_VERSION){
-    data.library.conditions=data.library.conditions.filter(item=>!item.builtin);
-    data.library.conditionPreset=null;
+    const selectedPreset=DND_CONDITION_PRESETS[data.library.conditionPreset]?data.library.conditionPreset:null;
+    const existingBuiltins=new Map(data.library.conditions.filter(item=>item.builtin).map(item=>[item.id,item]));
+    const custom=data.library.conditions.filter(item=>!item.builtin);
+    data.library.conditions=selectedPreset
+      ?[...DND_CONDITION_PRESETS[selectedPreset].map(item=>normalizeLibraryItem({...item,tagIds:[...(existingBuiltins.get(item.id)?.tagIds||[])]})),...custom]
+      :custom;
+    data.library.conditionPreset=selectedPreset;
     data.library.conditionPresetSystemVersion=CONDITION_PRESET_SYSTEM_VERSION;
     delete data.library.conditionsVersion;
   }else{
