@@ -15,6 +15,8 @@ const {normalize,presets,presetSystemVersion}=context;
 assert.equal(presetSystemVersion,3);
 assert.equal(presets['5e14'].length,15);
 assert.equal(presets['5e24'].length,15);
+assert.equal(presets.both.length,30);
+assert.equal(new Set(presets.both.map(item=>item.id)).size,30,'combined preset ids must be unique');
 
 const deafened14=presets['5e14'].find(item=>item.id==='dnd-condition-deafened');
 assert.equal(deafened14.name,'Оглохший (5е14)');
