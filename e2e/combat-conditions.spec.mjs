@@ -48,7 +48,7 @@ test('room creatures can receive Library conditions and undo their removal in co
 });
 
 
-test('conditions stay in one horizontal row and room can use compact add control',async({page})=>{
+test('conditions use available card width without horizontal scrolling and room can use compact add control',async({page})=>{
   await page.goto('/');
   await page.getByRole('button',{name:'Комнаты'}).first().click();
   await page.locator('[data-open-room="room-1"]').first().click();
@@ -74,6 +74,15 @@ test('conditions stay in one horizontal row and room can use compact add control
     expect(Math.abs(stripBox.x-creatureBox.x)).toBeLessThanOrEqual(2);
     expect(stripBox.y).toBeGreaterThanOrEqual(creatureBox.y+creatureBox.height-2);
     expect(stripBox.x+stripBox.width).toBeGreaterThan(noteBox.x+noteBox.width*0.6);
+    const stripOverflow=await page.locator('.combat-condition-strip').evaluate(node=>({
+      scrollWidth:node.scrollWidth,
+      clientWidth:node.clientWidth,
+      overflowX:getComputedStyle(node).overflowX,
+      flexWrap:getComputedStyle(node).flexWrap
+    }));
+    expect(stripOverflow.flexWrap).toBe('wrap');
+    expect(stripOverflow.overflowX).not.toBe('auto');
+    expect(stripOverflow.scrollWidth).toBeLessThanOrEqual(stripOverflow.clientWidth+1);
   }
 
   await page.getByRole('button',{name:'Настройки комнаты'}).click();
