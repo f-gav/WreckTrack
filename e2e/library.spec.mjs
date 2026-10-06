@@ -23,7 +23,7 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
   await expect(page.locator('.library-card')).toHaveCount(0);
   await expect(page.getByText('Предустановить',{exact:true})).toBeVisible();
   await page.getByText('Предустановить',{exact:true}).click();
-  await page.getByRole('button',{name:'Предустановить состояния 5e24'}).click();
+  await page.getByRole('button',{name:'Предустановить состояния 5е24'}).click();
   await expect(page.locator('.library-card')).toHaveCount(15);
   await expect(page.locator('.library-card').first()).toContainText('Состояние 01');
   await expect(page.getByText('Ослеплённый',{exact:true})).toBeVisible();
@@ -50,11 +50,18 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
 
   page.once('dialog',dialog=>dialog.accept());
   await page.getByText('Предустановить',{exact:true}).click();
-  await page.getByRole('button',{name:'Предустановить состояния 5e14'}).click();
+  await page.getByRole('button',{name:'Предустановить состояния 5е14'}).click();
   await expect(page.locator('.library-card')).toHaveCount(16);
-  await expect(page.getByText('Сбитый с ног',{exact:true})).toBeVisible();
+  await expect(page.getByText('Сбитый с ног / Лежащий ничком (5е14)',{exact:true})).toBeVisible();
   await expect(page.getByText('Горение',{exact:true})).toBeVisible();
   await expect(page.getByText('Опрокинутый',{exact:true})).toHaveCount(0);
+  await page.locator('#library-search').fill('оглохший');
+  await expect(page.locator('.library-card')).toHaveCount(1);
+  await expect(page.getByText('Оглохший (5е14)',{exact:true})).toBeVisible();
+  await page.locator('.library-card').click();
+  await expect(page.locator('#library-detail-dialog')).toContainText('Оглохшее существо ничего не слышит и автоматически проваливает все проверки характеристик, связанные со слухом.');
+  await page.locator('#library-detail-dialog [data-close="library-detail-dialog"]').first().click();
+  await page.locator('#library-search').fill('');
 
   await page.locator('#manage-library-tags').click();
   await page.locator('#add-tag').click();
