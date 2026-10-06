@@ -34,6 +34,7 @@
     registerDataFileEvents();
     registerMixedInputEvents();
     registerBattleNotePreviewEvents();
+    registerCombatConditionEvents();
     registerMixedChangeEvents();
     createJournalDialog();
     
