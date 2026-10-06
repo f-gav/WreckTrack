@@ -33,6 +33,12 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
   }
   await page.getByText('Предустановить',{exact:true}).click();
   if(viewport&&viewport.width<=430){
+    const popoverBox=await page.locator('.library-preset-popover').boundingBox();
+    expect(popoverBox).toBeTruthy();
+    expect(popoverBox.x).toBeGreaterThanOrEqual(0);
+    expect(popoverBox.x+popoverBox.width).toBeLessThanOrEqual(viewport.width+1);
+  }
+  if(viewport&&viewport.width<=430){
     const menuBox=await page.locator('.library-preset-popover').boundingBox();
     expect(menuBox).toBeTruthy();
     expect(menuBox.x).toBeGreaterThanOrEqual(0);
