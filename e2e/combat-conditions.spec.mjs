@@ -67,7 +67,8 @@ test('conditions stay in one horizontal row and room can use compact add control
   await expect(page.getByText('Уменьшенный значок добавления состояний',{exact:true})).toBeVisible();
   const compactToggle=page.locator('#room-compact-condition-add');
   await expect(compactToggle).not.toBeChecked();
-  await compactToggle.check();
+  await page.locator('label[for="room-compact-condition-add"]').click();
+  await expect(compactToggle).toBeChecked();
   await page.locator('#room-form').getByRole('button',{name:'Сохранить'}).click();
 
   const compactAdd=page.locator('.combat-condition-add-compact');
