@@ -35,7 +35,11 @@ const DND_CONDITIONS_5E14=[
   {id:'dnd-condition-prone',name:'Сбитый с ног / Лежащий ничком (5е14)',description:'Состояние 5е14',details:'- Сбитое с ног существо способно перемещаться только ползком, пока не встанет, прервав тем самым это состояние.\n- Существо совершает с помехой броски атаки.\n- Броски атаки по существу совершаются с преимуществом, если нападающий находится в пределах 5 футов от него. В противном случае броски атаки совершаются с помехой.',builtin:true,preset:'5e14'},
   {id:'dnd-condition-grappled',name:'Схваченный (5е14)',description:'Состояние 5е14',details:'- Скорость схваченного существа равна 0, и оно не получает выгоды ни от каких бонусов к скорости.\n- Состояние оканчивается, если схвативший становится недееспособным.\n- Это состояние также оканчивается, если какой-либо эффект выводит схваченное существо из зоны досягаемости того, кто его удерживает, или из зоны удерживающего эффекта. Например, когда существо отбрасывается заклинанием волна грома [thunderwave].',builtin:true,preset:'5e14'}
 ];
-const DND_CONDITION_PRESETS={'5e14':DND_CONDITIONS_5E14,'5e24':DND_CONDITIONS_5E24};
+const DND_CONDITIONS_BOTH=[
+  ...DND_CONDITIONS_5E14.map(item=>({...item,id:item.id+'-5e14'})),
+  ...DND_CONDITIONS_5E24.map(item=>({...item,id:item.id+'-5e24'}))
+];
+const DND_CONDITION_PRESETS={'5e14':DND_CONDITIONS_5E14,'5e24':DND_CONDITIONS_5E24,'both':DND_CONDITIONS_BOTH};
 
 function archiveSchemaVersion(data){if(!data||typeof data!=='object'||Array.isArray(data))return 0;const version=Number(data.schemaVersion);return Number.isInteger(version)&&version>=0?version:0}
     function migrateArchive(data){
