@@ -36,7 +36,7 @@ const DND_CONDITIONS_5E14=[
   {id:'dnd-condition-unconscious',name:'Бессознательный',description:'Недееспособен, падает, не двигается и не осознаёт окружение; попадания вблизи становятся критическими.',details:'- **Недееспособность:** существо Недееспособно, не может двигаться и говорить и не осознаёт окружение.\n- **Падение:** роняет всё, что держит, и становится Сбитым с ног.\n- **Спасброски:** автоматически проваливает спасброски Силы и Ловкости.\n- **Атаки по цели:** совершаются с Преимуществом.\n- **Критические попадания:** любое попадание атакой в пределах 5 футов считается Критическим попаданием.',builtin:true,preset:'5e14'}
 ];
 DND_CONDITIONS_5E24.forEach(item=>{item.preset='5e24'});
-const DND_CONDITION_PRESETS={5e14:DND_CONDITIONS_5E14,5e24:DND_CONDITIONS_5E24};
+const DND_CONDITION_PRESETS={'5e14':DND_CONDITIONS_5E14,'5e24':DND_CONDITIONS_5E24};
 
 function archiveSchemaVersion(data){if(!data||typeof data!=='object'||Array.isArray(data))return 0;const version=Number(data.schemaVersion);return Number.isInteger(version)&&version>=0?version:0}
     function migrateArchive(data){
