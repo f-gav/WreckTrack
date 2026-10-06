@@ -40,13 +40,22 @@ function normalize(data){
   data.bestiary.forEach(normalizeCreature);
   data.rooms.forEach(r=>{if(r.journal==null)r.journal='';if(!r.initiatives||typeof r.initiatives!=='object')r.initiatives={};if(!r.combatNotes||typeof r.combatNotes!=='object')r.combatNotes={};if(!r.currentHp||typeof r.currentHp!=='object')r.currentHp={};if(!r.bonusHp||typeof r.bonusHp!=='object')r.bonusHp={};if(!Array.isArray(r.entries)){const used=new Set;r.entries=(Array.isArray(r.creatureIds)?r.creatureIds:[]).map(creatureId=>{let id=creatureId;if(used.has(id)){id=makeId();if(Object.prototype.hasOwnProperty.call(r.initiatives,creatureId))r.initiatives[id]=r.initiatives[creatureId];if(Object.prototype.hasOwnProperty.call(r.combatNotes,creatureId))r.combatNotes[id]=r.combatNotes[creatureId];if(Object.prototype.hasOwnProperty.call(r.currentHp,creatureId))r.currentHp[id]=r.currentHp[creatureId];if(Object.prototype.hasOwnProperty.call(r.bonusHp,creatureId))r.bonusHp[id]=r.bonusHp[creatureId]}used.add(id);return{id,creatureId}})}r.entries=r.entries.map(entry=>{const normalized={id:entry.id||makeId(),creatureId:entry.creatureId||null};if(!normalized.creatureId)normalized.npc=normalizeCreature(entry.npc&&typeof entry.npc==='object'?entry.npc:{name:'',description:'',hp:'',ac:'',characteristics:'',abilities:'',notes:'',tagIds:[]});return normalized});delete r.creatureIds;if(!r.combat||typeof r.combat!=='object')r.combat={active:false,round:1,turnCreatureId:null};r.combat.active=Boolean(r.combat.active);r.combat.round=Math.max(1,Math.trunc(Number(r.combat.round)||1));if(r.combat.turnCreatureId==null)r.combat.turnCreatureId=null});
   const hadLibrary=Boolean(data.library&&typeof data.library==='object'&&!Array.isArray(data.library));
-  if(!hadLibrary)data.library={syncTags:false,tags:[],conditions:DND_STANDARD_CONDITIONS.map(item=>({...item,tagIds:[]})),artifacts:[]};
+  if(!hadLibrary)data.library={syncTags:false,tags:[],conditions:[],conditionsVersion:0,artifacts:[]};
   if(typeof data.library.syncTags!=='boolean')data.library.syncTags=false;
   if(!Array.isArray(data.library.tags))data.library.tags=[];
   data.library.tags=data.library.tags.map(t=>({id:t.id||makeId(),name:String(t.name||'Тег').slice(0,30),color:validTagColor(t.color)}));
-  if(!Array.isArray(data.library.conditions))data.library.conditions=DND_STANDARD_CONDITIONS.map(item=>({...item,tagIds:[]}));
+  const hadConditions=Array.isArray(data.library.conditions),storedConditionsVersion=Math.max(0,Math.trunc(Number(data.library.conditionsVersion)||0));
+  const normalizedConditions=hadConditions?data.library.conditions.map(normalizeLibraryItem):[];
+  if(!hadConditions||storedConditionsVersion<DND_CONDITIONS_VERSION){
+    const standardIds=new Set(DND_STANDARD_CONDITIONS.map(item=>item.id)),existingById=new Map(normalizedConditions.map(item=>[item.id,item]));
+    const standard=DND_STANDARD_CONDITIONS.map(item=>{const existing=existingById.get(item.id);return normalizeLibraryItem({...item,tagIds:Array.isArray(existing?.tagIds)?[...existing.tagIds]:[]})});
+    data.library.conditions=[...standard,...normalizedConditions.filter(item=>!standardIds.has(item.id))];
+    data.library.conditionsVersion=DND_CONDITIONS_VERSION;
+  }else{
+    data.library.conditions=normalizedConditions;
+    data.library.conditionsVersion=storedConditionsVersion;
+  }
   if(!Array.isArray(data.library.artifacts))data.library.artifacts=[];
-  data.library.conditions=data.library.conditions.map(normalizeLibraryItem);
   data.library.artifacts=data.library.artifacts.map(normalizeLibraryItem);
   return data
 }
