@@ -25,6 +25,18 @@ test('artifacts can be assigned to creatures and appear above inventory on page 
   await page.locator('#creature-form').getByRole('button',{name:'Сохранить'}).click();
   await expect(page.getByText('Дон Кихот',{exact:true}).first()).toBeVisible();
 
+  await page.locator('.bestiary-card').filter({hasText:'Дон Кихот'}).click();
+  await page.locator('[data-detail-page="2"]').click();
+  await expect(page.locator('.detail-artifacts-block')).toHaveCount(0);
+  await expect(page.locator('.detail-toc-link')).toHaveCount(1);
+  await expect(page.locator('.detail-toc-link')).toContainText('Инвентарь');
+  await expect(page.locator('.detail-toc-mark')).toHaveText('H1');
+  await expect(page.locator('.detail-toc .detail-page-nav')).toBeVisible();
+  await page.evaluate(()=>{document.documentElement.dataset.font='old-town'});
+  await expect(page.locator('.detail-page-button').first()).toHaveCSS('font-family',/Old Town/);
+  await page.locator('#detail-dialog [data-close="detail-dialog"]').click();
+  await page.evaluate(()=>{delete document.documentElement.dataset.font});
+
   await page.getByRole('button',{name:'Библиотека'}).first().click();
   await page.getByRole('button',{name:/Артефакты/}).click();
   await page.locator('#grid-new-library-item').click();
@@ -55,6 +67,11 @@ test('artifacts can be assigned to creatures and appear above inventory on page 
   await expect(page.locator('.detail-artifact')).toHaveCount(1);
   await expect(page.locator('.detail-artifact summary')).toContainText('Копьё Рассвета');
   await expect(page.locator('.detail-inventory-markdown')).toContainText('Верёвка');
+  await expect(page.locator('.detail-toc-link')).toHaveCount(2);
+  await expect(page.locator('.detail-toc-link').nth(0)).toContainText('Копьё Рассвета');
+  await expect(page.locator('.detail-toc-link').nth(1)).toContainText('Инвентарь');
+  await expect(page.locator('.detail-toc-mark')).toHaveText(['H1','H1']);
+  await expect(page.locator('.detail-toc')).not.toContainText('Способности');
   await expect(page.locator('.detail-artifact-body')).not.toBeVisible();
 
   await page.locator('.detail-artifact summary').click();
@@ -87,7 +104,7 @@ test('artifact assignment can target a room NPC',async({page})=>{
   await page.getByRole('button',{name:/Артефакты/}).click();
   await page.locator('#grid-new-library-item').click();
   await page.locator('#library-item-name').fill('Старый медальон');
-  await page.locator('#library-item-details').fill('**Память.** Хранит чужое воспоминание.');
+  await page.locator('#library-item-details').fill('**Память.** Хранит чужое воспоминание.\n- [ ] Открыть воспоминание\nЗаряды [x] [ ]');
   await page.locator('#library-item-form').getByRole('button',{name:'Сохранить'}).click();
   await page.locator('.library-card').filter({hasText:'Старый медальон'}).getByRole('button',{name:/Добавить Старый медальон существу/}).click();
   await expect(page.locator('#artifact-assignment-checks')).toContainText('Хозяин таверны');
@@ -101,4 +118,35 @@ test('artifact assignment can target a room NPC',async({page})=>{
   await page.locator('[data-detail-page="2"]').click();
   await expect(page.locator('.detail-artifact summary')).toContainText('Старый медальон');
   await expect(page.locator('.detail-inventory-markdown')).toContainText('Ключи от кладовой');
+  await page.locator('.detail-artifact summary').click();
+  const task=page.locator('.detail-artifact-body [data-artifact-task]');
+  const resources=page.locator('.detail-artifact-body [data-artifact-resource]');
+  await expect(task).not.toBeChecked();
+  await expect(resources).toHaveCount(2);
+  await expect(resources.nth(0)).toHaveAttribute('aria-pressed','true');
+  await expect(resources.nth(1)).toHaveAttribute('aria-pressed','false');
+  await task.check();
+  await resources.nth(1).click();
+  await expect(task).toBeChecked();
+  await expect(resources.nth(1)).toHaveAttribute('aria-pressed','true');
+  await page.waitForTimeout(450);
+
+  const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('gm-archive-v2')));
+  const storedRoom=stored.rooms.find(room=>room.name==='Таверна');
+  const storedArtifact=stored.library.artifacts.find(item=>item.name==='Старый медальон');
+  const storedEntry=storedRoom.entries.find(entry=>entry.npc?.name==='Хозяин таверны');
+  const controls=storedRoom.artifactStates[storedEntry.id][storedArtifact.id].controls;
+  expect(controls['task:1']).toBe(true);
+  expect(Object.entries(controls).some(([key,value])=>key.startsWith('resource:2:')&&value===true)).toBe(true);
+  expect(storedArtifact.details).toContain('- [ ] Открыть воспоминание');
+  expect(storedArtifact.details).toContain('Заряды [x] [ ]');
+
+  await page.reload();
+  await page.getByRole('button',{name:'Комнаты'}).first().click();
+  await page.locator('.room-card').filter({hasText:'Таверна'}).first().click();
+  await page.getByText('Хозяин таверны',{exact:true}).first().click();
+  await page.locator('[data-detail-page="2"]').click();
+  await page.locator('.detail-artifact summary').click();
+  await expect(page.locator('.detail-artifact-body [data-artifact-task]')).toBeChecked();
+  await expect(page.locator('.detail-artifact-body [data-artifact-resource]').nth(1)).toHaveAttribute('aria-pressed','true');
 });
