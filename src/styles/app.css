@@ -262,3 +262,19 @@
         overflow-wrap:anywhere;
       }
     }
+
+
+    /* Phone-only Library preset popover: keep the menu inside the viewport and span the action row. */
+    @media(max-width:430px){
+      .page-head .actions:has(.library-preset-menu)>.library-preset-menu .library-preset-popover{
+        left:0;
+        right:auto;
+        width:calc(200% + 10px);
+        max-width:none;
+      }
+      .page-head .actions:has(.library-preset-menu)>.library-preset-menu .library-preset-popover .button{
+        white-space:normal;
+        line-height:1.25;
+        text-align:left;
+      }
+    }
