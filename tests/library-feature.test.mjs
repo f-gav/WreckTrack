@@ -9,7 +9,11 @@ const app=fs.readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
 
 const standardIds=[...state.matchAll(/id:'dnd-condition-[^']+'/g)].map(match=>match[0]);
 assert.equal(standardIds.length,15,'all 15 standard 2024 D&D conditions should be seeded');
-for(const name of ['Ослеплённый','Очарованный','Оглохший','Истощение','Испуганный','Схваченный','Недееспособный','Невидимый','Парализованный','Окаменевший','Отравленный','Сбитый с ног','Опутанный','Ошеломлённый','Бессознательный'])assert.ok(state.includes("name:'"+name+"'"),'missing condition: '+name);
+assert.match(state,/const DND_CONDITIONS_VERSION=2/,'standard condition content version should be tracked');
+assert.ok(state.includes('−2 к Тестам d20'),'Exhaustion should expose its per-level d20 penalty');
+assert.ok(state.includes('5 футов считается Критическим попаданием'),'Paralyzed/Unconscious should expose close-range critical hits');
+assert.ok(state.includes("name:'Ошеломлённый'"),'Stunned should remain a standard condition');
+for(const name of ['Ослеплённый','Очарованный','Оглохший','Истощение','Испуганный','Схваченный','Недееспособный','Невидимый','Парализованный','Окаменевший','Отравленный','Опрокинутый','Опутанный','Ошеломлённый','Бессознательный'])assert.ok(state.includes("name:'"+name+"'"),'missing condition: '+name);
 
 for(const symbol of ['function renderLibrary(','function renderLibrarySection(','function renderLibraryCards(','function openLibraryItemDialog(','function duplicateLibraryItem(','function deleteLibraryItem(','function setLibraryTagSync('])assert.ok(library.includes(symbol),symbol+' missing');
 assert.match(settings,/\['library','Библиотека'\]/);
