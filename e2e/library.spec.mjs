@@ -22,6 +22,15 @@ test('Library ships standard conditions and supports CRUD, search, tags and arti
   await expect(page.locator('main h1')).toHaveText('Состояния');
   await expect(page.locator('.library-card')).toHaveCount(0);
   await expect(page.getByText('Предустановить',{exact:true})).toBeVisible();
+  const viewport=page.viewportSize();
+  if(viewport&&viewport.width<=430){
+    const presetBox=await page.locator('.library-preset-menu').boundingBox();
+    const tagsBox=await page.locator('#manage-library-tags').boundingBox();
+    expect(presetBox).toBeTruthy();
+    expect(tagsBox).toBeTruthy();
+    expect(Math.abs(presetBox.y-tagsBox.y)).toBeLessThanOrEqual(2);
+    expect(Math.abs(presetBox.width-tagsBox.width)).toBeLessThanOrEqual(2);
+  }
   await page.getByText('Предустановить',{exact:true}).click();
   await page.getByRole('button',{name:'Предустановить состояния 5е24'}).click();
   await expect(page.locator('.library-card')).toHaveCount(15);
