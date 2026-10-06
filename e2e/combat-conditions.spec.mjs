@@ -54,7 +54,7 @@ test('conditions use available card width without horizontal scrolling and room 
   await page.locator('[data-open-room="room-1"]').first().click();
 
   await page.getByRole('button',{name:'Изменить состояния'}).click();
-  for(const input of await page.locator('#combat-condition-checks input').all())await input.check();
+  for(const input of await page.locator('#combat-condition-checks input[type="checkbox"]').all())await input.check();
   await page.locator('#combat-condition-save').click();
 
   const chips=page.locator('.combat-condition-chip');
@@ -117,4 +117,46 @@ test('conditions use available card width without horizontal scrolling and room 
   await page.locator('[data-open-room="room-1"]').first().click();
   await expect(page.locator('.combat-condition-add-compact')).toBeVisible();
   await expect(page.locator('.combat-condition-chip')).toHaveCount(3);
+});
+
+
+test('timed conditions count down once per round while blank duration stays indefinite',async({page})=>{
+  await page.goto('/');
+  await page.getByRole('button',{name:'Комнаты'}).first().click();
+  await page.locator('[data-open-room="room-1"]').first().click();
+
+  await page.getByRole('button',{name:'Изменить состояния'}).click();
+  const burning=page.locator('#combat-condition-checks input[value="condition-burning"]');
+  const frightened=page.locator('#combat-condition-checks input[value="condition-frightened"]');
+  await burning.check();
+  await frightened.check();
+  await page.locator('[data-condition-duration="condition-burning"]').fill('2');
+  await expect(page.locator('[data-condition-duration="condition-frightened"]')).toHaveValue('');
+  await page.locator('#combat-condition-save').click();
+
+  const burningChip=page.locator('.combat-condition-chip:has([data-open-combat-condition="condition-burning"])');
+  const frightenedChip=page.locator('.combat-condition-chip:has([data-open-combat-condition="condition-frightened"])');
+  await expect(burningChip.locator('.combat-condition-duration')).toHaveText('2');
+  await expect(frightenedChip.locator('.combat-condition-duration')).toHaveCount(0);
+
+  await page.getByRole('button',{name:'Начать бой'}).click();
+  await page.getByRole('button',{name:'Следующий ход →'}).click();
+  await expect(page.locator('.round-step.current')).toHaveText('2');
+  await expect(burningChip.locator('.combat-condition-duration')).toHaveText('1');
+  await expect(frightenedChip).toBeVisible();
+
+  await page.reload();
+  await page.getByRole('button',{name:'Комнаты'}).first().click();
+  await page.locator('[data-open-room="room-1"]').first().click();
+  await expect(page.locator('.combat-condition-chip:has([data-open-combat-condition="condition-burning"]) .combat-condition-duration')).toHaveText('1');
+
+  await page.getByRole('button',{name:'Следующий ход →'}).click();
+  await expect(page.locator('.round-step.current')).toHaveText('3');
+  await expect(page.locator('.combat-condition-chip:has([data-open-combat-condition="condition-burning"])')).toHaveCount(0);
+  await expect(page.locator('.combat-condition-chip:has([data-open-combat-condition="condition-frightened"])')).toBeVisible();
+
+  await page.keyboard.press('Control+Z');
+  await expect(page.locator('.round-step.current')).toHaveText('2');
+  await expect(page.locator('.combat-condition-chip:has([data-open-combat-condition="condition-burning"]) .combat-condition-duration')).toHaveText('1');
+  await expect(page.locator('.combat-condition-chip:has([data-open-combat-condition="condition-frightened"])')).toBeVisible();
 });
