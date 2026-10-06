@@ -78,6 +78,7 @@ for(const symbol of ['function fullBackupSettings(','function createFullBackup('
   assert.ok(sources['features/data.js'].includes(symbol),symbol+' missing from features/data.js');
   assert.ok(!sources['app.js'].includes(symbol),symbol+' must not remain in app.js');
 }
+for(const symbol of ['function roomConditionIds(','function renderCombatConditions(','function openCombatConditionDialog(','function removeCombatCondition('])assert.ok(sources['features/combat.js'].includes(symbol),symbol+' missing from features/combat.js');
 assert.ok(parts.indexOf('features/combat.js')<parts.indexOf('features/data.js'),'Data feature must follow Combat');
 assert.ok(parts.indexOf('features/data.js')<parts.indexOf('app.js'),'Data feature must precede application bootstrap');
 
@@ -94,7 +95,7 @@ assert.ok(sources['features/tokenator-events.js'].includes('function registerTok
 assert.ok(sources['app.js'].includes('registerTokenatorEvents();'));
 assert.ok(!sources['app.js'].includes("const frame=e.target.closest('[data-token-frame]')"));
 
-for(const [part,registration] of [['ui/action-events.js','registerPrimaryActionEvents'],['features/library-events.js','registerLibraryEvents'],['features/combat-events.js','registerBattleNotePreviewEvents'],['features/data-events.js','registerDataFileEvents']]){
+for(const [part,registration] of [['ui/action-events.js','registerPrimaryActionEvents'],['features/library-events.js','registerLibraryEvents'],['features/combat-events.js','registerBattleNotePreviewEvents'],['features/combat-events.js','registerCombatConditionEvents'],['features/data-events.js','registerDataFileEvents']]){
   assert.ok(sources[part].includes('function '+registration+'(){'));
   assert.ok(sources['app.js'].includes(registration+'();'));
 }
