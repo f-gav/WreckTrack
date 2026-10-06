@@ -5,6 +5,7 @@ function registerLibraryEvents(){
     const edit=e.target.closest('[data-edit-library-item]');if(edit&&type){openLibraryItemDialog(type,edit.dataset.editLibraryItem);return}
     const duplicate=e.target.closest('[data-duplicate-library-item]');if(duplicate&&type){duplicateLibraryItem(type,duplicate.dataset.duplicateLibraryItem);return}
     const remove=e.target.closest('[data-delete-library-item]');if(remove&&type){deleteLibraryItem(type,remove.dataset.deleteLibraryItem);return}
+    const preset=e.target.closest('[data-condition-preset]');if(preset&&type==='conditions'){installConditionPreset(preset.dataset.conditionPreset);return}
     if(e.target.closest('#manage-library-tags')){openTagsDialog('library');return}
     const detailEdit=e.target.closest('[data-edit-library-detail]');if(detailEdit){el('library-detail-dialog').close();openLibraryItemDialog(detailEdit.dataset.libraryDetailType,detailEdit.dataset.editLibraryDetail);return}
     const card=e.target.closest('.library-card[data-open-library-item]');if(card&&!e.target.closest('button,.card-more-menu')&&type)openLibraryItemDetail(type,card.dataset.openLibraryItem)

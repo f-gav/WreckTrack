@@ -8,14 +8,18 @@ const index=fs.readFileSync(new URL('../src/index.html',import.meta.url),'utf8')
 const app=fs.readFileSync(new URL('../src/app.js',import.meta.url),'utf8');
 
 const standardIds=[...state.matchAll(/id:'dnd-condition-[^']+'/g)].map(match=>match[0]);
-assert.equal(standardIds.length,15,'all 15 standard 2024 D&D conditions should be seeded');
-assert.match(state,/const DND_CONDITIONS_VERSION=2/,'standard condition content version should be tracked');
-assert.ok(state.includes('−2 к Тестам d20'),'Exhaustion should expose its per-level d20 penalty');
-assert.ok(state.includes('5 футов считается Критическим попаданием'),'Paralyzed/Unconscious should expose close-range critical hits');
-assert.ok(state.includes("name:'Ошеломлённый'"),'Stunned should remain a standard condition');
-for(const name of ['Ослеплённый','Очарованный','Оглохший','Истощение','Испуганный','Схваченный','Недееспособный','Невидимый','Парализованный','Окаменевший','Отравленный','Опрокинутый','Опутанный','Ошеломлённый','Бессознательный'])assert.ok(state.includes("name:'"+name+"'"),'missing condition: '+name);
+assert.equal(standardIds.length,30,'both D&D condition presets should contain 15 conditions');
+assert.match(state,/const CONDITION_PRESET_SYSTEM_VERSION=1/,'condition preset system version should be tracked');
+assert.match(state,/const DND_CONDITIONS_5E14=\[/);
+assert.match(state,/const DND_CONDITIONS_5E24=\[/);
+assert.ok(state.includes('−2 к Тестам d20'),'5e24 Exhaustion should expose its per-level d20 penalty');
+assert.ok(state.includes('**1 уровень:** Помеха к проверкам характеристик.'),'5e14 Exhaustion should expose the six-level table');
+assert.ok(state.includes("name:'Сбитый с ног'"),'5e14 Prone label should be present');
+assert.ok(state.includes("name:'Опрокинутый'"),'5e24 Prone label should be present');
 
-for(const symbol of ['function renderLibrary(','function renderLibrarySection(','function renderLibraryCards(','function openLibraryItemDialog(','function duplicateLibraryItem(','function deleteLibraryItem(','function setLibraryTagSync('])assert.ok(library.includes(symbol),symbol+' missing');
+for(const symbol of ['function renderLibrary(','function renderLibrarySection(','function renderLibraryCards(','function openLibraryItemDialog(','function duplicateLibraryItem(','function deleteLibraryItem(','function installConditionPreset(','function setLibraryTagSync('])assert.ok(library.includes(symbol),symbol+' missing');
+assert.match(library,/Предустановить состояния 5e14/);
+assert.match(library,/Предустановить состояния 5e24/);
 assert.match(settings,/\['library','Библиотека'\]/);
 assert.match(settings,/id="library-sync-tags"/);
 assert.match(settings,/Синхронизировать Тэги с Бестиарием/);
