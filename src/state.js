@@ -1,7 +1,7 @@
 const CURRENT_SCHEMA_VERSION=1;
 
-const DND_CONDITIONS_VERSION=2;
-const DND_STANDARD_CONDITIONS=[
+const CONDITION_PRESET_SYSTEM_VERSION=1;
+const DND_CONDITIONS_5E24=[
   {id:'dnd-condition-blinded',name:'Ослеплённый',description:'Не видит; свои атаки — с Помехой, атаки по нему — с Преимуществом.',details:'- **Зрение:** не видит и автоматически проваливает проверки характеристик, требующие зрения.\n- **Атаки:** броски атаки существа совершаются с Помехой; броски атаки по нему — с Преимуществом.',builtin:true},
   {id:'dnd-condition-charmed',name:'Очарованный',description:'Не может вредить очаровавшему; очаровавший получает Преимущество в социальных проверках.',details:'- **Запрет вредить:** нельзя атаковать очаровавшее существо или выбирать его целью наносящих урон способностей и магических эффектов.\n- **Социальное влияние:** очаровавший совершает с Преимуществом проверки характеристик при социальном взаимодействии с целью.',builtin:true},
   {id:'dnd-condition-deafened',name:'Оглохший',description:'Не слышит и автоматически проваливает проверки, требующие слуха.',details:'- **Слух:** существо не слышит.\n- **Проверки:** автоматически проваливает проверки характеристик, для которых необходим слух.',builtin:true},
@@ -18,6 +18,25 @@ const DND_STANDARD_CONDITIONS=[
   {id:'dnd-condition-stunned',name:'Ошеломлённый',description:'Недееспособен, автоматически проваливает спасброски Силы и Ловкости; атаки по нему — с Преимуществом.',details:'- **Недееспособность:** также получает состояние Недееспособный.\n- **Спасброски:** автоматически проваливает спасброски Силы и Ловкости.\n- **Атаки по цели:** совершаются с Преимуществом.',builtin:true},
   {id:'dnd-condition-unconscious',name:'Бессознательный',description:'Недееспособен и Опрокинут, Скорость 0; попадания вблизи становятся критическими.',details:'- **Бездеятельность:** получает состояния Недееспособный и Опрокинутый и роняет всё, что держит. После окончания Бессознательности остаётся Опрокинутым.\n- **Скорость:** равна 0 и не может быть увеличена.\n- **Атаки по цели:** совершаются с Преимуществом.\n- **Спасброски:** автоматически проваливает спасброски Силы и Ловкости.\n- **Критические попадания:** любое попадание атакой в пределах 5 футов считается Критическим попаданием.\n- **Осознание:** не осознаёт происходящее вокруг.',builtin:true}
 ];
+const DND_CONDITIONS_5E14=[
+  {id:'dnd-condition-blinded',name:'Ослеплённый',description:'Не видит; свои атаки — с Помехой, атаки по нему — с Преимуществом.',details:'- **Зрение:** не видит и автоматически проваливает проверки характеристик, требующие зрения.\n- **Атаки:** броски атаки существа совершаются с Помехой; броски атаки по нему — с Преимуществом.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-charmed',name:'Очарованный',description:'Не может атаковать очаровавшего; тот получает Преимущество в социальных проверках против цели.',details:'- **Запрет атаковать:** нельзя атаковать очаровавшее существо или выбирать его целью вредоносных способностей и магических эффектов.\n- **Социальное влияние:** очаровавший совершает с Преимуществом проверки характеристик при социальном взаимодействии с целью.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-deafened',name:'Оглохший',description:'Не слышит и автоматически проваливает проверки, требующие слуха.',details:'- **Слух:** существо не слышит.\n- **Проверки:** автоматически проваливает проверки характеристик, для которых необходим слух.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-exhaustion',name:'Истощение',description:'Шесть уровней с нарастающими штрафами: от Помехи к проверкам до смерти.',details:'- **1 уровень:** Помеха к проверкам характеристик.\n- **2 уровень:** Скорость уменьшается вдвое.\n- **3 уровень:** Помеха к броскам атаки и спасброскам.\n- **4 уровень:** максимум хитов уменьшается вдвое.\n- **5 уровень:** Скорость становится 0.\n- **6 уровень:** смерть.\n- **Долгий отдых:** при наличии еды и питья снижает Истощение на 1 уровень.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-frightened',name:'Испуганный',description:'Пока источник страха виден — Помеха к атакам и проверкам; нельзя добровольно приближаться к нему.',details:'- **Источник в поле зрения:** проверки характеристик и броски атаки совершаются с Помехой.\n- **Перемещение:** нельзя добровольно перемещаться ближе к источнику страха.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-grappled',name:'Схваченный',description:'Скорость 0; захват заканчивается при недееспособности захватчика или выходе цели из его досягаемости.',details:'- **Скорость:** становится 0 и не получает бонусов к Скорости.\n- **Окончание:** состояние заканчивается, если захватчик становится Недееспособным.\n- **Разрыв дистанции:** также заканчивается, если эффект выталкивает или иным образом уводит цель за пределы досягаемости захватчика.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-incapacitated',name:'Недееспособный',description:'Не может совершать действия и реакции; Концентрация прекращается.',details:'- **Действия:** нельзя совершать действия и реакции.\n- **Концентрация:** состояние прекращает поддерживаемую Концентрацию.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-invisible',name:'Невидимый',description:'Нельзя увидеть без особого чувства; свои атаки — с Преимуществом, атаки по нему — с Помехой.',details:'- **Обнаружение:** существо невозможно увидеть без магии или особого чувства; его местоположение всё ещё можно определить по шуму, следам и другим признакам.\n- **Скрытность:** для попыток спрятаться считается сильно заслонённым.\n- **Атаки:** броски атаки существа совершаются с Преимуществом; броски атаки по нему — с Помехой.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-paralyzed',name:'Парализованный',description:'Недееспособен, не двигается и не говорит; попадания в пределах 5 футов становятся критическими.',details:'- **Недееспособность:** существо Недееспособно, не может двигаться и говорить.\n- **Спасброски:** автоматически проваливает спасброски Силы и Ловкости.\n- **Атаки по цели:** совершаются с Преимуществом.\n- **Критические попадания:** любое попадание атакой в пределах 5 футов считается Критическим попаданием.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-petrified',name:'Окаменевший',description:'Недееспособен и не осознаёт окружение; получает Сопротивление ко всему урону и Иммунитет к яду и болезням.',details:'- **Превращение:** существо и его немагическое снаряжение превращаются в твёрдое вещество; вес увеличивается в 10 раз, старение прекращается.\n- **Недееспособность:** существо Недееспособно, не может двигаться и говорить и не осознаёт окружение.\n- **Спасброски:** автоматически проваливает спасброски Силы и Ловкости.\n- **Атаки по цели:** совершаются с Преимуществом.\n- **Защита:** Сопротивление ко всему урону; Иммунитет к яду и болезням, а уже действующие яд или болезнь приостанавливаются.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-poisoned',name:'Отравленный',description:'Броски атаки и проверки характеристик совершаются с Помехой.',details:'- **Атаки:** броски атаки совершаются с Помехой.\n- **Проверки:** проверки характеристик совершаются с Помехой.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-prone',name:'Сбитый с ног',description:'Можно только ползти или встать; свои атаки — с Помехой.',details:'- **Перемещение:** можно только ползти, если существо не встанет. Вставание тратит половину Скорости.\n- **Свои атаки:** броски атаки совершаются с Помехой.\n- **Атаки по цели:** с Преимуществом, если атакующий в пределах 5 футов; иначе с Помехой.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-restrained',name:'Опутанный',description:'Скорость 0; свои атаки и спасброски Ловкости — с Помехой; атаки по нему — с Преимуществом.',details:'- **Скорость:** становится 0 и не получает бонусов к Скорости.\n- **Атаки:** броски атаки существа совершаются с Помехой; броски атаки по нему — с Преимуществом.\n- **Спасброски Ловкости:** совершаются с Помехой.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-stunned',name:'Ошеломлённый',description:'Недееспособен, не может двигаться и говорит запинаясь; атаки по нему — с Преимуществом.',details:'- **Недееспособность:** существо Недееспособно, не может двигаться и может говорить лишь запинаясь.\n- **Спасброски:** автоматически проваливает спасброски Силы и Ловкости.\n- **Атаки по цели:** совершаются с Преимуществом.',builtin:true,preset:'5e14'},
+  {id:'dnd-condition-unconscious',name:'Бессознательный',description:'Недееспособен, падает, не двигается и не осознаёт окружение; попадания вблизи становятся критическими.',details:'- **Недееспособность:** существо Недееспособно, не может двигаться и говорить и не осознаёт окружение.\n- **Падение:** роняет всё, что держит, и становится Сбитым с ног.\n- **Спасброски:** автоматически проваливает спасброски Силы и Ловкости.\n- **Атаки по цели:** совершаются с Преимуществом.\n- **Критические попадания:** любое попадание атакой в пределах 5 футов считается Критическим попаданием.',builtin:true,preset:'5e14'}
+];
+DND_CONDITIONS_5E24.forEach(item=>{item.preset='5e24'});
+const DND_CONDITION_PRESETS={5e14:DND_CONDITIONS_5E14,5e24:DND_CONDITIONS_5E24};
 
 function archiveSchemaVersion(data){if(!data||typeof data!=='object'||Array.isArray(data))return 0;const version=Number(data.schemaVersion);return Number.isInteger(version)&&version>=0?version:0}
     function migrateArchive(data){
@@ -40,20 +59,21 @@ function normalize(data){
   data.bestiary.forEach(normalizeCreature);
   data.rooms.forEach(r=>{if(r.journal==null)r.journal='';if(!r.initiatives||typeof r.initiatives!=='object')r.initiatives={};if(!r.combatNotes||typeof r.combatNotes!=='object')r.combatNotes={};if(!r.currentHp||typeof r.currentHp!=='object')r.currentHp={};if(!r.bonusHp||typeof r.bonusHp!=='object')r.bonusHp={};if(!Array.isArray(r.entries)){const used=new Set;r.entries=(Array.isArray(r.creatureIds)?r.creatureIds:[]).map(creatureId=>{let id=creatureId;if(used.has(id)){id=makeId();if(Object.prototype.hasOwnProperty.call(r.initiatives,creatureId))r.initiatives[id]=r.initiatives[creatureId];if(Object.prototype.hasOwnProperty.call(r.combatNotes,creatureId))r.combatNotes[id]=r.combatNotes[creatureId];if(Object.prototype.hasOwnProperty.call(r.currentHp,creatureId))r.currentHp[id]=r.currentHp[creatureId];if(Object.prototype.hasOwnProperty.call(r.bonusHp,creatureId))r.bonusHp[id]=r.bonusHp[creatureId]}used.add(id);return{id,creatureId}})}r.entries=r.entries.map(entry=>{const normalized={id:entry.id||makeId(),creatureId:entry.creatureId||null};if(!normalized.creatureId)normalized.npc=normalizeCreature(entry.npc&&typeof entry.npc==='object'?entry.npc:{name:'',description:'',hp:'',ac:'',characteristics:'',abilities:'',notes:'',tagIds:[]});return normalized});delete r.creatureIds;if(!r.combat||typeof r.combat!=='object')r.combat={active:false,round:1,turnCreatureId:null};r.combat.active=Boolean(r.combat.active);r.combat.round=Math.max(1,Math.trunc(Number(r.combat.round)||1));if(r.combat.turnCreatureId==null)r.combat.turnCreatureId=null});
   const hadLibrary=Boolean(data.library&&typeof data.library==='object'&&!Array.isArray(data.library));
-  if(!hadLibrary)data.library={syncTags:false,tags:[],conditions:[],conditionsVersion:0,artifacts:[]};
+  if(!hadLibrary)data.library={syncTags:false,tags:[],conditions:[],conditionPreset:null,conditionPresetSystemVersion:CONDITION_PRESET_SYSTEM_VERSION,artifacts:[]};
   if(typeof data.library.syncTags!=='boolean')data.library.syncTags=false;
   if(!Array.isArray(data.library.tags))data.library.tags=[];
   data.library.tags=data.library.tags.map(t=>({id:t.id||makeId(),name:String(t.name||'Тег').slice(0,30),color:validTagColor(t.color)}));
-  const hadConditions=Array.isArray(data.library.conditions),storedConditionsVersion=Math.max(0,Math.trunc(Number(data.library.conditionsVersion)||0));
-  const normalizedConditions=hadConditions?data.library.conditions.map(normalizeLibraryItem):[];
-  if(!hadConditions||storedConditionsVersion<DND_CONDITIONS_VERSION){
-    const standardIds=new Set(DND_STANDARD_CONDITIONS.map(item=>item.id)),existingById=new Map(normalizedConditions.map(item=>[item.id,item]));
-    const standard=DND_STANDARD_CONDITIONS.map(item=>{const existing=existingById.get(item.id);return normalizeLibraryItem({...item,tagIds:Array.isArray(existing?.tagIds)?[...existing.tagIds]:[]})});
-    data.library.conditions=[...standard,...normalizedConditions.filter(item=>!standardIds.has(item.id))];
-    data.library.conditionsVersion=DND_CONDITIONS_VERSION;
+  if(!Array.isArray(data.library.conditions))data.library.conditions=[];
+  data.library.conditions=data.library.conditions.map(normalizeLibraryItem);
+  const presetSystemVersion=Math.max(0,Math.trunc(Number(data.library.conditionPresetSystemVersion)||0));
+  if(presetSystemVersion<CONDITION_PRESET_SYSTEM_VERSION){
+    data.library.conditions=data.library.conditions.filter(item=>!item.builtin);
+    data.library.conditionPreset=null;
+    data.library.conditionPresetSystemVersion=CONDITION_PRESET_SYSTEM_VERSION;
+    delete data.library.conditionsVersion;
   }else{
-    data.library.conditions=normalizedConditions;
-    data.library.conditionsVersion=storedConditionsVersion;
+    data.library.conditionPreset=DND_CONDITION_PRESETS[data.library.conditionPreset]?data.library.conditionPreset:null;
+    data.library.conditionPresetSystemVersion=presetSystemVersion;
   }
   if(!Array.isArray(data.library.artifacts))data.library.artifacts=[];
   data.library.artifacts=data.library.artifacts.map(normalizeLibraryItem);
