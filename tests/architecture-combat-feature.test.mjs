@@ -22,7 +22,7 @@ assert.doesNotMatch(combat,/renderRoomBase|renderRoomWithOutsideCombat|renderRoo
 assert.doesNotMatch(combat,/changeRoomHpBase|changeRoomHp=function\(/,'HP changes should have one implementation');
 assert.doesNotThrow(()=>new Function(bundle));
 
-const logicNames=['orderedRoomCreatures','isOutsideCombat','combatRoomCreatures','ensureCombatTurn','startCombat','nextCombatTurn','endCombat'];
+const logicNames=['cloneCombatState','orderedRoomCreatures','isOutsideCombat','combatRoomCreatures','ensureCombatTurn','roomConditionIds','tickCombatConditionDurations','startCombat','nextCombatTurn','endCombat'];
 const logic=combat.split('\n').filter(line=>logicNames.some(name=>line.trimStart().startsWith('function '+name+'('))).join('\n');
 const room={entries:[{id:'a'},{id:'b'},{id:'c'}],initiatives:{a:12,b:12,c:0},combat:{active:false,round:1,turnCreatureId:null}};
 let saves=0,renders=0;
