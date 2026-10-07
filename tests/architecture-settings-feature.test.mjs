@@ -28,6 +28,10 @@ for(const symbol of [
 }
 
 assert.match(events,/data-settings-section/);
+assert.match(events,/scrollToSettingsSection/);
+assert.match(events,/updateSettingsNavFromScroll/);
 assert.match(events,/interface-density/);
+assert.match(feature,/settings-page-section/);
+assert.match(feature,/settings-panels/);
 
 console.log('Settings feature architecture split tests passed');
