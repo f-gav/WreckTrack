@@ -125,15 +125,20 @@ test('mobile bestiary handles many long cards and detail view',async({page})=>{
   expect(box.x+box.width).toBeLessThanOrEqual((await page.evaluate(()=>innerWidth))+1);
 });
 
-test('mobile settings tabs remain reachable by horizontal scrolling',async({page})=>{
+test('mobile settings use one scrollable page with anchor navigation',async({page})=>{
   await page.goto('/');
   await page.getByRole('button',{name:'Настройки'}).click();
   const nav=page.locator('.settings-nav');
   await expect(nav).toBeVisible();
   await expect(page.locator('.settings-nav-button')).toHaveCount(6);
-  await page.locator('.settings-nav-button').last().scrollIntoViewIfNeeded();
-  await page.locator('.settings-nav-button').last().click();
-  await expect(page.locator('.settings-nav-button').last()).toHaveClass(/current/);
+  await expect(page.locator('.settings-page-section')).toHaveCount(6);
+  for(const id of ['interface','bestiary','library','rooms','journal','data'])await expect(page.locator('#settings-'+id)).toBeAttached();
+  const dataButton=page.locator('[data-settings-section="data"]');
+  await dataButton.scrollIntoViewIfNeeded();
+  await dataButton.click();
+  await expect(dataButton).toHaveClass(/current/);
+  await expect(page.locator('#settings-data')).toBeInViewport();
+  await expect(page.locator('#settings-interface')).toBeAttached();
   await expectNoHorizontalOverflow(page);
 });
 
