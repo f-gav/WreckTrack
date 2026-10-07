@@ -27,6 +27,9 @@ test('alternative create mode turns new creature and artifact forms into card-st
   expect(pageNavBox).toBeTruthy();
   expect(actionsBox).toBeTruthy();
   expect(pageNavBox.y+pageNavBox.height).toBeLessThanOrEqual(actionsBox.y+1);
+  const pageNavY=pageNavBox.y;
+  await page.locator('.creature-dialog-scroll').evaluate(node=>{node.scrollTop=node.scrollHeight});
+  await expect.poll(async()=>Math.round((await page.locator('.alternative-create-page-nav').boundingBox()).y)).toBe(Math.round(pageNavY));
   await expect(page.locator('#creature-inventory')).not.toBeVisible();
   await page.locator('#creature-name').fill('Альтернативный герой');
   await page.locator('#creature-description').fill('Проверка карточного редактора');
