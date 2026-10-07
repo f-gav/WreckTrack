@@ -58,6 +58,8 @@ test('alternative create mode does not replace existing edit forms',async({page}
   await page.locator('#creature-name').fill('Редактируемый');
   await page.locator('#creature-form').getByRole('button',{name:'Сохранить'}).click();
   const card=page.locator('.bestiary-card').filter({hasText:'Редактируемый'});
-  await card.getByRole('button',{name:/Изменить:/}).click();
+  await card.click();
+  await expect(page.locator('#detail-dialog')).toBeVisible();
+  await page.locator('#detail-dialog [data-edit-creature]').click();
   await expect(page.locator('#creature-form')).not.toHaveClass(/alternative-create-mode/);
 });
