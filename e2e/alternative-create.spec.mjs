@@ -7,6 +7,7 @@ test.beforeEach(async({page})=>{
 
 test('alternative create mode turns new creature and artifact forms into card-style editors',async({page})=>{
   await page.goto('/');
+  await expect(page.locator('#back-home')).toHaveCount(0);
   await page.getByRole('button',{name:'Настройки'}).click();
   const toggle=page.locator('#alternative-create');
   await expect(toggle).not.toBeChecked();
@@ -18,7 +19,14 @@ test('alternative create mode turns new creature and artifact forms into card-st
   const creatureForm=page.locator('#creature-form');
   await expect(creatureForm).toHaveClass(/alternative-create-mode/);
   await expect(page.locator('.alternative-create-sidebar')).toBeVisible();
+  await expect(page.locator('label[for="creature-hp"]')).toHaveText('ХП');
+  await expect(page.locator('#creature-description')).toHaveAttribute('placeholder','Например, Гоблин - Колдун');
   await expect(page.locator('.detail-page-button[data-alt-create-page="1"]')).toHaveClass(/current/);
+  const pageNavBox=await page.locator('.alternative-create-page-nav').boundingBox();
+  const actionsBox=await page.locator('#creature-form .creature-dialog-actions').boundingBox();
+  expect(pageNavBox).toBeTruthy();
+  expect(actionsBox).toBeTruthy();
+  expect(pageNavBox.y+pageNavBox.height).toBeLessThanOrEqual(actionsBox.y+1);
   await expect(page.locator('#creature-inventory')).not.toBeVisible();
   await page.locator('#creature-name').fill('Альтернативный герой');
   await page.locator('#creature-description').fill('Проверка карточного редактора');
