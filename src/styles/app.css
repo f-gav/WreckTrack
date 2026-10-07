@@ -445,6 +445,8 @@
     .alternative-create-sidebar .detail-toc-title{padding-left:9px;border-left:0}
     .alternative-create-nav-link{width:100%;min-width:0;padding:7px 9px;border:0;border-radius:0 7px 7px 0;background:transparent;color:#c9c6cd;cursor:pointer;text-align:left;display:grid;grid-template-columns:25px minmax(0,1fr);align-items:start;gap:4px;font-size:14px;line-height:1.25}
     .alternative-create-nav-link:hover{color:var(--paper);background:rgba(var(--accent-rgb),.1)}
+    .alternative-create-nav-mark{color:var(--gold);font-weight:800}
+    .alternative-create-nav-text{overflow:hidden;text-overflow:ellipsis}
     #creature-form.alternative-create-mode[data-alt-create-page="1"] .alt-create-inventory,
     #creature-form.alternative-create-mode[data-alt-create-page="1"] [data-alt-create-nav-page="2"]{display:none}
     #creature-form.alternative-create-mode[data-alt-create-page="2"] .alt-create-stats,
