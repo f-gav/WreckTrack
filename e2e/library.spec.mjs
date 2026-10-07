@@ -139,7 +139,7 @@ test('Library tag synchronization merges Library tags into Bestiary tags',async(
   await page.locator('#tags-form').getByRole('button',{name:'Сохранить теги'}).click();
 
   await page.locator('.topbar-settings-button').click();
-  await page.locator('[data-settings-section="library"]').click();
+  await page.locator('[data-settings-section="bestiary"]').click();
   const toggle=page.locator('#library-sync-tags');
   await expect(toggle).not.toBeChecked();
   await page.locator('label[for="library-sync-tags"]').click();
