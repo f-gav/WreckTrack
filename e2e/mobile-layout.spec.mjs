@@ -130,15 +130,17 @@ test('mobile settings use one scrollable page with anchor navigation',async({pag
   await page.getByRole('button',{name:'Настройки'}).click();
   const nav=page.locator('.settings-nav');
   await expect(nav).toBeVisible();
-  await expect(page.locator('.settings-nav-button')).toHaveCount(6);
-  await expect(page.locator('.settings-page-section')).toHaveCount(6);
-  for(const id of ['interface','bestiary','library','rooms','journal','data'])await expect(page.locator('#settings-'+id)).toBeAttached();
+  await expect(page.locator('.settings-nav-button')).toHaveCount(5);
+  await expect(page.locator('.settings-page-section')).toHaveCount(5);
+  for(const id of ['interface','bestiary','rooms','journal','data'])await expect(page.locator('#settings-'+id)).toBeAttached();
   const dataButton=page.locator('[data-settings-section="data"]');
   await dataButton.scrollIntoViewIfNeeded();
   await dataButton.click();
   await expect(dataButton).toHaveClass(/current/);
   await expect(page.locator('#settings-data')).toBeInViewport();
   await expect(page.locator('#settings-interface')).toBeAttached();
+  await expect(page.locator('[data-settings-section="bestiary"]')).toHaveText('Бестиарий и Библиотека');
+  await expect(page.getByText('Синхронизировать Тэги с Библиотекой',{exact:true})).toBeAttached();
   await expectNoHorizontalOverflow(page);
 });
 
