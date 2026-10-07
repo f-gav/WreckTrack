@@ -43,6 +43,9 @@ assert.match(html,/data-settings-anchor="interface"/);
 assert.match(html,/data-settings-anchor="bestiary"/);
 assert.match(html,/<h2>Бестиарий и Библиотека<\/h2>/);
 assert.match(html,/Синхронизировать Тэги с Библиотекой/);
+assert.match(html,/Использовать один общий набор тегов для существ и материалов Библиотеки\.<\/span>/);
+assert.doesNotMatch(html,/При отключении Библиотека получает отдельную копию текущих тегов/);
+assert.match(html,/Альтернативное меню создания/);
 assert.doesNotMatch(html,/Синхронизировать Тэги с Бестиарием/);
 assert.match(html,/data-settings-anchor="rooms"/);
 assert.match(html,/data-settings-anchor="journal"/);
@@ -59,6 +62,7 @@ for(const id of [
   'bestiary-advanced-search',
   'bold-as-section',
   'library-sync-tags',
+  'alternative-create',
   'combat-tracking',
   'bonus-hp-enabled',
   'journal-enabled',
