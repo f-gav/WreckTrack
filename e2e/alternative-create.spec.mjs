@@ -18,7 +18,7 @@ test('alternative create mode turns new creature and artifact forms into card-st
   const creatureForm=page.locator('#creature-form');
   await expect(creatureForm).toHaveClass(/alternative-create-mode/);
   await expect(page.locator('.alternative-create-sidebar')).toBeVisible();
-  await expect(page.locator('[data-alt-create-page="1"]')).toHaveClass(/current/);
+  await expect(page.locator('.detail-page-button[data-alt-create-page="1"]')).toHaveClass(/current/);
   await expect(page.locator('#creature-inventory')).not.toBeVisible();
   await page.locator('#creature-name').fill('Альтернативный герой');
   await page.locator('#creature-description').fill('Проверка карточного редактора');
