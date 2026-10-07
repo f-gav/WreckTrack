@@ -14,12 +14,12 @@ assert.match(html,/\+'\[ \] '\+selected\+/);
 assert.match(html,/area\.setRangeText\('\[ \] '\+selected/);
 assert.match(html,/start\+4\+selected\.length/);
 
-// Settings moved out of the text nav and into a square button beside the account control.
+// Settings stay in the square button beside the account control, with a lighter gear stroke.
 assert.doesNotMatch(html,/<button class="topnav-button" data-go="settings">Настройки<\/button>/);
 assert.match(html,/class="topbar-settings-button"[^>]*data-go="settings"/);
 assert.match(html,/\.topbar-settings-button\{/);
 assert.match(html,/\.topbar-settings-button svg\{/);
-assert.match(html,/stroke-width:2\.4/);
+assert.match(html,/stroke-width:1\.65/);
 
 
 // The actually-used room renderer must use preview/edit mode too.
