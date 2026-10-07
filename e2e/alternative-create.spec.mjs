@@ -44,7 +44,8 @@ test('alternative create mode turns new creature and artifact forms into card-st
   await libraryForm.getByRole('button',{name:'Сохранить'}).click();
   await expect(page.locator('.library-card').filter({hasText:'Камень ветра'})).toBeVisible();
 
-  await page.getByRole('button',{name:'Состояния'}).click();
+  await page.getByRole('button',{name:'Библиотека'}).first().click();
+  await page.getByRole('button',{name:/Состояния/}).click();
   await page.locator('#grid-new-library-item').click();
   await expect(page.locator('#library-item-form')).not.toHaveClass(/alternative-create-mode/);
 });
