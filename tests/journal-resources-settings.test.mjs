@@ -38,7 +38,13 @@ assert.equal(context.journalResourceTokens('Вдохновение: [ ]').length
 // Settings are split into the requested sections.
 assert.match(html,/tabs=\[\['interface','Интерфейс'\],\['bestiary','Бестиарий'\],\['library','Библиотека'\],\['rooms','Комнаты'\],\['journal','Журнал'\],\['data','Данные'\]\]/);
 assert.match(html,/data-settings-section=/);
-assert.match(html,/settingsSection=section\.dataset\.settingsSection;renderSettings\(\)/);
+assert.match(html,/scrollToSettingsSection\(section\.dataset\.settingsSection\)/);
+assert.match(html,/data-settings-anchor="interface"/);
+assert.match(html,/data-settings-anchor="bestiary"/);
+assert.match(html,/data-settings-anchor="library"/);
+assert.match(html,/data-settings-anchor="rooms"/);
+assert.match(html,/data-settings-anchor="journal"/);
+assert.match(html,/data-settings-anchor="data"/);
 assert.doesNotMatch(html,/const renderSettingsBase=renderSettings/);
 assert.match(html,/class="topbar-settings-button"[^>]*data-go="settings"/);
 const homeStart=html.indexOf('function renderHome');
