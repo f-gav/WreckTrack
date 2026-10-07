@@ -36,12 +36,14 @@ assert.deepEqual(
 assert.equal(context.journalResourceTokens('Вдохновение: [ ]').length,1);
 
 // Settings are split into the requested sections.
-assert.match(html,/SETTINGS_SECTIONS=\[\['interface','Интерфейс'\],\['bestiary','Бестиарий'\],\['library','Библиотека'\],\['rooms','Комнаты'\],\['journal','Журнал'\],\['data','Данные'\]\]/);
+assert.match(html,/SETTINGS_SECTIONS=\[\['interface','Интерфейс'\],\['bestiary','Бестиарий и Библиотека'\],\['rooms','Комнаты'\],\['journal','Журнал'\],\['data','Данные'\]\]/);
 assert.match(html,/data-settings-section=/);
 assert.match(html,/scrollToSettingsSection\(section\.dataset\.settingsSection\)/);
 assert.match(html,/data-settings-anchor="interface"/);
 assert.match(html,/data-settings-anchor="bestiary"/);
-assert.match(html,/data-settings-anchor="library"/);
+assert.match(html,/<h2>Бестиарий и Библиотека<\/h2>/);
+assert.match(html,/Синхронизировать Тэги с Библиотекой/);
+assert.doesNotMatch(html,/Синхронизировать Тэги с Бестиарием/);
 assert.match(html,/data-settings-anchor="rooms"/);
 assert.match(html,/data-settings-anchor="journal"/);
 assert.match(html,/data-settings-anchor="data"/);

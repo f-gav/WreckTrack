@@ -30,9 +30,10 @@ for(const symbol of ['function renderLibrary(','function renderLibrarySection(',
 assert.match(library,/Предустановить состояния 5е14/);
 assert.match(library,/Предустановить состояния 5е24/);
 assert.match(library,/Предустановить 5е14 и 5е24/);
-assert.match(settings,/\['library','Библиотека'\]/);
+assert.match(settings,/\['bestiary','Бестиарий и Библиотека'\]/);
 assert.match(settings,/id="library-sync-tags"/);
-assert.match(settings,/Синхронизировать Тэги с Бестиарием/);
+assert.match(settings,/Синхронизировать Тэги с Библиотекой/);
+assert.doesNotMatch(settings,/Синхронизировать Тэги с Бестиарием/);
 
 const rooms=index.indexOf('data-go="rooms"'),libraryNav=index.indexOf('data-go="library"'),tokenator=index.indexOf('data-go="tokenator"');
 assert.ok(rooms>=0&&libraryNav>rooms&&tokenator>libraryNav,'Library must be third in top navigation');
