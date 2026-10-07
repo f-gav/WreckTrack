@@ -12,7 +12,7 @@ for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)){
 // Settings + advanced Bestiary search.
 assert.match(html,/BESTIARY_ADVANCED_SEARCH_KEY='initiative-bestiary-advanced-search-v1'/);
 assert.match(html,/id="bestiary-advanced-search"/);
-assert.match(html,/bestiaryAdvancedSearch,journal/);
+assert.match(html,/bestiaryAdvancedSearch,alternativeCreate:alternativeCreateEnabled,journal/);
 assert.match(html,/c\.characteristics,c\.abilities,c\.notes,c\.inventory,\.\.\.tagNames/);
 
 const searchStart=html.indexOf('function creatureMatchesQuery');
@@ -80,6 +80,9 @@ const duplicateSrc=html.slice(duplicateStart,duplicateEnd);
 assert.match(html,/function cloudSettings\(\)\{return\{[^}]*bestiaryAdvancedSearch/);
 assert.match(html,/applyBestiaryAdvancedSearch\(typeof settings\.bestiaryAdvancedSearch==='boolean'/);
 assert.match(html,/localStorage\.setItem\(BESTIARY_ADVANCED_SEARCH_KEY,String\(bestiaryAdvancedSearch\)\)/);
+assert.match(html,/ALTERNATIVE_CREATE_KEY='initiative-alternative-create-v1'/);
+assert.match(html,/applyAlternativeCreate\(typeof settings\.alternativeCreate==='boolean'/);
+assert.match(html,/localStorage\.setItem\(ALTERNATIVE_CREATE_KEY,String\(alternativeCreateEnabled\)\)/);
 
 // Import preview and three strategies.
 assert.match(html,/id="import-preview-dialog"/);
