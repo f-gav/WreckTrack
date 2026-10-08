@@ -7,7 +7,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dist=path.join(root,'dist');
 const html=fs.readFileSync(path.join(dist,'index.html'),'utf8');
 const sw=fs.readFileSync(path.join(dist,'service-worker.js'),'utf8');
-const manifest=JSON.parse(fs.readFileSync(path.join(dist,'manifest.webmanifest'),'utf8');
+const manifest=JSON.parse(fs.readFileSync(path.join(dist,'manifest.webmanifest'),'utf8'));
 
 assert.doesNotMatch(html,/<style[\s>]/i,'dist/index.html must not contain the application stylesheet inline');
 const css=html.match(/<link rel="stylesheet" href="(\.\/assets\/app\.[0-9a-f]{12}\.css)">/);
