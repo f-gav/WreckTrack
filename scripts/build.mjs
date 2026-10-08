@@ -22,6 +22,7 @@ const css=fs.readFileSync(path.join(src,'styles','app.css'),'utf8');
 const appParts=JSON.parse(fs.readFileSync(path.join(src,'app-parts.json'),'utf8'));
 const js=appParts.map(file=>fs.readFileSync(path.join(src,file),'utf8')).join('\n');
 const swTemplate=fs.readFileSync(path.join(src,'service-worker.js'),'utf8');
+const manifest=fs.readFileSync(path.join(src,'manifest.webmanifest'),'utf8');
 
 const cssHash=hashText(css);
 const jsHash=hashText(js);
@@ -49,6 +50,7 @@ fs.writeFileSync(path.join(assets,jsName),js);
 
 const outHtml=template.replaceAll('{{APP_CSS}}',cssRel).replaceAll('{{APP_JS}}',jsRel);
 fs.writeFileSync(path.join(dist,'index.html'),outHtml);
+fs.writeFileSync(path.join(dist,'manifest.webmanifest'),manifest);
 for(const route of directRoutes){
   const routeDir=path.join(dist,route);
   fs.rmSync(routeDir,{recursive:true,force:true});
@@ -58,7 +60,7 @@ for(const route of directRoutes){
 }
 
 const outSw=swTemplate
-  .replaceAll('{{CACHE_NAME}}','wreckage-static-'+buildId)
+  .replaceAll('{{CACHE_NAME}}','wrecktrack-static-'+buildId)
   .replaceAll('{{APP_CSS}}',cssRel)
   .replaceAll('{{APP_JS}}',jsRel);
 fs.writeFileSync(path.join(dist,'service-worker.js'),outSw);
