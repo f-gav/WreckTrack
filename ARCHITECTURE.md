@@ -7,7 +7,8 @@ WreckTrack remains a framework-free, local-first static application.
 Do not hand-edit generated application code inside `dist/index.html` or `dist/assets/app.*`.
 
 - `src/index.html` — HTML shell/template.
-- `src/styles/app.css` — application stylesheet.
+- `src/style-parts.json` — deterministic stylesheet concatenation order.
+- `src/styles/*.css` — focused stylesheet modules; the build concatenates them without changing cascade order.
 - `src/app-parts.json` — deterministic runtime concatenation order.
 - `src/ui/core.js` — small shared UI helpers.
 - `src/ui/markdown.js` — shared Markdown rendering/editing helpers.
@@ -37,6 +38,7 @@ Do not hand-edit generated application code inside `dist/index.html` or `dist/as
 - `src/features/data-events.js` — backup file selection wiring.
 - `src/app.js` — application state, navigation, ordered registration calls and bootstrap.
 - `src/service-worker.js` — service-worker template.
+- `src/manifest.webmanifest` — WreckTrack PWA manifest source.
 - `scripts/build.mjs` — deterministic build into `dist`.
 - `tests/` — regression coverage against source files.
 - `dist/` — deploy output plus static binary assets.
@@ -50,7 +52,7 @@ npm ci
 npm run check
 ```
 
-The build concatenates source parts in declared order, writes content-hashed CSS/JS assets, and injects their names into `dist/index.html` and the service worker.
+The build concatenates JavaScript and CSS source parts in declared order, writes content-hashed CSS/JS assets, copies the WreckTrack manifest, and injects hashed asset names into `dist/index.html` and the service worker.
 
 ## Architecture stage 2
 
