@@ -88,7 +88,6 @@ test('artifacts can be assigned to creatures and appear above inventory on page 
   await expect(page.locator('.detail-inventory-markdown')).toContainText('Верёвка');
 
   await page.getByRole('button',{name:'Управлять артефактами'}).click();
-  const assignedArtifact=page.locator('#creature-artifact-checks input').filter({has:undefined});
   await page.locator('#creature-artifact-checks input[type="checkbox"]').uncheck();
   await page.locator('#creature-artifact-save').click();
   await expect(page.locator('.detail-artifacts-block')).toHaveCount(0);
