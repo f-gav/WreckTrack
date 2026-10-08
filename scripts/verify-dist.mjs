@@ -7,6 +7,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dist=path.join(root,'dist');
 const html=fs.readFileSync(path.join(dist,'index.html'),'utf8');
 const sw=fs.readFileSync(path.join(dist,'service-worker.js'),'utf8');
+const manifest=JSON.parse(fs.readFileSync(path.join(dist,'manifest.webmanifest'),'utf8');
 
 assert.doesNotMatch(html,/<style[\s>]/i,'dist/index.html must not contain the application stylesheet inline');
 const css=html.match(/<link rel="stylesheet" href="(\.\/assets\/app\.[0-9a-f]{12}\.css)">/);
@@ -37,8 +38,10 @@ for(const route of ['rooms','bestiary','library','tokenator','settings']){
   assert.ok(routeHtml.includes(js[1]),'direct route JS hash mismatch: '+route);
 }
 
-assert.match(sw,/wreckage-static-[0-9a-f]{12}/);
+assert.match(sw,/wrecktrack-static-[0-9a-f]{12}/);
 assert.ok(sw.includes(css[1]),'service worker does not precache built CSS');
 assert.ok(sw.includes(js[1]),'service worker does not precache built JS');
+assert.equal(manifest.name,'WreckTrack');
+assert.equal(manifest.short_name,'WreckTrack');
 
 console.log('dist build verification passed');
