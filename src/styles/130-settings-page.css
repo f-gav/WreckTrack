@@ -1,0 +1,16 @@
+/* Settings single-page navigation */
+    .settings-panels{display:grid;gap:0}
+    .settings-page-section{min-width:0;padding:0 0 42px;margin:0 0 34px;border-bottom:1px solid var(--line);scroll-margin-top:94px}
+    .settings-page-section:last-child{margin-bottom:0;padding-bottom:18px;border-bottom:0}
+    .settings-page-section .settings-panel-head{margin-bottom:18px}
+    .settings-page-section .settings-panel-head h2{font-size:30px}
+    .settings-nav{max-height:calc(100vh - 96px);overflow:auto}
+    @media(max-width:760px){
+      .settings-layout{align-items:start}
+      .settings-nav{position:sticky;top:72px;z-index:4;max-height:none;overflow-x:auto;overflow-y:hidden;background:rgba(13,13,16,.96);backdrop-filter:blur(14px)}
+      .settings-page-section{scroll-margin-top:132px;padding-bottom:34px;margin-bottom:28px}
+      .settings-page-section .settings-panel-head h2{font-size:26px}
+    }
+
+
+    
