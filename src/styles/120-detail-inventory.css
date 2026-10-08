@@ -1,0 +1,80 @@
+/* Creature card page 2: artifacts and inventory */
+    .detail-card{position:relative}
+    .detail-card.detail-page-two{grid-template-columns:minmax(0,1fr)}
+    .detail-card.detail-page-two .detail-main{padding-bottom:88px}
+    .detail-page-nav{position:absolute;right:18px;bottom:16px;z-index:6;display:flex;align-items:center;gap:10px}
+    .detail-page-button{width:43px;height:43px;padding:0;border:2px solid var(--gold2);border-radius:50%;background:#17171c;color:var(--gold);cursor:pointer;display:grid;place-items:center;font:700 17px Georgia,serif;box-shadow:0 6px 18px rgba(0,0,0,.28)}
+    .detail-page-button:hover{border-color:var(--gold);background:rgba(var(--accent-rgb),.12)}
+    .detail-page-button.current{border-color:var(--gold);background:rgba(var(--accent-rgb),.28);color:var(--paper);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.12),0 6px 18px rgba(0,0,0,.28)}
+    .detail-inventory-main{width:100%}
+    .detail-inventory-block{margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
+    .detail-inventory-block h4{margin:0 0 12px;color:var(--gold);font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+    .detail-artifact-list{display:grid;gap:10px}
+    .detail-artifact{border:1px solid #3d3d45;border-radius:11px;background:#202127;overflow:hidden}
+    .detail-artifact summary{min-height:56px;padding:12px 15px;display:flex;align-items:center;justify-content:space-between;gap:14px;list-style:none;cursor:pointer;background:linear-gradient(180deg,#31343a,#2a2d32);color:var(--paper)}
+    .detail-artifact summary::-webkit-details-marker{display:none}
+    .detail-artifact summary:hover{background:linear-gradient(180deg,#383b42,#2f3238)}
+    .detail-artifact[open]{border-color:var(--gold2)}
+    .detail-artifact-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 20px/1.2 var(--display-font)}
+    .detail-artifact-toggle{width:24px;height:24px;flex:0 0 24px;display:grid;place-items:center;color:var(--gold);font:700 23px/1 Arial,sans-serif}
+    .detail-artifact-toggle:before{content:"+"}
+    .detail-artifact[open] .detail-artifact-toggle:before{content:"−"}
+    .detail-artifact-body{padding:16px 17px 18px;border-top:1px solid #4a4a52;background:#18191e}
+    .detail-inventory-markdown{padding:2px 1px 18px}
+    .detail-inventory-empty{margin:0;padding:18px;border:1px dashed #3d3d45;border-radius:10px;color:var(--muted);text-align:center}
+    #artifact-assignment-dialog{width:min(92vw,620px)}
+    .artifact-assignment-list{max-height:min(52vh,500px);overflow:auto;margin-top:12px}
+    .artifact-assignment-row{align-items:center}
+    .artifact-assignment-copy{min-width:0;display:grid;gap:3px}
+    .artifact-assignment-copy strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--paper)}
+    .artifact-assignment-copy small{color:var(--muted);font-size:12px}
+    @media(max-width:800px){
+      .detail-card.detail-page-two{display:flex;flex-direction:column}
+      .detail-page-nav{right:14px;bottom:12px}
+      .detail-page-button{width:39px;height:39px;font-size:15px}
+      .detail-card.detail-page-two .detail-main{padding-bottom:76px}
+      .detail-artifact-name{font-size:18px}
+    }
+    @media(max-width:430px){
+      .detail-page-nav{right:10px;bottom:10px;gap:7px}
+      .detail-page-button{width:36px;height:36px;font-size:14px}
+      .detail-inventory-block{margin-top:22px;padding-top:15px}
+      .detail-artifact summary{min-height:50px;padding:10px 12px}
+      .detail-artifact-body{padding:13px 12px 15px}
+    }
+
+
+    /* Artifact polish: keep section navigation on both creature-card pages. */
+    .detail-card.detail-page-two{grid-template-columns:minmax(0,1fr) 280px}
+    .detail-card.detail-page-two .detail-main{padding-bottom:30px}
+    .detail-toc{overflow:hidden;display:flex;flex-direction:column}
+    .detail-toc-scroll{min-height:0;flex:1 1 auto;overflow:auto}
+    .detail-page-nav{position:static;right:auto;bottom:auto;z-index:auto;width:100%;flex:0 0 auto;justify-content:center;margin-top:18px;padding-top:16px}
+    .detail-page-button{font-family:var(--display-font)!important}
+    .detail-artifact-body .detail-md-task input:not(:disabled){cursor:pointer}
+    .detail-artifact-body button.detail-md-resource-pip{cursor:pointer}
+    @media(max-width:800px){
+      .detail-card.detail-page-two{display:flex;flex-direction:column}
+      .detail-card.detail-page-two .detail-main{padding-bottom:22px}
+      .detail-page-nav{right:auto;bottom:auto;margin-top:10px;padding-top:10px}
+    }
+    @media(max-width:700px){
+      .detail-toc{overflow:hidden}
+      .detail-toc-scroll{overflow:auto}
+      .detail-page-nav{display:flex;justify-content:center}
+    }
+    @media(max-width:430px){
+      .detail-page-nav{right:auto;bottom:auto;gap:7px}
+    }
+
+
+    
+    #creature-artifact-dialog{width:min(92vw,660px)}
+    .detail-artifact-manage{font:500 24px/1 Arial,sans-serif}
+    .creature-artifact-picker{max-height:min(54vh,520px);overflow:auto;display:grid;gap:7px;margin-top:12px;padding-right:3px}
+    .creature-artifact-option{display:flex;align-items:flex-start;gap:10px;padding:10px 11px;border:1px solid var(--line);border-radius:12px;background:#111115;cursor:pointer}
+    .creature-artifact-option:hover{border-color:var(--gold2)}
+    .creature-artifact-option input{width:18px;height:18px;margin-top:2px;accent-color:var(--gold);flex:0 0 auto}
+    .creature-artifact-option-copy{min-width:0;display:grid;gap:2px}
+    .creature-artifact-option-copy strong{color:var(--paper);font-weight:600}
+    .creature-artifact-option-copy small{color:var(--muted);line-height:1.3}

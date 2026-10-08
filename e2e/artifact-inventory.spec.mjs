@@ -45,22 +45,19 @@ test('artifacts can be assigned to creatures and appear above inventory on page 
   await page.locator('#library-item-details').fill('## Солнечный выпад\nНаносит дополнительный урон светом.\n\n**Сияние.** Освещает область вокруг владельца.');
   await page.locator('#library-item-form').getByRole('button',{name:'Сохранить'}).click();
 
-  const artifactCard=page.locator('.library-card').filter({hasText:'Копьё Рассвета'});
-  await artifactCard.getByRole('button',{name:/Добавить Копьё Рассвета существу/}).click();
-  await expect(page.locator('#artifact-assignment-dialog')).toBeVisible();
-  await page.locator('#artifact-assignment-checks').getByText('Дон Кихот',{exact:true}).click();
-  await page.locator('#artifact-assignment-save').click();
-
   await page.getByRole('button',{name:'Бестиарий'}).first().click();
   await page.locator('.bestiary-card').filter({hasText:'Дон Кихот'}).click();
+  await page.locator('[data-detail-page="2"]').click();
+  await page.getByRole('button',{name:'Управлять артефактами'}).click();
+  await expect(page.locator('#creature-artifact-dialog')).toBeVisible();
+  await expect(page.locator('#creature-artifact-checks')).toContainText('Копьё Рассвета');
+  await page.locator('#creature-artifact-checks').getByText('Копьё Рассвета',{exact:true}).click();
+  await page.locator('#creature-artifact-save').click();
   await expect(page.locator('#detail-dialog')).toBeVisible();
   await expect(page.locator('.detail-top h3')).toHaveText('Дон Кихот');
   await expect(page.locator('.detail-description')).toHaveText('Честный авантюрист');
-  await expect(page.locator('.detail-stat')).toHaveCount(2);
-  await expect(page.getByText('Копьё Рассвета',{exact:true})).toHaveCount(0);
-
-  await page.locator('[data-detail-page="2"]').click();
   await expect(page.locator('.detail-card')).toHaveClass(/detail-page-two/);
+  await expect(page.locator('.detail-stat')).toHaveCount(0);
   await expect(page.locator('.detail-top h3')).toHaveText('Дон Кихот');
   await expect(page.locator('.detail-description')).toHaveText('Честный авантюрист');
   await expect(page.locator('.detail-stat')).toHaveCount(0);
@@ -86,6 +83,13 @@ test('artifacts can be assigned to creatures and appear above inventory on page 
   await page.locator('[data-detail-page="2"]').click();
   await expect(page.locator('.detail-artifact summary')).toContainText('Копьё Рассвета');
   await expect(page.locator('.detail-inventory-markdown')).toContainText('Верёвка');
+
+  await page.getByRole('button',{name:'Управлять артефактами'}).click();
+  await page.locator('#creature-artifact-checks input[type="checkbox"]').uncheck();
+  await page.locator('#creature-artifact-save').click();
+  await expect(page.locator('.detail-artifacts-block')).toHaveCount(0);
+  await expect(page.locator('.detail-toc-link')).toHaveCount(1);
+  await expect(page.locator('.detail-toc-link')).toContainText('Инвентарь');
 });
 
 test('artifact assignment can target a room NPC',async({page})=>{
@@ -149,4 +153,15 @@ test('artifact assignment can target a room NPC',async({page})=>{
   await page.locator('.detail-artifact summary').click();
   await expect(page.locator('.detail-artifact-body [data-artifact-task]')).toBeChecked();
   await expect(page.locator('.detail-artifact-body [data-artifact-resource]').nth(1)).toHaveAttribute('aria-pressed','true');
+
+  await page.getByRole('button',{name:'Управлять артефактами'}).click();
+  await page.locator('#creature-artifact-checks input[type="checkbox"]').uncheck();
+  await page.locator('#creature-artifact-save').click();
+  await expect(page.locator('.detail-artifacts-block')).toHaveCount(0);
+  await page.waitForTimeout(350);
+  const afterRemove=await page.evaluate(()=>JSON.parse(localStorage.getItem('gm-archive-v2')));
+  const removedRoom=afterRemove.rooms.find(room=>room.name==='Таверна');
+  const removedEntry=removedRoom.entries.find(entry=>entry.npc?.name==='Хозяин таверны');
+  expect(removedEntry.npc.artifactIds).toEqual([]);
+  expect(removedRoom.artifactStates?.[removedEntry.id]).toBeUndefined();
 });
