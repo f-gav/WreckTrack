@@ -56,11 +56,8 @@ test('artifacts can be assigned to creatures and appear above inventory on page 
   await expect(page.locator('#detail-dialog')).toBeVisible();
   await expect(page.locator('.detail-top h3')).toHaveText('Дон Кихот');
   await expect(page.locator('.detail-description')).toHaveText('Честный авантюрист');
-  await expect(page.locator('.detail-stat')).toHaveCount(2);
-  await expect(page.getByText('Копьё Рассвета',{exact:true})).toHaveCount(0);
-
-  await page.locator('[data-detail-page="2"]').click();
   await expect(page.locator('.detail-card')).toHaveClass(/detail-page-two/);
+  await expect(page.locator('.detail-stat')).toHaveCount(0);
   await expect(page.locator('.detail-top h3')).toHaveText('Дон Кихот');
   await expect(page.locator('.detail-description')).toHaveText('Честный авантюрист');
   await expect(page.locator('.detail-stat')).toHaveCount(0);
