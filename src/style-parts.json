@@ -1,0 +1,17 @@
+[
+  "styles/00-typography-theme.css",
+  "styles/10-core-shell.css",
+  "styles/20-rooms-detail.css",
+  "styles/30-settings-markdown.css",
+  "styles/40-account-sync.css",
+  "styles/50-bestiary-data.css",
+  "styles/60-journal.css",
+  "styles/70-tokenator.css",
+  "styles/80-density.css",
+  "styles/90-responsive-polish.css",
+  "styles/100-library.css",
+  "styles/110-combat-conditions.css",
+  "styles/120-detail-inventory.css",
+  "styles/130-settings-page.css",
+  "styles/140-alternative-create.css"
+]
