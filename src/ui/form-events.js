@@ -9,6 +9,13 @@
           const bounds=dialog.getBoundingClientRect(),x=event.clientX,y=event.clientY;
           if(x>=bounds.left&&x<=bounds.right&&y>=bounds.top&&y<=bounds.bottom)return;
           event.preventDefault();
+          if(!form.checkValidity()){
+            // Some dialog implementations still dismiss after the click handler.
+            // Reopen the same DOM form to retain all unsaved input values.
+            form.reportValidity();
+            setTimeout(()=>{if(!dialog.open)dialog.showModal()},0);
+            return;
+          }
           form.requestSubmit();
         });
         // Disable native backdrop light-dismiss; Escape keeps its normal behavior.
