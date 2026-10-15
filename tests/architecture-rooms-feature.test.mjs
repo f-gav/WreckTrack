@@ -24,7 +24,8 @@ assert.doesNotThrow(()=>new Function(bundle));
 
 const entrySource=rooms.split('\n').filter(line=>/function (?:newRoomEntry|removeRoomEntry)\(/.test(line)).join('\n');
 let nextId=0;
-const context={makeId:()=>String(++nextId),CHARACTERISTICS_TEMPLATE:'template'};
+const clearedUndo=[];
+const context={makeId:()=>String(++nextId),CHARACTERISTICS_TEMPLATE:'template',clearCombatUndo:roomId=>clearedUndo.push(roomId)};
 vm.createContext(context);
 vm.runInContext(entrySource+'\nthis.newRoomEntry=newRoomEntry;this.removeRoomEntry=removeRoomEntry;',context);
 const first=context.newRoomEntry(null),second=context.newRoomEntry(null);
