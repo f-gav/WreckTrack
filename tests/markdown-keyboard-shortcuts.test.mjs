@@ -6,7 +6,7 @@ const helperSource=fs.readFileSync(new URL('../src/ui/markdown-editing.js',impor
 const eventsSource=fs.readFileSync(new URL('../src/features/journal-events.js',import.meta.url),'utf8');
 const journalSource=fs.readFileSync(new URL('../src/features/journal.js',import.meta.url),'utf8');
 const start=helperSource.indexOf('function markdownFormattingShortcut(');
-const end=helperSource.indexOf('\nfunction wrapMarkdown(',start);
+const end=helperSource.indexOf('\n',start);
 assert.ok(start>=0&&end>start,'shortcut helper is shared by Markdown editors');
 const shortcut=vm.runInNewContext(`(${helperSource.slice(start,end).trim()})`);
 for(const [code,key,expected] of [['KeyB','b','bold'],['KeyB','и','bold'],['KeyI','i','italic'],['KeyI','ш','italic'],['','и','bold'],['','ш','italic']]){
