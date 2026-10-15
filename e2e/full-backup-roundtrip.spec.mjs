@@ -27,6 +27,8 @@ test('full backup round-trip restores a deleted creature and survives reload',as
   // Simulate a destructive local edit after the backup was created.
   await page.getByRole('button',{name:'Бестиарий'}).first().click();
   const card=page.locator('.bestiary-card').filter({hasText:'Архивный страж'});
+  page.once('dialog',dialog=>dialog.accept());
+  await card.locator('.card-more-menu summary').click();
   await card.locator('[data-delete-creature]').click();
   await expect(card).toHaveCount(0);
   await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('gm-archive-v2'))?.bestiary?.some(x=>x.name==='Архивный страж'))).toBe(false);
