@@ -8,7 +8,14 @@
           if(event.target!==dialog||!dialog.open)return;
           const bounds=dialog.getBoundingClientRect(),x=event.clientX,y=event.clientY;
           if(x>=bounds.left&&x<=bounds.right&&y>=bounds.top&&y<=bounds.bottom)return;
+          event.preventDefault();
           form.requestSubmit();
+        });
+        // Browsers may light-dismiss dialogs on backdrop interaction, and Escape
+        // also requests a close. Never discard a form through either mechanism.
+        dialog.addEventListener('cancel',event=>{
+          event.preventDefault();
+          if(dialog.open)form.requestSubmit();
         });
       }
     }
