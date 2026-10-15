@@ -86,3 +86,17 @@ test('Ctrl+Z and Ctrl+Я both undo the latest combat action',async({page})=>{
   await page.evaluate(()=>document.dispatchEvent(new KeyboardEvent('keydown',{key:'я',code:'KeyZ',ctrlKey:true,bubbles:true})));
   await expect(page.locator('.initiative-row').filter({hasText:'Undo Alpha'}).locator('[data-current-hp]')).toHaveValue('20');
 });
+
+test('removing a combatant clears stale undo history without restoring deleted HP',async({page})=>{
+  await openUndoRoom(page);
+  await damageAlpha(page,5);
+  await expect(page.locator('#undo-combat')).toBeEnabled();
+  await page.getByRole('button',{name:'Убрать Undo Alpha из комнаты'}).click();
+  await expect(page.locator('.initiative-row').filter({hasText:'Undo Alpha'})).toHaveCount(0);
+  await expect(page.locator('#undo-combat')).toBeDisabled();
+  await page.keyboard.press('Control+z');
+  const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('gm-archive-v2')));
+  const room=stored.rooms.find(item=>item.id==='undo-room');
+  expect(room.entries.some(entry=>entry.id==='entry-a')).toBe(false);
+  expect(room.currentHp['entry-a']).toBeUndefined();
+});
