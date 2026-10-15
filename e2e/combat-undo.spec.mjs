@@ -95,8 +95,9 @@ test('removing a combatant clears stale undo history without restoring deleted H
   await expect(page.locator('.initiative-row').filter({hasText:'Undo Alpha'})).toHaveCount(0);
   await expect(page.locator('#undo-combat')).toBeDisabled();
   await page.keyboard.press('Control+z');
-  const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('gm-archive-v2')));
-  const room=stored.rooms.find(item=>item.id==='undo-room');
-  expect(room.entries.some(entry=>entry.id==='entry-a')).toBe(false);
-  expect(room.currentHp['entry-a']).toBeUndefined();
+  await expect.poll(async()=>{
+    const stored=await page.evaluate(()=>JSON.parse(localStorage.getItem('gm-archive-v2')));
+    const room=stored.rooms.find(item=>item.id==='undo-room');
+    return room.entries.some(entry=>entry.id==='entry-a')||Object.hasOwn(room.currentHp,'entry-a');
+  }).toBe(false);
 });
