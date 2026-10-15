@@ -54,7 +54,8 @@ vm.runInContext(html.slice(start,end)+'\nthis.journalInlineTokens=journalInlineT
 // Existing keyboard editing and save protections must remain.
 assert.match(html,/if\(e\.key==='Enter'\)/);
 assert.match(html,/e\.key==='Backspace'/);
-assert.match(html,/wrapJournalMarkdown\(e\.key\.toLowerCase\(\)==='b'\?'bold':'italic'\)/);
+assert.match(html,/const format=markdownFormattingShortcut\(e\)/);
+assert.match(html,/wrapJournalMarkdown\(format\)/);
 assert.match(html,/Есть несохранённые изменения\. Закрыть без сохранения\?/);
 assert.match(html,/requestSubmit\(\)/);
 

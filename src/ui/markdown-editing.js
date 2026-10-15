@@ -1,3 +1,6 @@
+// Resolve formatting shortcuts by physical key so Latin and Cyrillic layouts behave alike.
+function markdownFormattingShortcut(e){if(!(e.ctrlKey||e.metaKey)||e.altKey||e.shiftKey)return null;const code=String(e.code||'');if(code==='KeyB')return 'bold';if(code==='KeyI')return 'italic';const key=String(e.key||'').toLowerCase();return key==='b'||key==='и'?'bold':key==='i'||key==='ш'?'italic':null}
+
 // Shared Markdown editing controls for textarea-based editors.
 // Keep these helpers state-agnostic: feature modules decide when to invoke them.
 
