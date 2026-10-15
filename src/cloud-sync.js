@@ -14,8 +14,17 @@ let authSession=null,authBusy=false,cloudReady=false,cloudUserId=null,cloudSyncS
       if(sameJson(local,remote))return cloneJson(local);
       if(sameJson(local,base))return cloneJson(remote);
       if(sameJson(remote,base))return cloneJson(local);
-      if(local===undefined){if(remote===undefined||sameJson(remote,base))return undefined;stats.conflicts++;return cloneJson(remote)}
-      if(remote===undefined){if(sameJson(local,base))return undefined;stats.conflicts++;return cloneJson(local)}
+      if(local===undefined){
+        // An existing item deleted on this device must not be revived by a
+        // concurrent edit on another device. New remote items still survive.
+        if(base!==undefined){if(remote!==undefined&&!sameJson(remote,base))stats.conflicts++;return undefined}
+        return cloneJson(remote)
+      }
+      if(remote===undefined){
+        // Apply the same rule symmetrically for deletions made remotely.
+        if(base!==undefined){if(!sameJson(local,base))stats.conflicts++;return undefined}
+        return cloneJson(local)
+      }
       if(Array.isArray(local)&&Array.isArray(remote)){
         const idArrays=[base,local,remote].filter(Array.isArray).every(list=>list.every(item=>plainObject(item)&&item.id!=null));
         if(idArrays){const baseMap=new Map((base||[]).map(item=>[String(item.id),item])),localMap=new Map(local.map(item=>[String(item.id),item])),remoteMap=new Map(remote.map(item=>[String(item.id),item])),order=[];[local,remote,base||[]].forEach(list=>list.forEach(item=>{const id=String(item.id);if(!order.includes(id))order.push(id)}));return order.map(id=>mergeSyncValue(baseMap.get(id),localMap.get(id),remoteMap.get(id),stats)).filter(value=>value!==undefined)}
