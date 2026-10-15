@@ -13,7 +13,7 @@ const saveSource=fragment('async function saveCloudNow(){','async function conne
 const timers=[];
 const context={
   authSession:{user:{id:'user-1'}},cloudUserId:'user-1',cloudReady:true,
-  cloudSaving:false,cloudSaveQueued:false,cloudSavePromise:null,
+  cloudSaving:false,cloudSaveQueued:false,cloudSavePromise:null,cloudSyncToken:1,
   cloudSyncState:'synced',cloudPendingChanges:false,networkOnline:true,
   cloudRetryTimer:null,cloudRetryAttempt:0,cloudSaveTimer:null,
   state:{rooms:[],bestiary:[]},localMutationVersion:5,
