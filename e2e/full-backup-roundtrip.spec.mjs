@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 
 test.beforeEach(async({page})=>{
-  await page.addInitScript(()=>localStorage.clear());
+  await page.addInitScript(()=>{if(!sessionStorage.getItem('backup-test-initialized')){localStorage.clear();sessionStorage.setItem('backup-test-initialized','1')}});
   await page.route('https://cdn.jsdelivr.net/**',route=>route.abort());
 });
 
