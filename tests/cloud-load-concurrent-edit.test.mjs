@@ -15,6 +15,8 @@ let savedState;
 const ctx={
   state:initial,cloudUserId:null,cloudReady:false,cloudSyncState:'local',cloudSyncToken:0,
   cloudPendingChanges:false,networkOnline:true,localMutationVersion:0,
+  cloudSaving:false,cloudSavePromise:null,cloudSaveQueued:false,cloudSaveTimer:null,
+  clearTimeout:()=>{},clearCloudRetry:()=>{},
   syncedUserId:()=>'',cloneJson:x=>JSON.parse(JSON.stringify(x)),
   cloudSettings:()=>({font:'georgia'}),
   fetchCloudArchive:()=>pending,loadCloudBase:async()=>null,
