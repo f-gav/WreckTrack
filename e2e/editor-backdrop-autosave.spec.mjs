@@ -29,7 +29,7 @@ test('creature editor saves creation and edits on accidental backdrop click',asy
   await expect(page.locator('#creature-dialog')).not.toBeVisible();
   await expect.poll(async()=>page.evaluate(()=>{
     const data=JSON.parse(localStorage.getItem('gm-archive-v2'));
-    return data.bestiary.find(x=>x.name==='Страж чернил')?.abilities;
+    return data?.bestiary?.find(x=>x.name==='Страж чернил')?.abilities;
   })).toBe('*Изменённая способность*');
 });
 
