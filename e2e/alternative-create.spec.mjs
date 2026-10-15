@@ -61,7 +61,7 @@ test('alternative create mode turns new creature and artifact forms into card-st
   await expect(page.locator('#library-item-form')).not.toHaveClass(/alternative-create-mode/);
 });
 
-test('alternative create mode does not replace existing edit forms',async({page})=>{
+test('alternative editor also handles existing creature and artifact edits',async({page})=>{
   await page.addInitScript(()=>localStorage.setItem('initiative-alternative-create-v1','true'));
   await page.goto('/');
   await page.getByRole('button',{name:'Бестиарий'}).first().click();
@@ -72,5 +72,23 @@ test('alternative create mode does not replace existing edit forms',async({page}
   await card.click();
   await expect(page.locator('#detail-dialog')).toBeVisible();
   await page.locator('#detail-dialog [data-edit-creature]').click();
-  await expect(page.locator('#creature-form')).not.toHaveClass(/alternative-create-mode/);
+  await expect(page.locator('#creature-form')).toHaveClass(/alternative-create-mode/);
+  await expect(page.locator('.alternative-create-sidebar')).toBeVisible();
+  await expect(page.locator('#creature-name')).toHaveValue('Редактируемый');
+  await page.locator('#creature-name').fill('Редактируемый герой');
+  await page.locator('#creature-form').getByRole('button',{name:'Сохранить'}).click();
+  await expect(page.locator('.bestiary-card').filter({hasText:'Редактируемый герой'})).toBeVisible();
+
+  await page.getByRole('button',{name:'Библиотека'}).first().click();
+  await page.getByRole('button',{name:/Артефакты/}).click();
+  await page.locator('#grid-new-library-item').click();
+  await page.locator('#library-item-name').fill('Амулет проверки');
+  await page.locator('#library-item-form').getByRole('button',{name:'Сохранить'}).click();
+  const artifactCard=page.locator('.library-card').filter({hasText:'Амулет проверки'});
+  await artifactCard.locator('[data-edit-library-item]').click();
+  await expect(page.locator('#library-item-form')).toHaveClass(/alternative-create-mode/);
+  await expect(page.locator('#library-item-name')).toHaveValue('Амулет проверки');
+  await page.locator('#library-item-name').fill('Амулет надежды');
+  await page.locator('#library-item-form').getByRole('button',{name:'Сохранить'}).click();
+  await expect(page.locator('.library-card').filter({hasText:'Амулет надежды'})).toBeVisible();
 });
