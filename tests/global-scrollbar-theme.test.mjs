@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const parts=JSON.parse(fs.readFileSync(new URL('../src/style-parts.json',import.meta.url),'utf8'));
+assert.equal(parts.at(-1),'styles/150-global-scrollbars.css','shared scrollbars load after feature styles');
+const css=fs.readFileSync(new URL('../src/styles/150-global-scrollbars.css',import.meta.url),'utf8');
+assert.match(css,/scrollbar-color:var\(--scrollbar-thumb\) var\(--scrollbar-track\)/);
+assert.match(css,/--scrollbar-thumb:var\(--gold\)/,'uses existing live accent theme');
+assert.match(css,/--scrollbar-track:rgba\(var\(--accent-rgb\),\.07\)/);
+assert.match(css,/\*::-webkit-scrollbar\{width:9px;height:9px\}/);
+assert.match(css,/\*::-webkit-scrollbar-thumb:hover/);
+assert.doesNotMatch(css,/overflow\s*:/,'scrollbar visuals cannot change overflow behavior');
+console.log('Global themed scrollbar stylesheet integration tests passed');
