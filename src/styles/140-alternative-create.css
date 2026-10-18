@@ -47,7 +47,36 @@
     #creature-form.alternative-create-mode[data-alt-create-page="2"] .alt-create-notes,
     #creature-form.alternative-create-mode[data-alt-create-page="2"] [data-alt-create-nav-page="1"]{display:none}
     #creature-form.alternative-create-mode[data-alt-create-page="2"] .alt-create-inventory{display:grid;margin-top:26px}
-    #creature-form.alternative-create-mode .alternative-create-page-nav{margin-top:auto;padding:18px 0 2px;border-top:1px solid var(--line);flex:0 0 auto;background:#17171c}
+    /* Match both independent editor scrollers to the selected accent theme. */
+    #creature-form.alternative-create-mode .creature-dialog-scroll,
+    #creature-form.alternative-create-mode .alternative-create-sidebar-scroll,
+    #creature-form.alternative-create-mode .alt-create-section textarea,
+    #library-item-form.alternative-create-mode .creature-dialog-scroll,
+    #library-item-form.alternative-create-mode #library-item-details{
+      scrollbar-width:thin;
+      scrollbar-color:var(--gold) rgba(var(--accent-rgb),.08);
+    }
+    #creature-form.alternative-create-mode .creature-dialog-scroll::-webkit-scrollbar,
+    #creature-form.alternative-create-mode .alternative-create-sidebar-scroll::-webkit-scrollbar,
+    #creature-form.alternative-create-mode .alt-create-section textarea::-webkit-scrollbar,
+    #library-item-form.alternative-create-mode .creature-dialog-scroll::-webkit-scrollbar,
+    #library-item-form.alternative-create-mode #library-item-details::-webkit-scrollbar{width:9px;height:9px}
+    #creature-form.alternative-create-mode .creature-dialog-scroll::-webkit-scrollbar-track,
+    #creature-form.alternative-create-mode .alternative-create-sidebar-scroll::-webkit-scrollbar-track,
+    #creature-form.alternative-create-mode .alt-create-section textarea::-webkit-scrollbar-track,
+    #library-item-form.alternative-create-mode .creature-dialog-scroll::-webkit-scrollbar-track,
+    #library-item-form.alternative-create-mode #library-item-details::-webkit-scrollbar-track{background:rgba(var(--accent-rgb),.07);border-radius:100px}
+    #creature-form.alternative-create-mode .creature-dialog-scroll::-webkit-scrollbar-thumb,
+    #creature-form.alternative-create-mode .alternative-create-sidebar-scroll::-webkit-scrollbar-thumb,
+    #creature-form.alternative-create-mode .alt-create-section textarea::-webkit-scrollbar-thumb,
+    #library-item-form.alternative-create-mode .creature-dialog-scroll::-webkit-scrollbar-thumb,
+    #library-item-form.alternative-create-mode #library-item-details::-webkit-scrollbar-thumb{
+      background:var(--gold);border:2px solid #17171c;border-radius:100px;
+    }
+    #creature-form.alternative-create-mode .alternative-create-page-nav{
+      margin-top:auto;padding:16px 0 14px;border-top:1px solid var(--line);
+      flex:0 0 auto;background:transparent;
+    }
     #creature-form.alternative-create-mode .creature-dialog-actions{grid-column:1/-1;grid-row:2;background:#17171c}
 
     #library-item-dialog:has(#library-item-form.alternative-create-mode){width:min(94vw,900px);height:min(88vh,780px);max-height:none;overflow:hidden}
@@ -80,7 +109,7 @@
       #creature-form.alternative-create-mode .alternative-create-sidebar{grid-column:1;grid-row:1;position:static!important;min-height:0;height:auto;max-height:none;display:grid;grid-template-rows:auto auto;gap:10px;margin:0;padding:12px 16px;border-left:0;border-bottom:1px solid var(--line);background:#17171c;z-index:3}
       .alternative-create-sidebar-scroll{min-height:auto;flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-left:0;gap:4px;overflow:visible}
       .alternative-create-sidebar .detail-toc-title{grid-column:1/-1;padding-left:0}
-      #creature-form.alternative-create-mode .alternative-create-page-nav{position:static!important;inset:auto!important;transform:none!important;width:100%;height:auto;z-index:4;margin:0;padding:10px 0 0;border-top:1px solid var(--line);background:#17171c}
+      #creature-form.alternative-create-mode .alternative-create-page-nav{position:static!important;inset:auto!important;transform:none!important;width:100%;height:auto;z-index:4;margin:0;padding:10px 0 8px;border-top:1px solid var(--line);background:transparent}
       #creature-form.alternative-create-mode .creature-dialog-actions{grid-column:1;grid-row:3}
       #creature-form.alternative-create-mode #creature-name{font-size:34px}
       #creature-form.alternative-create-mode .alt-create-stats{flex-wrap:wrap}

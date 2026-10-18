@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const css=fs.readFileSync(new URL('../src/styles/140-alternative-create.css',import.meta.url),'utf8');
+assert.match(css,/#creature-form\.alternative-create-mode \.creature-dialog-scroll,/);
+assert.match(css,/#creature-form\.alternative-create-mode \.alternative-create-sidebar-scroll,/);
+assert.match(css,/#creature-form\.alternative-create-mode \.alt-create-section textarea,/);
+assert.match(css,/#library-item-form\.alternative-create-mode #library-item-details/);
+assert.match(css,/scrollbar-color:var\(--gold\) rgba\(var\(--accent-rgb\),\.08\)/,'scrollbar uses shared active theme variables');
+assert.match(css,/::-webkit-scrollbar-thumb\{[\s\S]*?background:var\(--gold\);/,'Chromium scroll thumb uses active accent');
+assert.match(css,/margin-top:auto;padding:16px 0 14px;border-top:1px solid var\(--line\)/,'page selector has bottom breathing room');
+assert.match(css,/margin:0;padding:10px 0 8px;border-top:1px solid var\(--line\)/,'mobile selector retains lower spacing');
+console.log('Alternative editor theme scrollbars and page nav spacing tests passed');
