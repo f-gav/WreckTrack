@@ -1,0 +1,21 @@
+/* Shared themed scrollbars: page, dialogs, drawers, lists and editor fields.
+   Accent variables are set by the existing theme switcher. */
+:root{
+  --scrollbar-track:rgba(var(--accent-rgb),.07);
+  --scrollbar-thumb:var(--gold);
+  --scrollbar-thumb-hover:var(--gold-hover,var(--gold));
+}
+*{
+  scrollbar-width:thin;
+  scrollbar-color:var(--scrollbar-thumb) var(--scrollbar-track);
+}
+*::-webkit-scrollbar{width:9px;height:9px}
+*::-webkit-scrollbar-track{background:var(--scrollbar-track);border-radius:100px}
+*::-webkit-scrollbar-thumb{
+  background:var(--scrollbar-thumb);
+  border:2px solid transparent;
+  background-clip:padding-box;
+  border-radius:100px;
+}
+*::-webkit-scrollbar-thumb:hover{background-color:var(--scrollbar-thumb-hover)}
+*::-webkit-scrollbar-corner{background:transparent}
