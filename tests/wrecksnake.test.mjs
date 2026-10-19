@@ -8,11 +8,11 @@ const styles=JSON.parse(fs.readFileSync(new URL('../src/style-parts.json',import
 assert.ok(app.indexOf('features/wrecksnake.js')<app.indexOf('app.js'));
 assert.ok(styles.includes('styles/160-wrecksnake.css'));
 const nodes=new Map(),get=id=>nodes.get(id)||null;
-const ctx={localStorage:{getItem:()=>null,setItem:()=>{}},el:get,clearInterval:()=>{},setInterval:()=>1,Date,Math,document:{addEventListener:()=>{}},window:{}};
+const ctx={authSession:null,authClient:null,localStorage:{getItem:()=>null,setItem:()=>{}},el:get,clearInterval:()=>{},setInterval:()=>1,Date,Math,document:{addEventListener:()=>{}},window:{}};
 vm.createContext(ctx);vm.runInContext(src+'\nthis.game={reset:snakeReset,tick:snakeTick,setDirection:snakeSetDirection,start:snakeStart,end:snakeEnd,getBody:()=>snakeBody,getScore:()=>snakeScore,getStatus:()=>snakeStatus,setFood:p=>snakeFood=p};',ctx);
 ctx.game.reset();
 assert.equal(ctx.game.getBody().length,3);
-ctx.game.start();
+await ctx.game.start();
 ctx.game.tick();
 assert.equal(ctx.game.getBody()[0].x,8);
 ctx.game.setDirection(-1,0);ctx.game.tick();
