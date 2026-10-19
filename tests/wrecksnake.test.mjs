@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+
+const src=fs.readFileSync(new URL('../src/features/wrecksnake.js',import.meta.url),'utf8');
+const app=JSON.parse(fs.readFileSync(new URL('../src/app-parts.json',import.meta.url),'utf8'));
+const styles=JSON.parse(fs.readFileSync(new URL('../src/style-parts.json',import.meta.url),'utf8'));
+assert.ok(app.indexOf('features/wrecksnake.js')<app.indexOf('app.js'));
+assert.ok(styles.includes('styles/160-wrecksnake.css'));
+const nodes=new Map(),get=id=>nodes.get(id)||null;
+const ctx={localStorage:{getItem:()=>null,setItem:()=>{}},el:get,clearInterval:()=>{},setInterval:()=>1,Date,Math,document:{addEventListener:()=>{}},window:{}};
+vm.createContext(ctx);vm.runInContext(src+'\nthis.game={reset:snakeReset,tick:snakeTick,setDirection:snakeSetDirection,start:snakeStart,end:snakeEnd,getBody:()=>snakeBody,getScore:()=>snakeScore,getStatus:()=>snakeStatus,setFood:p=>snakeFood=p};',ctx);
+ctx.game.reset();
+assert.equal(ctx.game.getBody().length,3);
+ctx.game.start();
+ctx.game.tick();
+assert.equal(ctx.game.getBody()[0].x,8);
+ctx.game.setDirection(-1,0);ctx.game.tick();
+assert.equal(ctx.game.getBody()[0].x,9,'reverse move is ignored');
+ctx.game.setFood({x:10,y:10});ctx.game.tick();
+assert.equal(ctx.game.getScore(),10);
+assert.equal(ctx.game.getBody().length,4);
+ctx.game.setDirection(0,-1);ctx.game.tick();
+assert.equal(ctx.game.getBody()[0].y,9);
+ctx.game.reset();
+assert.equal(ctx.game.getScore(),0);
+console.log('WreckSnake mechanics and app integration tests passed');
