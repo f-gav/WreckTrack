@@ -22,7 +22,29 @@ create table if not exists public.wrecksnake_scores (
 );
 alter table public.wrecksnake_scores enable row level security;
 revoke all on public.wrecksnake_scores from anon, authenticated;
-grant select on public.wrecksnake_scores to anon, authenticated;
-drop policy if exists wrecksnake_scores_read_all on public.wrecksnake_scores;
-create policy wrecksnake_scores_read_all on public.wrecksnake_scores for select to anon, authenticated using (true);
--- Edge Function uses SUPABASE_SERVICE_ROLE_KEY and verifies the Google-authenticated caller.
+-- Rank reads and updates go through the authenticated Edge Function; account UUIDs are not publicly exposed.
+create or replace function public.record_wrecksnake_score(p_session uuid, p_user uuid, p_score integer, p_ticks integer, p_nickname text)
+returns boolean
+language plpgsql security definer set search_path = ''
+as $
+declare claimed uuid;
+begin
+  update public.wrecksnake_sessions
+     set score=p_score, ticks=p_ticks, completed_at=now()
+   where id=p_session and user_id=p_user and completed_at is null
+   returning id into claimed;
+  if claimed is null then return false; end if;
+  insert into public.wrecksnake_scores(user_id,nickname,best_score,games_played,total_score,updated_at)
+  values(p_user,p_nickname,p_score,1,p_score,now())
+  on conflict(user_id) do update set
+    best_score=greatest(public.wrecksnake_scores.best_score,excluded.best_score),
+    games_played=public.wrecksnake_scores.games_played+1,
+    total_score=public.wrecksnake_scores.total_score+excluded.total_score,
+    nickname=excluded.nickname,
+    updated_at=now();
+  return true;
+end;
+$;
+revoke all on function public.record_wrecksnake_score(uuid,uuid,integer,integer,text) from public, anon, authenticated;
+grant execute on function public.record_wrecksnake_score(uuid,uuid,integer,integer,text) to service_role;
+-- Edge Function verifies the signed-in Google account and recomputes the game independently.
