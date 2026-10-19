@@ -14,5 +14,6 @@
   "styles/120-detail-inventory.css",
   "styles/130-settings-page.css",
   "styles/140-alternative-create.css",
-  "styles/150-global-scrollbars.css"
+  "styles/150-global-scrollbars.css",
+  "styles/160-wrecksnake.css"
 ]
