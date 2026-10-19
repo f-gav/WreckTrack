@@ -26,7 +26,7 @@ revoke all on public.wrecksnake_scores from anon, authenticated;
 create or replace function public.record_wrecksnake_score(p_session uuid, p_user uuid, p_score integer, p_ticks integer, p_nickname text)
 returns boolean
 language plpgsql security definer set search_path = ''
-as $
+as $wrecksnake_body$
 declare claimed uuid;
 begin
   update public.wrecksnake_sessions
@@ -44,7 +44,7 @@ begin
     updated_at=now();
   return true;
 end;
-$;
+$wrecksnake_body$;
 revoke all on function public.record_wrecksnake_score(uuid,uuid,integer,integer,text) from public, anon, authenticated;
 grant execute on function public.record_wrecksnake_score(uuid,uuid,integer,integer,text) to service_role;
 -- Edge Function verifies the signed-in Google account and recomputes the game independently.
