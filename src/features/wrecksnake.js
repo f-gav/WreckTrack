@@ -26,7 +26,7 @@ async function snakeStart(){
     }catch(_){if(label)label.textContent='Нет связи — играем локально'}
     finally{snakePreparing=false}
   }
-  if(!el('snake-dialog')?.open&&typeof document!=='undefined')return;
+  if(el('snake-dialog')&&!el('snake-dialog').open)return;
   snakeStatus='playing';if(!snakeStartedAt)snakeStartedAt=Date.now();
   snakeStop();snakeTimer=setInterval(snakeTick,115);snakeUpdateDisplay();snakeDraw();
 }
