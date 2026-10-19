@@ -12,8 +12,11 @@ test('WreckSnake renders and plays using the account mini-game dialog',async({pa
   await expect(page.locator('#snake-dialog')).toBeVisible();
   await expect(page.locator('#snake-score')).toHaveText('0');
   await expect(page.locator('#snake-canvas')).toBeVisible();
-  await page.locator('[data-snake-color="cyan"]').click();
-  await expect(page.locator('[data-snake-color="cyan"]')).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('#snake-colors')).toHaveCount(0);
+  await expect(page.locator('#snake-dialog .snake-layout')).toHaveCSS('display','grid');
+  const left=await page.locator('#snake-canvas').boundingBox();
+  const right=await page.locator('.snake-leaders').boundingBox();
+  if(page.viewportSize().width>760){expect(right.x).toBeGreaterThan(left.x+left.width)}else{expect(right.y).toBeGreaterThan(left.y+left.height)}
   await page.locator('#snake-start').click();
   await expect(page.locator('#snake-start')).toHaveText('Пауза');
   await page.keyboard.press('Space');

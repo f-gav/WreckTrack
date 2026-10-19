@@ -22,14 +22,14 @@ function validateGame(seed:number,moves:number[]):{valid:boolean,score:number,en
     if(!Number.isInteger(requested)||requested<0||requested>3)return{valid:false,score,ended:false};
     if(requested!==direction&&(requested+2)%4===direction)return{valid:false,score,ended:false};
     direction=requested;
-    const head={x:body[0].x+vectors[direction][0],y:body[0].y+vectors[direction][1]};
+    const head={x:(body[0].x+vectors[direction][0]+WIDTH)%WIDTH,y:(body[0].y+vectors[direction][1]+WIDTH)%WIDTH};
     const ate=Boolean(state.food&&head.x===state.food.x&&head.y===state.food.y);
     const collisions=ate?body:body.slice(0,-1);
-    if(head.x<0||head.y<0||head.x>=WIDTH||head.y>=WIDTH||collisions.some(p=>p.x===head.x&&p.y===head.y)){
+    if(collisions.some(p=>p.x===head.x&&p.y===head.y)){
       ended=true;break;
     }
     body.unshift(head);
-    if(ate){score+=10;state=foodPlacement(body,state.seed);if(!state.food){ended=true;break}}
+    if(ate){score+=1;state=foodPlacement(body,state.seed);if(!state.food){ended=true;break}}
     else body.pop();
   }
   return{valid:ended,score,ended};

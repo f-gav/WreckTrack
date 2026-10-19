@@ -1,11 +1,11 @@
 /* WreckSnake — independent mini-game; never mutates the WreckTrack archive. */
-const SNAKE_COLORS={violet:'#b995ff',mint:'#74e5bd',cyan:'#78d8ff',coral:'#ff8d9d',amber:'#ffcc79'};
-const SNAKE_COLOR_KEY='wrecksnake-color-v1',SNAKE_BEST_KEY='wrecksnake-best-v1';
+const SNAKE_BEST_KEY='wrecksnake-best-v2',SNAKE_LEGACY_BEST_KEY='wrecksnake-best-v1';
 const snakeSize=20,snakeCell=19;
 let snakeBody=[],snakeFood=null,snakeDirection=[1,0],snakeNextDirection=[1,0],snakeScore=0,
-    snakeStatus='ready',snakeTimer=null,snakeColor='violet',snakeBest=0,snakeStartedAt=0,snakeMoves=[],snakeSeed=null,snakeSessionId=null,snakePreparing=false;
+    snakeStatus='ready',snakeTimer=null,snakeBest=0,snakeStartedAt=0,snakeMoves=[],snakeSeed=null,snakeSessionId=null,snakePreparing=false;
 function snakeStorage(key,fallback){try{return localStorage.getItem(key)||fallback}catch(_){return fallback}}
 function snakePersist(key,value){try{localStorage.setItem(key,value)}catch(_){}}
+function snakeReadBest(){const saved=snakeStorage(SNAKE_BEST_KEY,'');if(saved!=='')return Math.max(0,Number(saved)||0);const legacy=Math.max(0,Math.floor((Number(snakeStorage(SNAKE_LEGACY_BEST_KEY,'0'))||0)/10));snakePersist(SNAKE_BEST_KEY,String(legacy));return legacy}
 function snakeRandomFood(){const free=[];for(let y=0;y<snakeSize;y++)for(let x=0;x<snakeSize;x++)if(!snakeBody.some(p=>p.x===x&&p.y===y))free.push({x,y});if(snakeSeed!==null){snakeSeed=(Math.imul(snakeSeed,1664525)+1013904223)>>>0;return free.length?free[snakeSeed%free.length]:null}return free.length?free[Math.floor(Math.random()*free.length)]:null}
 function snakeReset(){
   snakeBody=[{x:7,y:10},{x:6,y:10},{x:5,y:10}];snakeDirection=[1,0];snakeNextDirection=[1,0];
@@ -40,11 +40,11 @@ function snakeTick(){
   if(snakeStatus!=='playing')return;
   snakeDirection=snakeNextDirection;
   if(snakeSessionId)snakeMoves.push(snakeDirection[0]===1?0:snakeDirection[1]===1?1:snakeDirection[0]===-1?2:3);
-  const head={x:snakeBody[0].x+snakeDirection[0],y:snakeBody[0].y+snakeDirection[1]};
+  const head={x:(snakeBody[0].x+snakeDirection[0]+snakeSize)%snakeSize,y:(snakeBody[0].y+snakeDirection[1]+snakeSize)%snakeSize};
   const ate=snakeFood&&head.x===snakeFood.x&&head.y===snakeFood.y;
   const collisionCells=ate?snakeBody:snakeBody.slice(0,-1);
-  if(head.x<0||head.y<0||head.x>=snakeSize||head.y>=snakeSize||collisionCells.some(p=>p.x===head.x&&p.y===head.y)){snakeEnd('over');return}
-  snakeBody.unshift(head);if(ate){snakeScore+=10;snakeFood=snakeRandomFood();if(!snakeFood){snakeEnd('won');return}}else snakeBody.pop();
+  if(collisionCells.some(p=>p.x===head.x&&p.y===head.y)){snakeEnd('over');return}
+  snakeBody.unshift(head);if(ate){snakeScore+=1;snakeFood=snakeRandomFood();if(!snakeFood){snakeEnd('won');return}}else snakeBody.pop();
   snakeUpdateDisplay();snakeDraw();
 }
 function snakeEnd(result){
@@ -61,7 +61,7 @@ function snakeUpdateDisplay(){
 function snakeDraw(){
   const canvas=el('snake-canvas');if(!canvas)return;
   const ctx=canvas.getContext('2d');if(!ctx)return;
-  const size=snakeSize*snakeCell,light=SNAKE_COLORS[snakeColor]||SNAKE_COLORS.violet;
+  const size=snakeSize*snakeCell,light=getComputedStyle(document.documentElement).getPropertyValue('--gold').trim()||'#b995ff';
   ctx.clearRect(0,0,size,size);ctx.fillStyle='#0d1016';ctx.fillRect(0,0,size,size);
   ctx.strokeStyle='rgba(177,187,214,.075)';ctx.lineWidth=1;
   for(let n=1;n<snakeSize;n++){ctx.beginPath();ctx.moveTo(n*snakeCell+.5,0);ctx.lineTo(n*snakeCell+.5,size);ctx.moveTo(0,n*snakeCell+.5);ctx.lineTo(size,n*snakeCell+.5);ctx.stroke()}
@@ -73,23 +73,16 @@ function snakeDraw(){
 function snakeOpen(){
   const dialog=el('snake-dialog');if(!dialog)return;
   if(el('auth-dialog')?.open)el('auth-dialog').close();
-  snakeColor=snakeStorage(SNAKE_COLOR_KEY,'violet');if(!SNAKE_COLORS[snakeColor])snakeColor='violet';
-  snakeBest=Math.max(0,Number(snakeStorage(SNAKE_BEST_KEY,'0'))||0);
-  snakeReset();snakeRenderColors();snakeRefreshLeaderboard();dialog.showModal();
+  snakeBest=snakeReadBest();
+  snakeReset();snakeRefreshLeaderboard();dialog.showModal();
 }
 function snakeClose(){snakeStop();el('snake-dialog')?.close()}
-function snakeRenderColors(){
-  const buttons=el('snake-colors');if(!buttons)return;
-  buttons.innerHTML=Object.entries(SNAKE_COLORS).map(([id,color])=>'<button type="button" class="snake-color'+(id===snakeColor?' current':'')+'" data-snake-color="'+id+'" style="--snake-choice:'+color+'" aria-label="Цвет змейки: '+id+'" aria-pressed="'+(id===snakeColor)+'"></button>').join('');
-  snakeDraw();
-}
 function registerSnakeEvents(){
   document.addEventListener('click',e=>{
     if(e.target.closest('#open-snake')){snakeOpen();return}
     if(e.target.closest('#snake-close')){snakeClose();return}
     if(e.target.closest('#snake-start')){if(snakeStatus==='playing'||snakeStatus==='paused')snakePause();else snakeStart();return}
     if(e.target.closest('#snake-restart')){snakeReset();snakeStart();return}
-    const color=e.target.closest('[data-snake-color]');if(color){snakeColor=color.dataset.snakeColor;snakePersist(SNAKE_COLOR_KEY,snakeColor);snakeRenderColors();return}
     const move=e.target.closest('[data-snake-direction]');if(move){const dir={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[move.dataset.snakeDirection];if(dir)snakeSetDirection(...dir)}
   });
   document.addEventListener('keydown',e=>{
