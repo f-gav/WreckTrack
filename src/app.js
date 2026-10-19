@@ -49,6 +49,7 @@
     registerJournalFormattingEvents();
     registerBattleNoteMenuEvents();
     registerPersistenceNetworkEvents();
+    registerSnakeEvents();
     window.addEventListener('popstate',restoreHistoryView)
     el('brand-home').onclick=()=>go('home');document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target!==d)return;if(d.id==='journal-dialog'){requestCloseJournal();return}if(d.id==='import-preview-dialog')pendingCreatureImport=null;d.close()}))
     installArchiveActions();
