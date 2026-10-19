@@ -1,0 +1,28 @@
+/* WreckSnake: small monochrome, luminous mini-game inspired by ChatGPT's generation animation. */
+.snake-entry{width:100%;min-height:48px;justify-content:space-between;border-color:var(--gold2);background:rgba(var(--accent-rgb),.075);font-weight:650}
+.snake-entry span{font-size:12px;color:var(--muted);font-weight:400}
+#snake-dialog{width:min(95vw,580px);max-height:min(94dvh,930px);padding:0;border:1px solid #343743;border-radius:20px;background:#12151d;color:#f3f2f8;overflow:auto}
+.snake-shell{padding:clamp(18px,4vw,28px)}
+.snake-header{display:flex;justify-content:space-between;align-items:start;gap:18px}
+.snake-header h3{font:500 32px var(--display-font);margin:0}
+.snake-header .eyebrow{margin:0 0 8px;font-size:11px}
+.snake-subtitle{color:#9198a8;margin:5px 0 0;font-size:13px}
+.snake-stats{display:flex;gap:12px;margin:20px 0 14px}
+.snake-stats>div{flex:1;min-width:0;padding:11px 15px;border:1px solid #323641;border-radius:12px;background:#191d26;display:flex;flex-direction:column;gap:3px}
+.snake-stats span,.snake-label{font-size:10px;font-weight:800;letter-spacing:.15em;color:#a7adbb}
+.snake-stats strong{font:600 25px var(--display-font);font-variant-numeric:tabular-nums}
+.snake-canvas-frame{max-width:460px;margin:auto;border:1px solid #323a4a;border-radius:14px;padding:7px;background:#090c12;box-shadow:0 0 26px rgba(var(--accent-rgb),.09)}
+#snake-canvas{display:block;width:100%;height:auto;aspect-ratio:1/1;touch-action:none;border-radius:8px}
+.snake-hint{text-align:center;color:#afb4c5;font-size:13px;min-height:20px;margin:12px 0}
+.snake-actions{display:flex;gap:9px;justify-content:center}
+.snake-actions .button{min-width:110px;justify-content:center}
+.snake-settings{margin-top:18px;border-top:1px solid #2e323e;padding-top:15px}
+.snake-label{margin:0 0 12px}
+.snake-colors{display:flex;gap:12px;flex-wrap:wrap}
+.snake-color{width:30px;height:30px;border:3px solid #1b202a;border-radius:50%;background:var(--snake-choice);cursor:pointer;outline:1px solid #4a5060}
+.snake-color.current,.snake-color:focus-visible{outline:2px solid #f3f1f8;outline-offset:3px}
+.snake-controls-hint{font-size:12px;color:#9fa5b5;margin:15px 0 0}
+.snake-leaders{margin-top:22px;padding-top:15px;border-top:1px solid #2e323e}
+.snake-leaders h4{font-size:15px;font-weight:600;margin:0 0 9px}
+#snake-leaderboard{color:#adb4c3;font-size:13px}
+@media(max-width:600px){.snake-shell{padding:16px}.snake-header h3{font-size:26px}.snake-stats strong{font-size:22px}}

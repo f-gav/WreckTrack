@@ -27,5 +27,6 @@
   "features/detail-events.js",
   "features/data.js",
   "features/data-events.js",
+  "features/wrecksnake.js",
   "app.js"
 ]
