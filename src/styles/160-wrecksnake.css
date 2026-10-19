@@ -26,3 +26,8 @@
 .snake-leaders h4{font-size:15px;font-weight:600;margin:0 0 9px}
 #snake-leaderboard{color:#adb4c3;font-size:13px}
 @media(max-width:600px){.snake-shell{padding:16px}.snake-header h3{font-size:26px}.snake-stats strong{font-size:22px}}
+
+.snake-rank-list{list-style:decimal;list-style-position:inside;margin:0;padding:0;display:grid;gap:5px;max-height:235px;overflow:auto}
+.snake-rank-list li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 11px;border:1px solid #313645;border-radius:8px;background:#191e28}
+.snake-rank-list li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.snake-rank-list li strong{color:#e4d2ff;font-variant-numeric:tabular-nums}
