@@ -12,7 +12,7 @@ const ctx={localStorage:{getItem:()=>null,setItem:()=>{}},el:get,clearInterval:(
 vm.createContext(ctx);vm.runInContext(src+'\nthis.game={reset:snakeReset,tick:snakeTick,setDirection:snakeSetDirection,start:snakeStart,end:snakeEnd,getBody:()=>snakeBody,getScore:()=>snakeScore,getStatus:()=>snakeStatus,setFood:p=>snakeFood=p};',ctx);
 ctx.game.reset();
 assert.equal(ctx.game.getBody().length,3);
-ctx.game.start();
+await ctx.game.start();
 ctx.game.tick();
 assert.equal(ctx.game.getBody()[0].x,8);
 ctx.game.setDirection(-1,0);ctx.game.tick();
