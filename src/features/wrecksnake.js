@@ -3,21 +3,32 @@ const SNAKE_COLORS={violet:'#b995ff',mint:'#74e5bd',cyan:'#78d8ff',coral:'#ff8d9
 const SNAKE_COLOR_KEY='wrecksnake-color-v1',SNAKE_BEST_KEY='wrecksnake-best-v1';
 const snakeSize=20,snakeCell=19;
 let snakeBody=[],snakeFood=null,snakeDirection=[1,0],snakeNextDirection=[1,0],snakeScore=0,
-    snakeStatus='ready',snakeTimer=null,snakeColor='violet',snakeBest=0,snakeStartedAt=0,snakeMoves=[];
+    snakeStatus='ready',snakeTimer=null,snakeColor='violet',snakeBest=0,snakeStartedAt=0,snakeMoves=[],snakeSeed=null,snakeSessionId=null,snakePreparing=false;
 function snakeStorage(key,fallback){try{return localStorage.getItem(key)||fallback}catch(_){return fallback}}
 function snakePersist(key,value){try{localStorage.setItem(key,value)}catch(_){}}
-function snakeRandomFood(){const free=[];for(let y=0;y<snakeSize;y++)for(let x=0;x<snakeSize;x++)if(!snakeBody.some(p=>p.x===x&&p.y===y))free.push({x,y});return free.length?free[Math.floor(Math.random()*free.length)]:null}
+function snakeRandomFood(){const free=[];for(let y=0;y<snakeSize;y++)for(let x=0;x<snakeSize;x++)if(!snakeBody.some(p=>p.x===x&&p.y===y))free.push({x,y});if(snakeSeed!==null){snakeSeed=(Math.imul(snakeSeed,1664525)+1013904223)>>>0;return free.length?free[snakeSeed%free.length]:null}return free.length?free[Math.floor(Math.random()*free.length)]:null}
 function snakeReset(){
   snakeBody=[{x:7,y:10},{x:6,y:10},{x:5,y:10}];snakeDirection=[1,0];snakeNextDirection=[1,0];
-  snakeFood=snakeRandomFood();snakeScore=0;snakeMoves=[];snakeStartedAt=0;snakeStatus='ready';
+  snakeSeed=null;snakeSessionId=null;snakeFood=snakeRandomFood();snakeScore=0;snakeMoves=[];snakeStartedAt=0;snakeStatus='ready';
   snakeStop();snakeUpdateDisplay();snakeDraw();
 }
 function snakeStop(){if(snakeTimer!==null){clearInterval(snakeTimer);snakeTimer=null}}
-function snakeStart(){
+async function snakeStart(){
+  if(snakePreparing||snakeStatus==='playing')return;
   if(snakeStatus==='over'||snakeStatus==='won')snakeReset();
-  if(snakeStatus==='playing')return;
+  if(snakeStatus==='ready'&&authSession?.user&&authClient?.functions){
+    snakePreparing=true;const label=el('snake-hint');if(label)label.textContent='Подключаем рейтинговую партию…';
+    try{
+      const {data,error}=await authClient.functions.invoke('wrecksnake',{body:{action:'start'}});
+      if(!error&&data?.sessionId&&Number.isInteger(Number(data.seed))){
+        snakeSeed=Number(data.seed)>>>0;snakeSessionId=data.sessionId;snakeFood=snakeRandomFood();
+      }else if(label)label.textContent='Рейтинг недоступен — играем локально';
+    }catch(_){if(label)label.textContent='Нет связи — играем локально'}
+    finally{snakePreparing=false}
+  }
+  if(!el('snake-dialog')?.open&&typeof document!=='undefined')return;
   snakeStatus='playing';if(!snakeStartedAt)snakeStartedAt=Date.now();
-  snakeStop();snakeTimer=setInterval(snakeTick,115);snakeUpdateDisplay();snakeDraw()
+  snakeStop();snakeTimer=setInterval(snakeTick,115);snakeUpdateDisplay();snakeDraw();
 }
 function snakePause(){if(snakeStatus==='playing'){snakeStatus='paused';snakeStop()}else if(snakeStatus==='paused'){snakeStart()}snakeUpdateDisplay();snakeDraw()}
 function snakeSetDirection(dx,dy){
@@ -28,6 +39,7 @@ function snakeSetDirection(dx,dy){
 function snakeTick(){
   if(snakeStatus!=='playing')return;
   snakeDirection=snakeNextDirection;
+  if(snakeSessionId)snakeMoves.push(snakeDirection[0]===1?0:snakeDirection[1]===1?1:snakeDirection[0]===-1?2:3);
   const head={x:snakeBody[0].x+snakeDirection[0],y:snakeBody[0].y+snakeDirection[1]};
   const ate=snakeFood&&head.x===snakeFood.x&&head.y===snakeFood.y;
   const collisionCells=ate?snakeBody:snakeBody.slice(0,-1);
@@ -38,7 +50,7 @@ function snakeTick(){
 function snakeEnd(result){
   snakeStatus=result;snakeStop();const newBest=snakeScore>snakeBest;
   if(newBest){snakeBest=snakeScore;snakePersist(SNAKE_BEST_KEY,String(snakeBest))}
-  snakeUpdateDisplay();snakeDraw();snakeOnGameOver(snakeScore,Date.now()-snakeStartedAt);
+  snakeUpdateDisplay();snakeDraw();snakeOnGameOver(snakeScore,Date.now()-snakeStartedAt,snakeSessionId,[...snakeMoves]);
 }
 function snakeUpdateDisplay(){
   const score=el('snake-score'),best=el('snake-best'),start=el('snake-start'),hint=el('snake-hint');
@@ -91,5 +103,26 @@ function registerSnakeEvents(){
   canvas?.addEventListener('touchend',e=>{if(!touch)return;const p=e.changedTouches[0],dx=p.clientX-touch.x,dy=p.clientY-touch.y;touch=null;if(Math.max(Math.abs(dx),Math.abs(dy))<22)return;if(Math.abs(dx)>Math.abs(dy))snakeSetDirection(Math.sign(dx),0);else snakeSetDirection(0,Math.sign(dy))},{passive:true});
   el('snake-dialog')?.addEventListener('close',snakeStop);
 }
-function snakeOnGameOver(score,duration){/* Cloud leaderboard is enabled in the separate server-backed phase. */}
-function snakeRefreshLeaderboard(){const node=el('snake-leaderboard');if(node)node.textContent='Таблица лидеров появится после подключения рейтинга Supabase.'}
+async function snakeOnGameOver(score,duration,sessionId,moves){
+  if(!sessionId||!authClient?.functions)return;
+  const node=el('snake-leaderboard');if(node)node.textContent='Проверяем результат на сервере…';
+  try{
+    const {data,error}=await authClient.functions.invoke('wrecksnake',{body:{action:'finish',sessionId,moves}});
+    if(error||!data?.ok){if(node)node.textContent='Не удалось записать результат. Личный локальный рекорд сохранён.';return}
+    await snakeRefreshLeaderboard();
+  }catch(_){if(node)node.textContent='Нет связи с рейтингом. Личный рекорд сохранён локально.'}
+}
+async function snakeRefreshLeaderboard(){
+  const node=el('snake-leaderboard');if(!node)return;
+  if(!authSession?.user||!authClient?.functions){node.textContent='Войдите через Google для участия в общем рейтинге.';return}
+  node.textContent='Загружаем общий рейтинг…';
+  try{
+    const {data,error}=await authClient.functions.invoke('wrecksnake',{body:{action:'leaderboard'}});
+    if(error||!Array.isArray(data?.leaders)){node.textContent='Рейтинг временно недоступен';return}
+    const rows=data.leaders.slice(0,20);node.replaceChildren();
+    if(!rows.length){node.textContent='Рейтинг пока пуст — станьте первым!';return}
+    const list=document.createElement('ol');list.className='snake-rank-list';
+    for(const item of rows){const li=document.createElement('li');const name=document.createElement('span');const points=document.createElement('strong');name.textContent=item.name;points.textContent=String(item.score);li.append(name,points);list.append(li)}
+    node.append(list);
+  }catch(_){node.textContent='Рейтинг временно недоступен'}
+}
