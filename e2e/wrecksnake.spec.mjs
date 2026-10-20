@@ -17,6 +17,13 @@ test('WreckSnake renders and plays using the account mini-game dialog',async({pa
   const left=await page.locator('#snake-canvas').boundingBox();
   const right=await page.locator('.snake-leaders').boundingBox();
   if(page.viewportSize().width>760){expect(right.x).toBeGreaterThan(left.x+left.width)}else{expect(right.y).toBeGreaterThan(left.y+left.height)}
+  await expect(page.locator('#snake-sound')).not.toBeChecked();
+  await page.locator('#snake-sound').check();
+  await expect(page.locator('#snake-sound')).toBeChecked();
+  await page.locator('#snake-start').click();
+  await expect(page.locator('#snake-start')).toHaveText('Пауза');
+  await page.evaluate(()=>window.dispatchEvent(new Event('blur')));
+  await expect(page.locator('#snake-start')).toHaveText('Продолжить');
   await page.locator('#snake-start').click();
   await expect(page.locator('#snake-start')).toHaveText('Пауза');
   await page.keyboard.press('Space');
