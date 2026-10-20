@@ -1,11 +1,32 @@
 /* WreckSnake — independent mini-game; never mutates the WreckTrack archive. */
-const SNAKE_BEST_KEY='wrecksnake-best-v2',SNAKE_LEGACY_BEST_KEY='wrecksnake-best-v1';
+const SNAKE_BEST_KEY='wrecksnake-best-v2',SNAKE_LEGACY_BEST_KEY='wrecksnake-best-v1',SNAKE_SOUND_KEY='wrecksnake-sound-v1';
 const snakeSize=20,snakeCell=19;
 let snakeBody=[],snakeFood=null,snakeDirection=[1,0],snakeNextDirection=[1,0],snakeScore=0,
-    snakeStatus='ready',snakeTimer=null,snakeBest=0,snakeStartedAt=0,snakeMoves=[],snakeSeed=null,snakeSessionId=null,snakePreparing=false;
+    snakeStatus='ready',snakeTimer=null,snakeBest=0,snakeStartedAt=0,snakeMoves=[],snakeSeed=null,snakeSessionId=null,snakePreparing=false,snakeAudio=null,snakeSoundEnabled=false,snakeLeaderboardVersion=0;
 function snakeStorage(key,fallback){try{return localStorage.getItem(key)||fallback}catch(_){return fallback}}
 function snakePersist(key,value){try{localStorage.setItem(key,value)}catch(_){}}
 function snakeReadBest(){const saved=snakeStorage(SNAKE_BEST_KEY,'');if(saved!=='')return Math.max(0,Number(saved)||0);const legacy=Math.max(0,Math.floor((Number(snakeStorage(SNAKE_LEGACY_BEST_KEY,'0'))||0)/10));snakePersist(SNAKE_BEST_KEY,String(legacy));return legacy}
+function snakeSound(type){
+  if(!snakeSoundEnabled||typeof window==='undefined')return;
+  try{
+    const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;
+    snakeAudio=snakeAudio||new Audio();
+    if(snakeAudio.state==='suspended')snakeAudio.resume().catch(()=>{});
+    const tone=snakeAudio.createOscillator(),gain=snakeAudio.createGain(),now=snakeAudio.currentTime;
+    tone.type='sine';tone.frequency.setValueAtTime(type==='eat'?660:type==='record'?880:180,now);
+    tone.frequency.exponentialRampToValueAtTime(type==='eat'?880:type==='record'?1100:110,now+.12);
+    gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.045,now+.015);
+    gain.gain.exponentialRampToValueAtTime(.0001,now+.17);
+    tone.connect(gain);gain.connect(snakeAudio.destination);tone.start(now);tone.stop(now+.18);
+  }catch(_){}
+}
+function snakeSetSound(enabled){
+  snakeSoundEnabled=Boolean(enabled);snakePersist(SNAKE_SOUND_KEY,snakeSoundEnabled?'1':'0');
+  const toggle=el('snake-sound');if(toggle){toggle.checked=snakeSoundEnabled}
+}
+function snakeAutoPause(){
+  if(snakeStatus==='playing'){snakeStatus='paused';snakeStop();snakeUpdateDisplay();snakeDraw()}
+}
 function snakeRandomFood(){const free=[];for(let y=0;y<snakeSize;y++)for(let x=0;x<snakeSize;x++)if(!snakeBody.some(p=>p.x===x&&p.y===y))free.push({x,y});if(snakeSeed!==null){snakeSeed=(Math.imul(snakeSeed,1664525)+1013904223)>>>0;return free.length?free[snakeSeed%free.length]:null}return free.length?free[Math.floor(Math.random()*free.length)]:null}
 function snakeReset(){
   snakeBody=[{x:7,y:10},{x:6,y:10},{x:5,y:10}];snakeDirection=[1,0];snakeNextDirection=[1,0];
@@ -44,12 +65,12 @@ function snakeTick(){
   const ate=snakeFood&&head.x===snakeFood.x&&head.y===snakeFood.y;
   const collisionCells=ate?snakeBody:snakeBody.slice(0,-1);
   if(collisionCells.some(p=>p.x===head.x&&p.y===head.y)){snakeEnd('over');return}
-  snakeBody.unshift(head);if(ate){snakeScore+=1;snakeFood=snakeRandomFood();if(!snakeFood){snakeEnd('won');return}}else snakeBody.pop();
+  snakeBody.unshift(head);if(ate){snakeScore+=1;snakeSound('eat');snakeFood=snakeRandomFood();if(!snakeFood){snakeEnd('won');return}}else snakeBody.pop();
   snakeUpdateDisplay();snakeDraw();
 }
 function snakeEnd(result){
   snakeStatus=result;snakeStop();const newBest=snakeScore>snakeBest;
-  if(newBest){snakeBest=snakeScore;snakePersist(SNAKE_BEST_KEY,String(snakeBest))}
+  if(newBest){snakeBest=snakeScore;snakePersist(SNAKE_BEST_KEY,String(snakeBest))}snakeSound(newBest?'record':'end');
   snakeUpdateDisplay();snakeDraw();snakeOnGameOver(snakeScore,Date.now()-snakeStartedAt,snakeSessionId,[...snakeMoves]);
 }
 function snakeUpdateDisplay(){
@@ -73,7 +94,8 @@ function snakeDraw(){
 function snakeOpen(){
   const dialog=el('snake-dialog');if(!dialog)return;
   if(el('auth-dialog')?.open)el('auth-dialog').close();
-  snakeBest=snakeReadBest();
+  snakeBest=snakeReadBest();snakeSoundEnabled=snakeStorage(SNAKE_SOUND_KEY,'0')==='1';
+  const toggle=el('snake-sound');if(toggle)toggle.checked=snakeSoundEnabled;
   snakeReset();snakeRefreshLeaderboard();dialog.showModal();
 }
 function snakeClose(){snakeStop();el('snake-dialog')?.close()}
@@ -85,6 +107,9 @@ function registerSnakeEvents(){
     if(e.target.closest('#snake-restart')){snakeReset();snakeStart();return}
     const move=e.target.closest('[data-snake-direction]');if(move){const dir={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[move.dataset.snakeDirection];if(dir)snakeSetDirection(...dir)}
   });
+  el('snake-sound')?.addEventListener('change',e=>snakeSetSound(e.target.checked));
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)snakeAutoPause()});
+  window.addEventListener('blur',snakeAutoPause);
   document.addEventListener('keydown',e=>{
     if(!el('snake-dialog')?.open||['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;
     const directions={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],KeyW:[0,-1],KeyS:[0,1],KeyA:[-1,0],KeyD:[1,0]};
@@ -108,14 +133,26 @@ async function snakeOnGameOver(score,duration,sessionId,moves){
 async function snakeRefreshLeaderboard(){
   const node=el('snake-leaderboard');if(!node)return;
   if(!authSession?.user||!authClient?.functions){node.textContent='Войдите через Google для участия в общем рейтинге.';return}
-  node.textContent='Загружаем общий рейтинг…';
+  const request=++snakeLeaderboardVersion;node.textContent='Загружаем общий рейтинг…';
   try{
     const {data,error}=await authClient.functions.invoke('wrecksnake',{body:{action:'leaderboard'}});
+    if(request!==snakeLeaderboardVersion)return;
     if(error||!Array.isArray(data?.leaders)){node.textContent='Рейтинг временно недоступен';return}
     const rows=data.leaders.slice(0,20);node.replaceChildren();
-    if(!rows.length){node.textContent='Рейтинг пока пуст — станьте первым!';return}
+    if(!rows.length){node.textContent='Рейтинг пока пуст — станьте первым!'}
     const list=document.createElement('ol');list.className='snake-rank-list';
-    for(const item of rows){const li=document.createElement('li');const name=document.createElement('span');const points=document.createElement('strong');name.textContent=item.name;points.textContent=String(item.score);li.append(name,points);list.append(li)}
+    for(const item of rows){
+      const li=document.createElement('li'),name=document.createElement('span'),points=document.createElement('strong');
+      if(item.isMe){li.classList.add('snake-rank-me');li.setAttribute('aria-current','true')}
+      name.textContent=item.rank+'. '+item.name+(item.isMe?' (вы)':'');
+      points.textContent=String(item.score);li.append(name,points);list.append(li)
+    }
     node.append(list);
+    if(data.mine){
+      const mine=document.createElement('div');mine.className='snake-my-stats';
+      const games=Math.max(0,Number(data.mine.games_played)||0),total=Math.max(0,Number(data.mine.total_score)||0);
+      mine.textContent='Ваше место: '+(data.mine.rank||'—')+' · Партий: '+games+' · Съедено точек: '+total+' · Средний счёт: '+(games?(total/games).toFixed(1):'0');
+      node.append(mine)
+    }
   }catch(_){node.textContent='Рейтинг временно недоступен'}
 }

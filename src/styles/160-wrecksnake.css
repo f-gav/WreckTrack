@@ -28,3 +28,7 @@
 .snake-rank-list li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 11px;border:1px solid #313645;border-radius:8px;background:#191e28}
 .snake-rank-list li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .snake-rank-list li strong{color:#e4d2ff;font-variant-numeric:tabular-nums}
+.snake-rank-list .snake-rank-me{border-color:var(--gold);background:rgba(var(--accent-rgb),.16)}
+.snake-my-stats{margin-top:14px;padding:12px;border-top:1px solid #434456;color:#e5dfef;font-size:12px;line-height:1.7}
+.snake-sound-setting{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:18px;color:#c3c7d4;font-size:13px;cursor:pointer}
+.snake-sound-setting input{accent-color:var(--gold)}
