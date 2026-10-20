@@ -44,10 +44,17 @@ Deno.serve(async(req:Request)=>{
     if(!user||auth.error)return send({error:"Invalid session"},401);
     const body=await req.json();const action=String(body?.action||"");
     if(action==="leaderboard"){
-      const {data,error}=await db.from("wrecksnake_scores").select("nickname,best_score,games_played").order("best_score",{ascending:false}).order("updated_at",{ascending:true}).limit(20);
+      const {data,error}=await db.from("wrecksnake_scores").select("user_id,nickname,best_score,games_played").order("best_score",{ascending:false}).order("updated_at",{ascending:true}).limit(20);
       if(error)return send({error:"Leaderboard unavailable"},503);
-      const {data:mine}=await db.from("wrecksnake_scores").select("best_score,games_played").eq("user_id",user.id).maybeSingle();
-      return send({leaders:(data||[]).map((r,i)=>({rank:i+1,name:r.nickname,score:r.best_score,games:r.games_played})),mine:mine||null});
+      const {data:mine,error:mineError}=await db.from("wrecksnake_scores").select("best_score,games_played,total_score").eq("user_id",user.id).maybeSingle();
+      if(mineError)return send({error:"Personal stats unavailable"},503);
+      let personal=null;
+      if(mine){
+        const {count, error:rankError}=await db.from("wrecksnake_scores").select("user_id",{head:true,count:"exact"}).gt("best_score",mine.best_score);
+        if(rankError)return send({error:"Ranking unavailable"},503);
+        personal={...mine,rank:(count||0)+1};
+      }
+      return send({leaders:(data||[]).map((r,i)=>({rank:i+1,name:r.nickname,score:r.best_score,games:r.games_played,isMe:r.user_id===user.id})),mine:personal});
     }
     if(action==="start"){
       // Limit unfinished challenges to avoid unbounded writes and rapid scripted resets.
