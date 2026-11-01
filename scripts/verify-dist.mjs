@@ -41,6 +41,18 @@ for(const route of ['rooms','bestiary','library','tokenator','settings']){
 assert.match(sw,/wrecktrack-static-[0-9a-f]{12}/);
 assert.ok(sw.includes(css[1]),'service worker does not precache built CSS');
 assert.ok(sw.includes(js[1]),'service worker does not precache built JS');
+// Validate every precache asset before a deployment can install a broken worker.
+const shell=sw.match(/const APP_SHELL=\[([\s\S]*?)\];/);
+assert.ok(shell,'PWA app shell list missing');
+const entries=[...shell[1].matchAll(/'([^']+)'/g)].map(match=>match[1]);
+assert.ok(entries.length>10,'PWA app shell unexpectedly small');
+for(const entry of entries){
+  assert.ok(entry.startsWith('./'),'PWA resource must be relative: '+entry);
+  const file=path.resolve(dist,entry);
+  assert.ok(file.startsWith(dist+path.sep) || file===dist,'PWA resource escapes distribution');
+  assert.ok(fs.existsSync(file) && fs.statSync(file).isFile() || fs.existsSync(path.join(file,'index.html')),
+    'PWA precache resource missing: '+entry);
+}
 assert.equal(manifest.name,'WreckTrack');
 assert.equal(manifest.short_name,'WreckTrack');
 
