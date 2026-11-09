@@ -1,7 +1,7 @@
 /* Single final header skin used by WreckTrack and WreckArchive.
    The markup of Archive is generated from WreckTrack's real header. */
 .topbar{height:72px;padding:0 clamp(18px,4vw,52px);border-bottom:1px solid var(--line);background:rgba(13,13,16,.88);backdrop-filter:blur(18px);display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:30}
-.topbar .brand{display:flex;align-items:center;gap:11px;border:0;background:transparent;padding:0;cursor:pointer;flex:0 1 auto;min-width:0;color:var(--gold,var(--accent));white-space:nowrap}
+.topbar .brand{display:flex;align-items:center;gap:11px;border:0;background:transparent;padding:0;cursor:pointer;flex:0 1 auto;min-width:0;color:var(--paper,#eee);white-space:nowrap}
 .topbar .brand-mark{width:37px;height:37px;flex:0 0 37px;border:0;border-radius:10px;display:grid;place-items:center;overflow:hidden}
 .topbar .brand-mark img{width:37px;height:37px;display:block;object-fit:contain}
 .topbar .brand-name{font:600 18px var(--display-font,Georgia,serif);letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis}
