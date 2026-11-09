@@ -59,6 +59,7 @@ test('Warcraft classes catalog opens a DnD-style detail page and returns',async(
  await expect(page).toHaveURL(/#classes\/death-knight$/);
  await expect(page.locator('#detail-panel')).toBeVisible();
  await expect(page.locator('#detail-title')).toHaveText('Рыцарь смерти');
+ await expect(page.locator('#detail-overview')).toContainText('Рыцарь смерти');
  await expect(page.locator('#detail-original')).toHaveText('Death Knight');
  await expect(page.locator('#class-level-rows tr')).toHaveCount(20);
  await expect(page.locator('#class-facts-list')).toContainText('Сила и Харизма');
