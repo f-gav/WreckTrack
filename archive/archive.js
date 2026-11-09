@@ -45,7 +45,7 @@ const route=()=>{
  const entry=(warcraftEntries[id]||[]).find(item=>item.id===entryId);
  const detail=Boolean(entry);
  const catalog=id==='classes'||id==='species';
- const title=entry?.name||selected?.[1]||'Главная';
+ const title=entry?.name||selected?.[1]||'Справочник D&D';
  $('page-title').textContent=title;
  $('crumb-current').textContent=title;
  $('page-kicker').textContent=detail?'WORLD OF WARCRAFT · 2024':selected?'СПРАВОЧНИК · 2024':'ЭНЦИКЛОПЕДИЯ · 2024';
