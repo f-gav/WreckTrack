@@ -32,20 +32,31 @@
     link.append(title, desc);
     menu.appendChild(link);
   }
-  wrapper.appendChild(menu);
+  // Render outside the header so overflow/stacking contexts cannot clip the menu.
+  document.body.appendChild(menu);
+  const positionMenu = () => {
+    const rect = brand.getBoundingClientRect();
+    const width = Math.min(260, Math.max(200, window.innerWidth - 24));
+    menu.style.width = width + 'px';
+    menu.style.left = Math.max(12, Math.min(rect.left, window.innerWidth - width - 12)) + 'px';
+    menu.style.top = Math.min(rect.bottom + 10, window.innerHeight - 12) + 'px';
+  };
+  const open = () => { positionMenu(); menu.hidden = false; brand.setAttribute('aria-expanded', 'true'); };
+  window.addEventListener('resize', () => { if (!menu.hidden) positionMenu(); });
+  window.addEventListener('scroll', () => { if (!menu.hidden) positionMenu(); }, true);
   const close = () => { menu.hidden = true; brand.setAttribute('aria-expanded', 'false'); };
   brand.addEventListener('click', event => {
     event.preventDefault();
     event.stopImmediatePropagation();
     const opening = menu.hidden;
     close();
-    if (opening) { menu.hidden = false; brand.setAttribute('aria-expanded', 'true'); }
+    if (opening) open();
   }, true);
-  document.addEventListener('click', event => { if (!wrapper.contains(event.target)) close(); });
+  document.addEventListener('click', event => { if (!wrapper.contains(event.target) && !menu.contains(event.target)) close(); });
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') { close(); brand.focus(); }
     if (event.key === 'ArrowDown' && document.activeElement === brand) {
-      event.preventDefault(); menu.hidden = false; brand.setAttribute('aria-expanded', 'true');
+      event.preventDefault(); open();
       menu.querySelector('a')?.focus();
     }
   });
