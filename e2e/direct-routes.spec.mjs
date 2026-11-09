@@ -64,11 +64,11 @@ test('project switcher opens the independent WreckArchive shell and returns to W
   await page.getByRole('menu',{name:'Приложения Wreck'})
     .getByRole('menuitem',{name:/WreckArchive/}).click();
   await expect(page).toHaveURL(/\/archive\/$/);
-  await expect(page.locator('main h1')).toHaveText('WreckArchive');
-  await expect(page.getByText('Скоро')).toHaveCount(9);
+  await expect(page.locator('main h1')).toHaveText('Справочник D&D');
+  await expect(page.locator('.category-card')).toHaveCount(9);
   await expect(page.getByRole('menuitem',{name:/WreckLib/})).toHaveCount(0);
-  await page.getByRole('button',{name:/WreckArchive/}).click();
-  await page.getByRole('menuitem',{name:/WreckTrack/}).click();
+  await page.locator('#project-switch').click();
+  await page.locator('#project-menu a').filter({hasText:'WreckTrack'}).click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.locator('main h1')).toHaveText('WreckTrack');
 });
