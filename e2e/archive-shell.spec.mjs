@@ -11,8 +11,8 @@ test('Archive desktop sidebar and empty catalog routes',async({page})=>{
  await page.locator('.breadcrumb a').click();
  await expect(page.locator('#category-grid')).toBeVisible();
  await page.locator('#project-switch').click();
- await expect(page.locator('#project-menu a')).toHaveCount(2);
- await expect(page.locator('#project-menu')).not.toContainText('WreckLib');
+ await expect(page.locator('.project-switcher-menu a')).toHaveCount(2);
+ await expect(page.getByRole('menu',{name:'Приложения Wreck'})).not.toContainText('WreckLib');
 });
 test('Archive appearance persists and shares WreckTrack storage keys',async({page})=>{
  await page.goto('/archive/');
@@ -106,4 +106,67 @@ test('Death Knight reference remains readable on narrow screens',async({page})=>
  await page.locator('#settings-button').click();
  await expect(page.locator('#settings-dialog')).toHaveAttribute('open','');
  await expect(page.locator('#settings-dialog')).toBeVisible();
+});
+
+test('Archive uses the parent WreckTrack header, favicon and identical app switcher',async({page})=>{
+ await page.goto('/');
+ const rootIcon=await page.locator('.topbar .brand-mark img').getAttribute('src');
+ await expect(page.locator('.topbar .topnav-button')).toHaveCount(4);
+ await page.locator('#brand-home').click();
+ await expect(page.getByRole('menu',{name:'Приложения Wreck'})).toBeVisible();
+ await page.getByRole('menuitem',{name:/WreckArchive/}).click();
+ await expect(page).toHaveURL(/\/archive\/$/);
+ await expect(page.locator('.topbar .topnav-button')).toHaveCount(0);
+ await expect(page.locator('.topbar .brand-name')).toHaveText('WreckArchive');
+ const archiveIcon=await page.locator('.topbar .brand-mark img').getAttribute('src');
+ const rootPath=await page.evaluate(src=>new URL(src,location.origin+'/').pathname,rootIcon);
+ const archivePath=await page.evaluate(src=>new URL(src,document.baseURI).pathname,archiveIcon);
+ expect(archivePath).toBe(rootPath);
+ await expect(page.locator('.topbar .save-status')).toBeVisible();
+ await expect(page.locator('#settings-button.topbar-settings-button')).toBeVisible();
+ await expect(page.locator('#account-button.account-button')).toBeVisible();
+ await expect(page.locator('link[rel="icon"][sizes="32x32"]')).toHaveAttribute('href',/\.\.\/icon32x32\.png/);
+ await page.locator('#project-switch').click();
+ const menu=page.getByRole('menu',{name:'Приложения Wreck'});
+ await expect(menu.getByRole('menuitem')).toHaveCount(2);
+ await expect(menu).not.toContainText('WreckLib');
+ await menu.getByRole('menuitem',{name:/WreckTrack/}).click();
+ await expect(page).toHaveURL(/\/$/);
+});
+test('Theme and heading font persist both ways when switching projects',async({page})=>{
+ await page.goto('/archive/#classes/death-knight');
+ await page.locator('#settings-button').click();
+ await page.locator('[data-accent="purple"]').click();
+ await page.locator('[data-font="neuzeit"]').click();
+ await page.locator('#interface-density').fill('1');
+ await expect(page.locator('html')).toHaveAttribute('data-accent','purple');
+ await expect(page.locator('html')).toHaveAttribute('data-font','neuzeit');
+ await page.locator('#settings-dialog [data-close]').click();
+ await page.locator('#project-switch').click();
+ await page.getByRole('menuitem',{name:/WreckTrack/}).click();
+ await expect(page.locator('html')).toHaveAttribute('data-accent','purple');
+ await expect(page.locator('html')).toHaveAttribute('data-font','neuzeit');
+ await page.locator('#brand-home').click();
+ await page.getByRole('menuitem',{name:/WreckArchive/}).click();
+ await expect(page.locator('html')).toHaveAttribute('data-accent','purple');
+ await expect(page.locator('html')).toHaveAttribute('data-font','neuzeit');
+ await expect(page.locator('html')).toHaveAttribute('data-density','1');
+});
+test('Account button opens shared-style account dialog from the class page',async({page})=>{
+ await page.goto('/archive/#classes/death-knight');
+ await page.locator('#account-button').click();
+ await expect(page.locator('#auth-dialog')).toHaveAttribute('open','');
+ await expect(page.locator('#auth-title')).toHaveText('Вход в аккаунт');
+ await expect(page.locator('#auth-google')).toBeVisible();
+ await page.locator('#auth-dialog [data-close]').click();
+ await expect(page.locator('#auth-dialog')).toBeHidden();
+});
+test('Archive compact mobile header stays inside viewport',async({page})=>{
+ await page.setViewportSize({width:360,height:740});
+ await page.goto('/archive/#classes/death-knight');
+ await expect(page.locator('#mobile-menu')).toBeVisible();
+ await expect(page.locator('#account-button')).toBeVisible();
+ await expect(page.locator('#settings-button')).toBeVisible();
+ const width=await page.evaluate(()=>document.documentElement.scrollWidth);
+ expect(width).toBeLessThanOrEqual(361);
 });
