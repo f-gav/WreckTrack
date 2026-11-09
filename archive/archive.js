@@ -294,4 +294,6 @@ if(authClient){
 updateAccountUi();
 document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>button.closest('dialog')?.close()));
 document.querySelectorAll('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()}));
+// Global controls are ready; now initialize the active catalog/deep-link route.
+route();
 })();
