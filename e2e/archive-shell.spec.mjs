@@ -36,3 +36,17 @@ test('Archive mobile navigation opens and closes',async({page})=>{
  await expect(page.locator('#page-title')).toHaveText('Бестиарий');
  await expect(page.locator('#sidebar')).not.toHaveClass(/is-open/);
 });
+
+test('Archive only exposes reference sections and cache-busted assets',async({page})=>{
+ await page.goto('/archive/');
+ const links=page.locator('#sidebar-nav [data-page]');
+ await expect(links).toHaveCount(10);
+ await expect(page.locator('#sidebar-nav')).not.toContainText('Новичку');
+ await expect(page.locator('#sidebar-nav')).not.toContainText('Статьи');
+ await expect(page.locator('#sidebar-nav')).not.toContainText('Инструменты');
+ await expect(page.locator('#page-description')).toContainText('World of Warcraft');
+ const css=await page.locator('link[rel="stylesheet"]').getAttribute('href');
+ const js=await page.locator('script[src]').getAttribute('src');
+ expect(css).toMatch(/archive\.[0-9a-f]{12}\.css$/);
+ expect(js).toMatch(/archive\.[0-9a-f]{12}\.js$/);
+});
