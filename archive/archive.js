@@ -19,7 +19,7 @@ for(const [id,title,icon,description] of sections.slice(0,9)){
 }
 // Only entries with independently identified names are shown; no mechanics are invented.
 const warcraftEntries={
- classes:[{id:'death-knight',name:'Рыцарь смерти',original:'Death Knight',description:'Новый класс в материалах World of Warcraft для D&D 5e24.'}],
+ classes:[{id:'death-knight',name:'Рыцарь смерти',original:'Death Knight',description:'Рыцарь смерти — воин, сочетающий владение оружием, руническую магию, некротическую энергию и защитные ауры.'}],
  species:[]
 };
 const search=$('archive-search');
@@ -153,7 +153,7 @@ const route=()=>{
  if(detail){
   $('detail-title').textContent=entry.name;
   $('detail-original').textContent=entry.original;
-  $('detail-overview').textContent=entry.description+' Здесь будет собрана проверенная информация об особенностях и правилах.';
+  $('detail-overview').textContent=entry.description;
   $('detail-back').href='#'+id;
   activeRune='base';document.querySelectorAll('[data-rune]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.rune==='base')));renderClassFeatures();setClassTab('base');
  }
