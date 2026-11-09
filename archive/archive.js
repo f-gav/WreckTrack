@@ -170,7 +170,7 @@ const sidebar=$('sidebar'),backdrop=$('mobile-backdrop'),hamburger=$('mobile-men
 function closeSidebar(){sidebar.classList.remove('is-open');backdrop.hidden=true;hamburger.setAttribute('aria-expanded','false')}
 hamburger.addEventListener('click',()=>{const opening=!sidebar.classList.contains('is-open');sidebar.classList.toggle('is-open',opening);backdrop.hidden=!opening;hamburger.setAttribute('aria-expanded',String(opening))});
 backdrop.addEventListener('click',closeSidebar);
-window.addEventListener('hashchange',route);route();
+window.addEventListener('hashchange',route);
 const switchButton=$('project-switch'),projectMenu=$('project-menu');
 function closeProject(){projectMenu.hidden=true;switchButton.setAttribute('aria-expanded','false')}
 switchButton.addEventListener('click',()=>{const opening=projectMenu.hidden;projectMenu.hidden=!opening;switchButton.setAttribute('aria-expanded',String(opening))});
@@ -199,4 +199,7 @@ $('settings-button').addEventListener('click',()=>$('settings-dialog').showModal
 $('account-button').addEventListener('click',()=>$('account-dialog').showModal());
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
 document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));
+// Bind global header controls before rendering deep-linked class pages.
+// A page-specific rendering error must not disable settings or account controls.
+route();
 })();
