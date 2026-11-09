@@ -1,9 +1,43 @@
 <!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0d0d10"><title>WreckArchive — D&D 2024</title><style>
-:root{color-scheme:dark;font-family:Georgia,serif;background:#0d0d10;color:#e8e2d8}*{box-sizing:border-box}body{margin:0}header{height:68px;display:flex;align-items:center;padding:0 clamp(16px,4vw,48px);border-bottom:1px solid #343139;background:#16161b;gap:20px}a{color:inherit;text-decoration:none}button{font:inherit;color:inherit}.switch{position:relative}.switch>button{background:transparent;border:0;cursor:pointer;font-size:20px;font-weight:bold;color:#d5b579}.switch>button:focus-visible,a:focus-visible{outline:2px solid #d5b579;outline-offset:4px}.menu{position:absolute;top:38px;left:0;background:#202027;border:1px solid #48414a;border-radius:10px;min-width:235px;padding:7px;box-shadow:0 12px 32px #0008;z-index:5}.menu[hidden]{display:none}.menu a{display:block;padding:12px;border-radius:7px}.menu a:hover{background:#38313a}.menu small{display:block;color:#aaa;font:12px system-ui;margin-top:4px}main{max-width:1100px;margin:auto;padding:44px 22px}h1{font-size:clamp(30px,5vw,46px);color:#d5b579;margin:0 0 10px}p{color:#aaa;font:15px/1.6 system-ui}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:34px}.tile{background:#1a1a20;border:1px solid #38353d;border-radius:10px;padding:22px;min-height:100px}.tile h2{font-size:19px;margin:0 0 10px}.tile p{margin:0;font-size:13px}.note{margin-top:30px;border-left:3px solid #b99861;padding:8px 16px}
-</style></head><body>
-<header><div class="switch"><button id="switch" aria-haspopup="menu" aria-expanded="false">WreckArchive ▾</button><nav id="menu" class="menu" role="menu" aria-label="Приложения" hidden><a role="menuitem" href="../">WreckTrack<small>Основное приложение</small></a><a role="menuitem" href="./" aria-current="page">WreckArchive<small>Справочник D&D 2024</small></a></nav></div></header>
-<main><h1>WreckArchive</h1><p>Справочник D&D 5e · редакция 2024</p><section class="grid" aria-label="Разделы справочника">
-<div class="tile"><h2>Классы</h2><p>Скоро</p></div><div class="tile"><h2>Виды</h2><p>Скоро</p></div><div class="tile"><h2>Предыстории</h2><p>Скоро</p></div><div class="tile"><h2>Черты</h2><p>Скоро</p></div><div class="tile"><h2>Заклинания</h2><p>Скоро</p></div><div class="tile"><h2>Бестиарий</h2><p>Скоро</p></div><div class="tile"><h2>Магические предметы</h2><p>Скоро</p></div><div class="tile"><h2>Снаряжение</h2><p>Скоро</p></div><div class="tile"><h2>Правила и глоссарий</h2><p>Скоро</p></div>
-</section><p class="note">Структура подготовлена. Игровые материалы будут добавлены позднее.</p></main>
-<script>const b=document.getElementById('switch'),m=document.getElementById('menu');function close(){m.hidden=true;b.setAttribute('aria-expanded','false')}b.addEventListener('click',()=>{const open=m.hidden;m.hidden=!open;b.setAttribute('aria-expanded',String(open))});document.addEventListener('click',e=>{if(!e.target.closest('.switch'))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'){close();b.focus()}if(e.key==='ArrowDown'&&document.activeElement===b){m.hidden=false;b.setAttribute('aria-expanded','true');m.querySelector('a').focus()}})</script></body></html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0d0d10"><title>WreckArchive — D&D 2024</title><link rel="stylesheet" href="./archive.css"></head>
+<body>
+<header class="topbar">
+  <button id="mobile-menu" class="icon-button mobile-only" type="button" aria-label="Открыть боковое меню" aria-expanded="false">☰</button>
+  <div class="brand-wrap"><button id="project-switch" class="brand" aria-expanded="false" aria-haspopup="true"><span class="brand-emblem">W</span><span>WreckArchive</span><span class="chevron">⌄</span></button><nav id="project-menu" class="project-menu" aria-label="Выбор приложения" hidden><a href="../">WreckTrack<small>Основное приложение</small></a><a href="./" aria-current="page">WreckArchive<small>Справочник D&D 2024</small></a></nav></div>
+  <span class="edition">D&D 5e <b>2024</b></span>
+  <div class="top-actions"><button id="settings-button" class="icon-button" type="button" aria-label="Настройки" title="Настройки">⚙</button><button id="account-button" class="icon-button avatar-button" type="button" aria-label="Аккаунт" title="Аккаунт">●</button></div>
+</header>
+<div id="mobile-backdrop" class="backdrop" hidden></div>
+<div class="layout">
+<aside id="sidebar" class="sidebar" aria-label="Навигация справочника">
+  <div class="sidebar-intro"><span class="sidebar-kicker">СПРАВОЧНИК</span><strong>D&D 5e24</strong><span>WreckArchive</span></div>
+  <nav id="sidebar-nav">
+    <div class="nav-group"><div class="group-label">СПРАВОЧНИКИ</div>
+      <a href="#home" data-page="home">⌂ <span>Главная</span></a>
+      <a href="#classes" data-page="classes">♜ <span>Классы</span></a>
+      <a href="#species" data-page="species">♙ <span>Виды</span></a>
+      <a href="#backgrounds" data-page="backgrounds">▤ <span>Предыстории</span></a>
+      <a href="#feats" data-page="feats">✦ <span>Черты</span></a>
+      <a href="#spells" data-page="spells">✧ <span>Заклинания</span></a>
+      <a href="#glossary" data-page="glossary">☷ <span>Глоссарий</span></a>
+      <a href="#bestiary" data-page="bestiary">♞ <span>Бестиарий</span></a>
+      <a href="#magic-items" data-page="magic-items">◇ <span>Магические предметы</span></a>
+      <a href="#equipment" data-page="equipment">⚒ <span>Снаряжение</span></a>
+    </div>
+    <div class="nav-group"><div class="group-label">ДОПОЛНИТЕЛЬНО</div>
+      <a href="#beginner" data-page="beginner">◈ <span>Новичку</span></a>
+      <a href="#articles" data-page="articles">▧ <span>Статьи</span></a>
+      <a href="#tools" data-page="tools">⚙ <span>Инструменты</span></a>
+    </div>
+  </nav>
+  <div class="sidebar-footer">WreckArchive <span>·</span> 5e24</div>
+</aside>
+<main id="content" tabindex="-1">
+  <div class="breadcrumb"><a href="#home">WreckArchive</a><span>/</span><span id="crumb-current">Главная</span></div>
+  <p class="eyebrow" id="page-kicker">ЭНЦИКЛОПЕДИЯ · 2024</p><h1 id="page-title">Справочник D&D</h1><p id="page-description" class="lead">Разделы пятой редакции Dungeons & Dragons (2024). Содержимое появится позже.</p>
+  <div id="home-panel"><div class="section-heading">Разделы справочника <span>5e24</span></div><div id="category-grid" class="category-grid"></div></div>
+  <div id="empty-panel" class="empty-panel" hidden><div class="empty-symbol">✧</div><h2>Раздел готов к наполнению</h2><p>Здесь появятся материалы D&D 2024. Сейчас доступна навигация и оформление.</p><a href="#home" class="outline-link">← Все разделы</a></div>
+</main></div>
+<dialog id="settings-dialog" class="settings-dialog"><div class="dialog-header"><div><p class="eyebrow">WRECKARCHIVE</p><h2>Настройки оформления</h2></div><button type="button" class="icon-button" data-close aria-label="Закрыть настройки">✕</button></div><div class="dialog-body"><p>Используются те же настройки цвета и шрифта, что и в WreckTrack. Выбор сохраняется между посещениями.</p><h3>Цвет интерфейса</h3><div id="accent-choices" class="choice-grid"></div><h3>Шрифт</h3><div id="font-choices" class="choice-grid"></div></div></dialog>
+<dialog id="account-dialog" class="settings-dialog"><div class="dialog-header"><h2>Аккаунт Wreck</h2><button type="button" class="icon-button" data-close aria-label="Закрыть">✕</button></div><div class="dialog-body"><p>WreckArchive использует экосистему WreckTrack. Управление учётной записью пока доступно в основном приложении.</p><a class="outline-link" href="../">Перейти в WreckTrack →</a></div></dialog>
+<script src="./archive.js" defer></script></body></html>
