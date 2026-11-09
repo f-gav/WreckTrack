@@ -103,5 +103,6 @@ test('Death Knight reference remains readable on narrow screens',async({page})=>
  await expect(page.locator('.class-table-scroll')).toBeVisible();
  await expect(page.locator('#settings-button')).toBeVisible();
  await page.locator('#settings-button').click();
+ await expect(page.locator('#settings-dialog')).toHaveAttribute('open','');
  await expect(page.locator('#settings-dialog')).toBeVisible();
 });
