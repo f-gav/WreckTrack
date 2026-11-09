@@ -171,35 +171,127 @@ function closeSidebar(){sidebar.classList.remove('is-open');backdrop.hidden=true
 hamburger.addEventListener('click',()=>{const opening=!sidebar.classList.contains('is-open');sidebar.classList.toggle('is-open',opening);backdrop.hidden=!opening;hamburger.setAttribute('aria-expanded',String(opening))});
 backdrop.addEventListener('click',closeSidebar);
 window.addEventListener('hashchange',route);
-const switchButton=$('project-switch'),projectMenu=$('project-menu');
-function closeProject(){projectMenu.hidden=true;switchButton.setAttribute('aria-expanded','false')}
-switchButton.addEventListener('click',()=>{const opening=projectMenu.hidden;projectMenu.hidden=!opening;switchButton.setAttribute('aria-expanded',String(opening))});
-document.addEventListener('click',e=>{if(!e.target.closest('.brand-wrap'))closeProject()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeProject();closeSidebar();document.querySelectorAll('dialog[open]').forEach(d=>d.close())}});
-const accentColors={gold:['Золотистый','#d6a85f'],blue:['Синий','#4f9de8'],scarlet:['Алый','#ef5b56'],purple:['Фиолетовый','#a879e8']};
-const fonts={georgia:'Georgia',neuzeit:'Neuzeit Antiqua',belarus:'Belarus',ebbe:'Ebbe Regular','old-town':'Old Town'};
-const accentKey='initiative-accent-v1',fontKey='initiative-display-font-v1';
+// Header project menu is provided by the same project-switcher module as WreckTrack.
+document.addEventListener('keydown',event=>{if(event.key==='Escape')closeSidebar()});
+
+const accentColors={
+ gold:['Золотистый','#d6a85f','Золотое оформление WreckTrack'],
+ blue:['Синий','#4f9de8','Синий контраст интерфейса'],
+ scarlet:['Алый','#ef5b56','Алый контраст интерфейса'],
+ purple:['Фиолетовый','#a879e8','Фиолетовый контраст интерфейса']
+};
+const fonts={
+ georgia:['Georgia','Georgia,serif'],
+ neuzeit:['Neuzeit Antiqua',"'Neuzeit Antiqua',Georgia,serif"],
+ belarus:['Belarus',"'Belarus',Georgia,serif"],
+ ebbe:['Ebbe Regular',"'Ebbe Regular','Ebbe',Georgia,serif"],
+ 'old-town':['Old Town',"'Old Town',Georgia,serif"]
+};
+const accentKey='initiative-accent-v1';
+const fontKey='initiative-display-font-v1';
+const densityKey='initiative-density-v1';
 const read=(key,fallback)=>{try{return localStorage.getItem(key)||fallback}catch{return fallback}};
-const save=(key,value)=>{try{localStorage.setItem(key,value)}catch{}};
+const save=(key,value)=>{try{localStorage.setItem(key,String(value));return true}catch{return false}};
+const currentAccent=()=>accentColors[read(accentKey,'gold')]?read(accentKey,'gold'):'gold';
+const currentFont=()=>fonts[read(fontKey,'georgia')==='made-winter'?'old-town':read(fontKey,'georgia')]?(read(fontKey,'georgia')==='made-winter'?'old-town':read(fontKey,'georgia')):'georgia';
+const currentDensity=()=>{const n=Number(read(densityKey,'0'));return Number.isInteger(n)&&n>=0&&n<=2?n:0};
+const status=$('save-status');
+const showSaveStatus=message=>{
+ if(!status)return;
+ status.dataset.state='saved';
+ status.title=message||'Настройки оформления сохранены в этом браузере';
+ $('save-status-label').textContent='Настройки сохранены';
+};
 function applyAppearance(){
- const accent=read(accentKey,'gold'),font=read(fontKey,'georgia');
- document.documentElement.dataset.accent=accentColors[accent]&&accent!=='gold'?accent:'';
- document.documentElement.dataset.font=fonts[font]&&font!=='georgia'?font:'';
- document.querySelectorAll('[data-accent]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.accent===(accentColors[accent]?accent:'gold'))));
- document.querySelectorAll('[data-font]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.font===(fonts[font]?font:'georgia'))));
+ const accent=currentAccent(),font=currentFont(),density=currentDensity();
+ document.documentElement.dataset.accent=accent==='gold'?'':accent;
+ document.documentElement.dataset.font=font==='georgia'?'':font;
+ document.documentElement.dataset.density=density?String(density):'';
+ document.querySelectorAll('[data-accent]').forEach(b=>{const chosen=b.dataset.accent===accent;b.setAttribute('aria-pressed',String(chosen));b.classList.toggle('current',chosen);const state=b.querySelector('.accent-state');if(state)state.textContent=chosen?'Выбрано':''});
+ document.querySelectorAll('[data-font]').forEach(b=>{const chosen=b.dataset.font===font;b.setAttribute('aria-pressed',String(chosen));b.classList.toggle('current',chosen);const state=b.querySelector('.font-state');if(state)state.textContent=chosen?'Выбрано':''});
+ const slider=$('interface-density');slider.value=String(density);
+ $('interface-density-label').textContent=['Обычная','Компактная','Плотная'][density];
 }
-for(const [id,[label,color]] of Object.entries(accentColors)){
- const b=document.createElement('button');b.type='button';b.className='choice';b.dataset.accent=id;b.innerHTML='<span class="swatch"></span><span></span>';b.querySelector('.swatch').style.setProperty('--swatch',color);b.lastElementChild.textContent=label;b.addEventListener('click',()=>{save(accentKey,id);applyAppearance()});$('accent-choices').append(b);
+const colorGrid=$('accent-choices');
+for(const [id,[name,color,description]] of Object.entries(accentColors)){
+ const button=document.createElement('button');
+ button.type='button';button.className='accent-choice';button.dataset.accent=id;
+ button.style.setProperty('--choice',color);
+ const swatch=document.createElement('span');swatch.className='accent-swatch';swatch.setAttribute('aria-hidden','true');
+ const copy=document.createElement('span');copy.className='accent-copy';
+ const strong=document.createElement('strong');strong.textContent=name;
+ const small=document.createElement('span');small.textContent=description;
+ const state=document.createElement('span');state.className='accent-state';
+ copy.append(strong,small);button.append(swatch,copy,state);
+ button.addEventListener('click',()=>{save(accentKey,id);applyAppearance();showSaveStatus()});
+ colorGrid.append(button);
 }
-for(const [id,label] of Object.entries(fonts)){
- const b=document.createElement('button');b.type='button';b.className='choice';b.dataset.font=id;b.textContent=label;b.addEventListener('click',()=>{save(fontKey,id);applyAppearance()});$('font-choices').append(b);
+const fontGrid=$('font-choices');
+for(const [id,[name,style]] of Object.entries(fonts)){
+ const button=document.createElement('button');button.type='button';button.className='font-choice';button.dataset.font=id;
+ const copy=document.createElement('span');copy.className='font-copy';
+ const strong=document.createElement('strong');strong.textContent=name;
+ const sample=document.createElement('span');sample.className='font-sample';sample.textContent='WreckArchive';sample.style.fontFamily=style;
+ const state=document.createElement('span');state.className='font-state';
+ copy.append(strong,sample);button.append(copy,state);
+ button.addEventListener('click',()=>{save(fontKey,id);applyAppearance();showSaveStatus()});
+ fontGrid.append(button);
 }
-applyAppearance();window.addEventListener('storage',e=>{if([accentKey,fontKey].includes(e.key))applyAppearance()});
-$('settings-button').addEventListener('click',()=>$('settings-dialog').showModal());
-$('account-button').addEventListener('click',()=>$('account-dialog').showModal());
-document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
-document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d)d.close()}));
-// Bind global header controls before rendering deep-linked class pages.
-// A page-specific rendering error must not disable settings or account controls.
-route();
+$('interface-density').addEventListener('input',event=>{save(densityKey,event.target.value);applyAppearance();showSaveStatus()});
+applyAppearance();showSaveStatus();
+window.addEventListener('storage',event=>{if([accentKey,fontKey,densityKey].includes(event.key))applyAppearance()});
+window.addEventListener('pageshow',applyAppearance);
+
+$('settings-button').addEventListener('click',()=>{applyAppearance();$('settings-dialog').showModal()});
+
+// Display the real shared Supabase account identity without duplicating
+// WreckTrack's cloud-data/sync/sign-out logic in this read-only companion.
+const SUPABASE_URL='https://bdozzhlmuaswqeyawzdr.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_7TKD0bDzOpr2_Q8sBz8HSw_jiD_FMyo';
+const authClient=window.supabase?.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{
+ auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}
+})||null;
+let authSession=null;
+function updateAccountUi(){
+ const user=authSession?.user,email=user?.email||'',avatarUrl=user?.user_metadata?.avatar_url||user?.user_metadata?.picture||'';
+ const button=$('account-button'),avatar=$('account-avatar');
+ $('account-label').textContent=email||'Войти';
+ button.title=email||'Войти через Google';
+ button.setAttribute('aria-label',email?'Аккаунт: '+email:'Войти в аккаунт');
+ avatar.replaceChildren();
+ avatar.classList.toggle('has-image',Boolean(avatarUrl));
+ if(avatarUrl){
+  const image=document.createElement('img');image.src=avatarUrl;image.alt='';image.referrerPolicy='no-referrer';
+  image.addEventListener('error',()=>{avatar.classList.remove('has-image');avatar.textContent='●'},{once:true});
+  avatar.append(image);
+ }else avatar.textContent='●';
+ const signedIn=Boolean(user);
+ $('auth-login-view').hidden=signedIn;
+ $('auth-account-view').hidden=!signedIn;
+ $('auth-title').textContent=signedIn?'Аккаунт':'Вход в аккаунт';
+ if(signedIn){
+  $('auth-account-email').textContent=email||'Аккаунт';
+  const modalAvatar=$('auth-avatar');modalAvatar.replaceChildren();
+  if(avatarUrl){const img=document.createElement('img');img.src=avatarUrl;img.alt='';img.referrerPolicy='no-referrer';modalAvatar.append(img)}else modalAvatar.textContent='●';
+ }
+}
+$('account-button').addEventListener('click',()=>{updateAccountUi();$('auth-dialog').showModal()});
+$('auth-google').addEventListener('click',async()=>{
+ const status=$('auth-status');
+ if(!authClient){status.textContent='Сервис входа недоступен. Откройте WreckTrack и войдите в аккаунт.';return}
+ status.textContent='Открываем вход через Google…';
+ $('auth-google').disabled=true;
+ try{
+  const {error}=await authClient.auth.signInWithOAuth({provider:'google',options:{redirectTo:new URL('../',document.baseURI).href}});
+  if(error)status.textContent=error.message||'Не удалось выполнить вход';
+ }catch(error){status.textContent=error.message||'Не удалось выполнить вход'}
+ finally{$('auth-google').disabled=false}
+});
+if(authClient){
+ authClient.auth.onAuthStateChange((_event,session)=>{authSession=session;updateAccountUi()});
+ authClient.auth.getSession().then(({data})=>{authSession=data?.session||null;updateAccountUi()}).catch(()=>updateAccountUi());
+}
+updateAccountUi();
+document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>button.closest('dialog')?.close()));
+document.querySelectorAll('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()}));
 })();
