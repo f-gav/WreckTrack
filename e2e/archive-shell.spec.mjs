@@ -70,6 +70,8 @@ test('Warcraft species empty state and class search work on mobile',async({page}
  await expect(page.locator('#catalog-no-results')).toBeVisible();
  await page.locator('#mobile-menu').click();
  await page.locator('[data-page="classes"]').click();
+ await expect(page).toHaveURL(/#classes$/);
+ await expect(page.locator('#page-title')).toHaveText('Классы');
  await page.locator('#archive-search').fill('неизвестный');
  await expect(page.locator('.warcraft-card')).toHaveCount(0);
  await page.locator('#archive-search').fill('Death');
