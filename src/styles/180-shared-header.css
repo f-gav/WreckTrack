@@ -1,0 +1,23 @@
+/* Single final header skin used by WreckTrack and WreckArchive.
+   The markup of Archive is generated from WreckTrack's real header. */
+.topbar{height:72px;padding:0 clamp(18px,4vw,52px);border-bottom:1px solid var(--line);background:rgba(13,13,16,.88);backdrop-filter:blur(18px);display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:30}
+.topbar .brand{display:flex;align-items:center;gap:11px;border:0;background:transparent;padding:0;cursor:pointer;flex:0 1 auto;min-width:0;color:var(--gold,var(--accent));white-space:nowrap}
+.topbar .brand-mark{width:37px;height:37px;flex:0 0 37px;border:0;border-radius:10px;display:grid;place-items:center;overflow:hidden}
+.topbar .brand-mark img{width:37px;height:37px;display:block;object-fit:contain}
+.topbar .brand-name{font:600 18px var(--display-font,Georgia,serif);letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis}
+.topbar .save-status{margin-left:auto;min-height:34px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:rgba(18,18,22,.72);color:var(--muted);display:flex;align-items:center;gap:7px;font:600 12px Arial,sans-serif;white-space:nowrap;flex:0 0 auto}
+.topbar .save-status-dot{width:7px;height:7px;border-radius:50%;background:#7fb98a;box-shadow:0 0 0 3px rgba(127,185,138,.1)}
+.topbar .save-status-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.topbar .topbar-settings-button{flex:0 0 42px;width:42px;height:42px;padding:8px;border:1px solid var(--gold2,rgba(var(--accent-rgb),.5));border-radius:10px;background:rgba(var(--accent-rgb),.06);color:var(--gold,var(--accent));cursor:pointer;display:grid;place-items:center}
+.topbar .topbar-settings-button:hover,.topbar .topbar-settings-button:focus-visible{border-color:var(--gold,var(--accent));background:rgba(var(--accent-rgb),.12);outline:none}
+.topbar .topbar-settings-button svg{width:24px;height:24px;display:block;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.topbar .account-button{flex:0 0 auto;max-width:230px;min-height:40px;padding:8px 12px;border:1px solid var(--gold2,rgba(var(--accent-rgb),.5));border-radius:10px;background:rgba(var(--accent-rgb),.06);color:var(--gold,var(--accent));cursor:pointer;display:flex;align-items:center;gap:8px}
+.topbar .account-button:hover,.topbar .account-button:focus-visible{border-color:var(--gold,var(--accent));background:rgba(var(--accent-rgb),.12);outline:none}
+.topbar .account-glyph{width:21px;height:21px;border:1px solid currentColor;border-radius:50%;display:grid;place-items:center;font-size:11px;overflow:hidden;flex:0 0 21px}
+.topbar .account-glyph img{width:100%;height:100%;display:block;object-fit:cover}
+.topbar .account-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.archive-menu-toggle{display:none;flex:0 0 auto;width:36px;height:36px;padding:5px;border:1px solid var(--gold2,rgba(var(--accent-rgb),.5));border-radius:9px;background:rgba(var(--accent-rgb),.06);color:var(--gold,var(--accent));cursor:pointer;font-size:21px;align-items:center;justify-content:center}
+.archive-menu-toggle:focus-visible{outline:2px solid var(--gold,var(--accent));outline-offset:2px}
+@media(max-width:760px){.topbar{gap:7px;padding-inline:12px}.topbar .save-status{min-width:34px;width:34px;padding:0;justify-content:center}.topbar .topbar-settings-button{flex-basis:34px;width:34px;height:34px;padding:5px;border-radius:8px}.topbar .topbar-settings-button svg{width:21px;height:21px}.archive-menu-toggle{display:flex}}
+@media(max-width:600px){.topbar .account-button{width:34px;min-width:34px;min-height:34px;height:34px;padding:5px;justify-content:center}.topbar .account-label{display:none}.topbar .brand-mark,.topbar .brand-mark img{width:32px;height:32px;flex-basis:32px}.topbar .brand-name{font-size:15px;letter-spacing:0}}
+@media(max-width:380px){.topbar{gap:5px;padding-inline:7px}.topbar .brand{gap:5px}.topbar .brand-name{font-size:13px}.topbar .save-status{width:30px;min-width:30px}.topbar .topbar-settings-button,.topbar .account-button{width:32px;min-width:32px;flex-basis:32px}.archive-menu-toggle{width:32px;height:32px}}
