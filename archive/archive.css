@@ -5,3 +5,40 @@
 /* Reference catalog: compact source cards and readable detail pages inspired by DnD.su. */
 .archive-toolbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 30px}.archive-search-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}#archive-search{flex:1;min-width:180px;max-width:520px;border:1px solid var(--line);border-radius:8px;padding:12px 15px;background:var(--panel);color:#f1ece4;outline:none}#archive-search:focus-visible{border-color:var(--accent)}.archive-count{font-size:12px;color:var(--muted)}.catalog-group h2{font:32px/1.2 system-ui,sans-serif;margin:0 0 8px}.catalog-intro{margin:0 0 18px;color:var(--muted)}.warcraft-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:12px}.warcraft-card{display:flex;flex-direction:column;min-height:126px;padding:14px 16px;border-radius:7px;border:1px solid var(--line);background:#25232a;transition:border-color .15s,background .15s}.warcraft-card:hover,.warcraft-card:focus-visible{border-color:var(--accent);background:#302a30}.warcraft-card strong{font:600 22px/1.25 system-ui,sans-serif}.warcraft-card em{font-size:14px;margin-top:3px;color:#cbc4bd}.warcraft-card small{margin-top:auto;padding-top:14px;font-size:12px;color:var(--muted)}.catalog-no-results{padding:22px 0;color:var(--muted)}.detail-back{display:inline-block;color:var(--accent);margin-bottom:22px}.detail-heading{display:flex;align-items:start;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:30px}.detail-heading h2{font:500 clamp(32px,4vw,52px)/1.15 var(--display-font);margin:0 0 8px}.detail-original{font-style:italic;color:var(--muted);margin:0}.source-pill{font-size:12px;color:var(--accent);border:1px solid rgba(var(--accent-rgb),.45);padding:7px 10px;border-radius:7px;white-space:nowrap}.detail-layout{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:30px;align-items:start}.detail-section{padding:0 0 25px;margin:0 0 27px;border-bottom:1px solid var(--line)}.detail-section h3{font-size:25px;margin:0 0 12px}.detail-section p{line-height:1.75;color:#c5c0c6;max-width:72ch}.detail-aside{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:19px}.detail-aside h3{font-size:22px;margin:0 0 16px}.detail-aside dl{margin:0}.detail-aside dt{font-size:12px;color:var(--muted);margin-top:14px}.detail-aside dd{margin:3px 0 0}.warcraft-panel[hidden],.detail-panel[hidden]{display:none!important}
 @media(max-width:760px){.detail-layout{grid-template-columns:1fr}.detail-heading{flex-wrap:wrap}.source-pill{white-space:normal}.warcraft-cards{grid-template-columns:repeat(auto-fill,minmax(155px,1fr))}.warcraft-card strong{font-size:18px}.catalog-group h2{font-size:27px}}
+
+/* Death Knight reading view: large readable reference typography and striped tables. */
+#detail-panel{--paper:#eae3d9;--ink:#2e2927;--paper-muted:#665e58;color:var(--ink);background:var(--paper);border-radius:10px;padding:clamp(16px,2.5vw,30px);border:1px solid rgba(var(--accent-rgb),.35)}
+#detail-panel .detail-back{color:#725b4a;font-size:14px}
+#detail-panel .detail-heading{border-bottom:1px solid #c9bfb4;margin-bottom:12px}
+#detail-panel .detail-heading h2{font:600 clamp(29px,3vw,42px)/1.2 var(--display-font)}
+#detail-panel .detail-original{color:var(--paper-muted)}
+#detail-panel .eyebrow{color:#775b48}
+#detail-panel .source-pill{color:#675039;border-color:#b9a88f}
+.class-tabs,.class-subtabs{display:flex;gap:5px;flex-wrap:wrap;border-bottom:1px solid #c9bfb4;padding-bottom:7px;margin-bottom:8px}
+.class-tabs button,.class-subtabs button{border:1px solid #c5b9a9;border-radius:5px;padding:7px 12px;background:#d8d0c4;color:#40382f;font-size:14px}
+.class-subtabs button{font-size:13px;padding:5px 10px}
+.class-tabs button[aria-pressed=true],.class-subtabs button[aria-pressed=true]{background:#a8a47c;border-color:#8d8a65;color:#1f241c}
+.class-tabs button:hover,.class-subtabs button:hover{border-color:#7b674f}
+.class-table-scroll{overflow-x:auto;margin:14px 0 22px;max-width:100%;border:1px solid #cfc7bd;border-radius:4px}
+.class-level-table{border-collapse:collapse;min-width:820px;width:100%;font-size:13px;color:#302d2a}
+.class-level-table caption{text-align:left;font:600 20px var(--display-font);padding:10px 0;color:#47372e;caption-side:top;background:var(--paper)}
+.class-level-table th,.class-level-table td{padding:8px 9px;border-right:1px solid #d0c8bf;border-bottom:1px solid #d0c8bf;text-align:center;vertical-align:middle}
+.class-level-table th{background:#d2cac0;font-weight:600}
+.class-level-table tbody tr:nth-child(odd){background:#e3dbd0}
+.class-level-table tbody tr:nth-child(even){background:#f1ebe2}
+.class-level-table .feature-cell{text-align:left;min-width:280px}
+.class-columns{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:25px;align-items:start}
+.class-abilities{min-width:0}
+.class-feature{margin:0 0 18px}
+.class-feature h3{font:600 19px/1.35 var(--display-font);color:#795045;margin:0 0 6px}
+.class-feature p,.rune-summary{font:15px/1.7 system-ui,sans-serif;margin:0;color:#393431}
+.rune-summary{padding:12px 14px;margin:0 0 20px;background:#e0d4c6;border-left:3px solid #8d745d}
+.class-facts section{padding:15px;background:#e1d8cd;border:1px solid #c6b9aa;border-radius:6px;margin-bottom:12px}
+.class-facts h3{font:600 19px var(--display-font);margin:0 0 8px;color:#604b40}
+.class-facts p{font-size:13px;line-height:1.65;margin:0}
+.class-facts dl{margin:0}.class-facts dt{font-size:12px;border-bottom:1px solid #b9ad9e;padding:9px 0 3px;color:#74665b}.class-facts dd{font-size:14px;margin:4px 0 8px}
+.class-attribution{font-size:12px!important;color:#665e58}.class-attribution a,.class-other-tab a{color:#704b36;text-decoration:underline}
+.class-other-tab{padding:20px 0;min-height:250px}.class-other-tab h3{font:600 23px var(--display-font)}.class-other-tab p{line-height:1.75}
+.class-reading[hidden],.class-other-tab[hidden],.class-subtabs[hidden]{display:none!important}
+@media(max-width:950px){.class-columns{grid-template-columns:1fr}.class-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.class-facts section{margin:0}.class-attribution{grid-column:1/-1}}
+@media(max-width:600px){#detail-panel{padding:15px;margin:0 -8px}.class-facts{grid-template-columns:1fr}.class-tabs button,.class-subtabs button{font-size:12px;padding:8px}.class-level-table{font-size:12px}.class-feature h3{font-size:18px}.class-feature p{font-size:14px}}
