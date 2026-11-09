@@ -33,10 +33,23 @@ const jsName='app.'+jsHash+'.js';
 const cssRel='./assets/'+cssName;
 const jsRel='./assets/'+jsName;
 const archiveSource=path.join(root,'archive','index.html');
+const archiveCss=fs.readFileSync(path.join(root,'archive','archive.css'),'utf8');
+const archiveJs=fs.readFileSync(path.join(root,'archive','archive.js'),'utf8');
+const archiveHash=hashText(archiveCss+':'+archiveJs);
+const archiveCssName='archive.'+hashText(archiveCss)+'.css';
+const archiveJsName='archive.'+hashText(archiveJs)+'.js';
 const archiveDist=path.join(dist,'archive');
 fs.mkdirSync(archiveDist,{recursive:true});
-fs.copyFileSync(archiveSource,path.join(archiveDist,'index.html'));
-for(const name of ['archive.css','archive.js'])fs.copyFileSync(path.join(root,'archive',name),path.join(archiveDist,name));
+const archiveHtml=fs.readFileSync(archiveSource,'utf8')
+  .replace('./archive.css','./'+archiveCssName)
+  .replace('./archive.js','./'+archiveJsName)
+  .replace('<head>','<head><meta name="wreckarchive-build" content="'+archiveHash+'">');
+fs.writeFileSync(path.join(archiveDist,'index.html'),archiveHtml);
+for(const file of fs.readdirSync(archiveDist)){
+  if(/^archive\.[0-9a-f]{12}\.(css|js)$/.test(file))fs.rmSync(path.join(archiveDist,file));
+}
+fs.writeFileSync(path.join(archiveDist,archiveCssName),archiveCss);
+fs.writeFileSync(path.join(archiveDist,archiveJsName),archiveJs);
 const directRoutes=['rooms','bestiary','library','tokenator','settings'];
 
 fs.mkdirSync(assets,{recursive:true});
