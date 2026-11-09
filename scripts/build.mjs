@@ -32,6 +32,10 @@ const cssName='app.'+cssHash+'.css';
 const jsName='app.'+jsHash+'.js';
 const cssRel='./assets/'+cssName;
 const jsRel='./assets/'+jsName;
+const archiveSource=path.join(root,'archive','index.html');
+const archiveDist=path.join(dist,'archive');
+fs.mkdirSync(archiveDist,{recursive:true});
+fs.copyFileSync(archiveSource,path.join(archiveDist,'index.html'));
 const directRoutes=['rooms','bestiary','library','tokenator','settings'];
 
 fs.mkdirSync(assets,{recursive:true});
