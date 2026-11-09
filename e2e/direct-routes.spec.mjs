@@ -45,6 +45,7 @@ test('section navigation updates URL and direct route survives reload',async({pa
   await page.locator('#brand-home').click();
   const menu=page.getByRole('menu',{name:'Приложения Wreck'});
   await expect(menu).toBeVisible();
+  await expect(menu).toHaveJSProperty('popover', 'manual');
   await expect(menu.getByRole('menuitem')).toHaveCount(2);
   await expect(menu.getByText('WreckLib')).toHaveCount(0);
   await menu.getByRole('menuitem',{name:/WreckTrack/}).click();
@@ -71,4 +72,14 @@ test('project switcher opens the independent WreckArchive shell and returns to W
   await page.getByRole('menuitem',{name:/WreckTrack/}).click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.locator('main h1')).toHaveText('WreckTrack');
+});
+
+test('project menu from a nested section points to the root archive',async({page})=>{
+  await page.goto('/bestiary/');
+  await page.locator('#brand-home').click();
+  const menu=page.getByRole('menu',{name:'Приложения Wreck'});
+  await expect(menu).toBeVisible();
+  await expect(menu.getByRole('menuitem',{name:/WreckArchive/})).toHaveAttribute('href',/\/archive\/$/);
+  await menu.getByRole('menuitem',{name:/WreckArchive/}).click();
+  await expect(page).toHaveURL(/\/archive\/$/);
 });
