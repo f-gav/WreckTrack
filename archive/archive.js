@@ -9,10 +9,7 @@ const sections=[
 ['glossary','Глоссарий','☷','Термины и правила'],
 ['bestiary','Бестиарий','♞','Существа и их характеристики'],
 ['magic-items','Магические предметы','◇','Волшебное снаряжение'],
-['equipment','Снаряжение','⚒','Оружие, доспехи и предметы'],
-['beginner','Новичку','◈','Основы игры'],
-['articles','Статьи','▧','Полезные материалы'],
-['tools','Инструменты','⚙','Вспомогательные инструменты']];
+['equipment','Снаряжение','⚒','Оружие, доспехи и предметы']];
 const $=id=>document.getElementById(id);
 const grid=$('category-grid');
 for(const [id,title,icon,description] of sections.slice(0,9)){
@@ -25,7 +22,7 @@ const route=()=>{
  $('page-title').textContent=selected?title:'Справочник D&D';
  $('crumb-current').textContent=title;
  $('page-kicker').textContent=selected?'СПРАВОЧНИК · 2024':'ЭНЦИКЛОПЕДИЯ · 2024';
- $('page-description').textContent=selected?selected[3]+'.':'Разделы пятой редакции Dungeons & Dragons (2024). Содержимое появится позже.';
+ $('page-description').textContent=selected?selected[3]+'.':'Разделы D&D 2024. Классы и виды World of Warcraft появятся в следующих обновлениях.';
  $('home-panel').hidden=!!selected;$('empty-panel').hidden=!selected;
  document.querySelectorAll('[data-page]').forEach(a=>{const active=a.dataset.page===(selected?.[0]||'home');a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
  document.title=(selected?title+' — ':'')+'WreckArchive · D&D 2024';

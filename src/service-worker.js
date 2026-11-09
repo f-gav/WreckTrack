@@ -43,6 +43,14 @@ self.addEventListener('fetch',event=>{
   if(request.method!=='GET')return;
   const url=new URL(request.url);
   if(url.origin!==self.location.origin)return;
+  // Archive is a separate child site. Never serve a stale Archive document or
+  // assets from WreckTrack's service-worker cache; the browser handles it online.
+  if(url.pathname.includes('/archive/')){
+    if(request.mode==='navigate'){
+      event.respondWith(fetch(new Request(request,{cache:'no-store'})));
+    }
+    return;
+  }
   if(request.mode==='navigate'){
     event.respondWith(fetch(request).then(response=>{
       if(response.ok)caches.open(CACHE_NAME).then(cache=>cache.put(request,response.clone()));
