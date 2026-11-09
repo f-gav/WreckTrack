@@ -4,6 +4,7 @@ test('Archive desktop sidebar and empty catalog routes',async({page})=>{
  await page.goto('/archive/');
  await expect(page.locator('#sidebar')).toBeVisible();
  await expect(page.locator('.category-card')).toHaveCount(9);
+ if(await page.locator('#mobile-menu').isVisible())await page.locator('#mobile-menu').click();
  await page.locator('[data-page="spells"]').click();
  await expect(page.locator('#page-title')).toHaveText('Заклинания');
  await expect(page.locator('#empty-panel')).toBeVisible();
