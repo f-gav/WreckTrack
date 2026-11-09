@@ -50,3 +50,30 @@ test('Archive only exposes reference sections and cache-busted assets',async({pa
  expect(css).toMatch(/archive\.[0-9a-f]{12}\.css$/);
  expect(js).toMatch(/archive\.[0-9a-f]{12}\.js$/);
 });
+
+test('Warcraft classes catalog opens a DnD-style detail page and returns',async({page})=>{
+ await page.goto('/archive/#classes');
+ await expect(page.locator('#warcraft-panel')).toBeVisible();
+ await expect(page.locator('#warcraft-cards .warcraft-card')).toHaveCount(1);
+ await page.locator('.warcraft-card').click();
+ await expect(page).toHaveURL(/#classes\/death-knight$/);
+ await expect(page.locator('#detail-panel')).toBeVisible();
+ await expect(page.locator('#detail-title')).toHaveText('Рыцарь смерти');
+ await expect(page.locator('#detail-original')).toHaveText('Death Knight');
+ await expect(page.locator('#detail-panel')).toContainText('Ожидает наполнения');
+ await page.locator('#detail-back').click();
+ await expect(page.locator('#warcraft-panel')).toBeVisible();
+});
+test('Warcraft species empty state and class search work on mobile',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto('/archive/#species');
+ await expect(page.locator('#catalog-no-results')).toBeVisible();
+ await page.locator('#mobile-menu').click();
+ await page.locator('[data-page="classes"]').click();
+ await expect(page).toHaveURL(/#classes$/);
+ await expect(page.locator('#page-title')).toHaveText('Классы');
+ await page.locator('#archive-search').fill('неизвестный');
+ await expect(page.locator('.warcraft-card')).toHaveCount(0);
+ await page.locator('#archive-search').fill('Death');
+ await expect(page.locator('.warcraft-card')).toHaveCount(1);
+});

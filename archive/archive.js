@@ -17,17 +17,59 @@ for(const [id,title,icon,description] of sections.slice(0,9)){
  const symbol=document.createElement('span');symbol.className='category-icon';symbol.textContent=icon;
  const copy=document.createElement('span');const name=document.createElement('strong');name.textContent=title;const sub=document.createElement('small');sub.textContent=description;copy.append(name,sub);a.append(symbol,copy);grid.append(a);
 }
+// Only entries with independently identified names are shown; no mechanics are invented.
+const warcraftEntries={
+ classes:[{id:'death-knight',name:'Рыцарь смерти',original:'Death Knight',description:'Новый класс в материалах World of Warcraft для D&D 5e24.'}],
+ species:[]
+};
+const search=$('archive-search');
+const renderCatalog=(section)=>{
+ const query=search.value.trim().toLocaleLowerCase('ru');
+ const entries=(warcraftEntries[section]||[]).filter(item=>(item.name+' '+item.original).toLocaleLowerCase('ru').includes(query));
+ const cards=$('warcraft-cards');cards.replaceChildren();
+ for(const item of entries){
+  const a=document.createElement('a');a.className='warcraft-card';a.href='#'+section+'/'+item.id;
+  const name=document.createElement('strong');name.textContent=item.name;
+  const original=document.createElement('em');original.textContent=item.original;
+  const source=document.createElement('small');source.textContent='World of Warcraft';
+  a.append(name,original,source);cards.append(a);
+ }
+ $('archive-count').textContent=entries.length+' материалов';
+ $('catalog-no-results').hidden=entries.length!==0;
+ $('catalog-no-results').textContent=query?'Ничего не найдено.':'Подтверждённые материалы появятся здесь после публикации.';
+};
 const route=()=>{
- const id=decodeURIComponent(location.hash.slice(1)||'home');const selected=sections.find(s=>s[0]===id);const title=selected?.[1]||'Главная';
- $('page-title').textContent=selected?title:'Справочник D&D';
+ const raw=decodeURIComponent(location.hash.slice(1)||'home');
+ const [id,entryId]=raw.split('/');
+ const selected=sections.find(s=>s[0]===id);
+ const entry=(warcraftEntries[id]||[]).find(item=>item.id===entryId);
+ const detail=Boolean(entry);
+ const catalog=id==='classes'||id==='species';
+ const title=entry?.name||selected?.[1]||'Справочник D&D';
+ $('page-title').textContent=title;
  $('crumb-current').textContent=title;
- $('page-kicker').textContent=selected?'СПРАВОЧНИК · 2024':'ЭНЦИКЛОПЕДИЯ · 2024';
- $('page-description').textContent=selected?selected[3]+'.':'Разделы D&D 2024. Классы и виды World of Warcraft появятся в следующих обновлениях.';
- $('home-panel').hidden=!!selected;$('empty-panel').hidden=!selected;
- document.querySelectorAll('[data-page]').forEach(a=>{const active=a.dataset.page===(selected?.[0]||'home');a.classList.toggle('active',active);if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
- document.title=(selected?title+' — ':'')+'WreckArchive · D&D 2024';
+ $('page-kicker').textContent=detail?'WORLD OF WARCRAFT · 2024':selected?'СПРАВОЧНИК · 2024':'ЭНЦИКЛОПЕДИЯ · 2024';
+ $('page-description').textContent=detail?entry.description:selected?selected[3]+'.':'Разделы D&D 2024. Классы и виды World of Warcraft появятся в следующих обновлениях.';
+ $('home-panel').hidden=!!selected;
+ $('warcraft-panel').hidden=!catalog||detail;
+ $('detail-panel').hidden=!detail;
+ $('empty-panel').hidden=!selected||catalog;
+ if(catalog&&!detail){search.value='';renderCatalog(id)}
+ if(detail){
+  $('detail-title').textContent=entry.name;
+  $('detail-original').textContent=entry.original;
+  $('detail-overview').textContent=entry.description+' Здесь будет собрана проверенная информация об особенностях и правилах.';
+  $('detail-back').href='#'+id;
+ }
+ document.querySelectorAll('[data-page]').forEach(a=>{
+  const active=a.dataset.page===(selected?.[0]||'home');
+  a.classList.toggle('active',active);
+  if(active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
+ });
+ document.title=title+' — WreckArchive · D&D 2024';
  closeSidebar();
 };
+search.addEventListener('input',()=>{const id=decodeURIComponent(location.hash.slice(1)||'home').split('/')[0];if(id==='classes'||id==='species')renderCatalog(id)});
 const sidebar=$('sidebar'),backdrop=$('mobile-backdrop'),hamburger=$('mobile-menu');
 function closeSidebar(){sidebar.classList.remove('is-open');backdrop.hidden=true;hamburger.setAttribute('aria-expanded','false')}
 hamburger.addEventListener('click',()=>{const opening=!sidebar.classList.contains('is-open');sidebar.classList.toggle('is-open',opening);backdrop.hidden=!opening;hamburger.setAttribute('aria-expanded',String(opening))});
