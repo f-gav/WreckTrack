@@ -36,6 +36,7 @@ const archiveSource=path.join(root,'archive','index.html');
 const archiveDist=path.join(dist,'archive');
 fs.mkdirSync(archiveDist,{recursive:true});
 fs.copyFileSync(archiveSource,path.join(archiveDist,'index.html'));
+for(const name of ['archive.css','archive.js'])fs.copyFileSync(path.join(root,'archive',name),path.join(archiveDist,name));
 const directRoutes=['rooms','bestiary','library','tokenator','settings'];
 
 fs.mkdirSync(assets,{recursive:true});
