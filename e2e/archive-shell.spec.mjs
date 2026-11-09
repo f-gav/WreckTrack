@@ -138,7 +138,8 @@ test('Theme and heading font persist both ways when switching projects',async({p
  await page.locator('#settings-button').click();
  await page.locator('[data-accent="purple"]').click();
  await page.locator('[data-font="neuzeit"]').click();
- await page.locator('#interface-density').fill('1');
+ await page.locator('#interface-density').focus();
+ await page.keyboard.press('ArrowRight');
  await expect(page.locator('html')).toHaveAttribute('data-accent','purple');
  await expect(page.locator('html')).toHaveAttribute('data-font','neuzeit');
  await page.locator('#settings-dialog [data-close]').click();
