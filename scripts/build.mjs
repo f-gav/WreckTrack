@@ -33,14 +33,31 @@ const jsName='app.'+jsHash+'.js';
 const cssRel='./assets/'+cssName;
 const jsRel='./assets/'+jsName;
 const archiveSource=path.join(root,'archive','index.html');
-const archiveCss=fs.readFileSync(path.join(root,'archive','archive.css'),'utf8');
-const archiveJs=fs.readFileSync(path.join(root,'archive','archive.js'),'utf8');
+const sharedSwitcher=fs.readFileSync(path.join(src,'ui','project-switcher.js'),'utf8');
+const sharedSwitcherCss=fs.readFileSync(path.join(src,'styles','170-project-switcher.css'),'utf8');
+const sharedHeaderCss=fs.readFileSync(path.join(src,'styles','180-shared-header.css'),'utf8');
+const archiveCss=fs.readFileSync(path.join(root,'archive','archive.css'),'utf8')+'\n'+sharedHeaderCss+'\n'+sharedSwitcherCss;
+const archiveJs=fs.readFileSync(path.join(root,'archive','archive.js'),'utf8')+'\n'+sharedSwitcher;
 const archiveHash=hashText(archiveCss+':'+archiveJs);
 const archiveCssName='archive.'+hashText(archiveCss)+'.css';
 const archiveJsName='archive.'+hashText(archiveJs)+'.js';
+// Derive Archive's topbar directly from the canonical WreckTrack header.
+const sourceHeader=template.match(/<header class="topbar">[\s\S]*?<\/header>/)?.[0];
+if(!sourceHeader)throw new Error('Missing WreckTrack topbar template');
+const archiveHeader=sourceHeader
+  .replace(/<nav class="topnav"[^>]*>[\s\S]*?<\/nav>/,'')
+  .replace('<header class="topbar">','<header class="topbar"><button id="mobile-menu" class="archive-menu-toggle" type="button" aria-label="Открыть боковое меню" aria-expanded="false">☰</button>')
+  .replace('id="brand-home"','id="project-switch"')
+  .replace('aria-label="На главный экран"','aria-label="Переключить приложение"')
+  .replace('<span class="brand-name">WreckTrack</span>','<span class="brand-name">WreckArchive</span>')
+  .replace('src="./icon64x64.png','src="../icon64x64.png')
+  .replace('class="topbar-settings-button"','class="topbar-settings-button" id="settings-button"')
+  .replace('title="Данные сохранены на этом устройстве"','title="Настройки оформления сохранены в этом браузере"')
+  .replace('id="save-status-label">Сохранено','id="save-status-label">Настройки сохранены');
 const archiveDist=path.join(dist,'archive');
 fs.mkdirSync(archiveDist,{recursive:true});
 const archiveHtml=fs.readFileSync(archiveSource,'utf8')
+  .replace('{{WRECK_HEADER}}',archiveHeader)
   .replace('./archive.css','./'+archiveCssName)
   .replace('./archive.js','./'+archiveJsName)
   .replace('<head>','<head><meta name="wreckarchive-build" content="'+archiveHash+'">');
