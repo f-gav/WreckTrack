@@ -59,8 +59,10 @@ test('Warcraft classes catalog opens a DnD-style detail page and returns',async(
  await expect(page).toHaveURL(/#classes\/death-knight$/);
  await expect(page.locator('#detail-panel')).toBeVisible();
  await expect(page.locator('#detail-title')).toHaveText('Рыцарь смерти');
+ await expect(page.locator('#detail-overview')).toContainText('Рыцарь смерти');
  await expect(page.locator('#detail-original')).toHaveText('Death Knight');
- await expect(page.locator('#detail-panel')).toContainText('Ожидает наполнения');
+ await expect(page.locator('#class-level-rows tr')).toHaveCount(20);
+ await expect(page.locator('#class-facts-list')).toContainText('Сила и Харизма');
  await page.locator('#detail-back').click();
  await expect(page.locator('#warcraft-panel')).toBeVisible();
 });
@@ -76,4 +78,32 @@ test('Warcraft species empty state and class search work on mobile',async({page}
  await expect(page.locator('.warcraft-card')).toHaveCount(0);
  await page.locator('#archive-search').fill('Death');
  await expect(page.locator('.warcraft-card')).toHaveCount(1);
+});
+
+test('Death Knight reference has complete level progression and interactive sections',async({page})=>{
+ await page.goto('/archive/#classes/death-knight');
+ await expect(page.locator('#detail-panel')).toBeVisible();
+ await expect(page.locator('#class-level-rows tr')).toHaveCount(20);
+ await expect(page.locator('#class-level-rows tr').first()).toContainText('Лик смерти');
+ await expect(page.locator('#class-level-rows tr').last()).toContainText('Всадник Апокалипсиса');
+ expect(await page.locator('.class-feature').count()).toBeGreaterThan(18);
+ await page.locator('[data-rune="frost"]').click();
+ await expect(page.locator('.rune-summary')).toContainText('холодом');
+ await page.locator('[data-class-tab="description"]').click();
+ await expect(page.locator('#class-reading')).toBeHidden();
+ await expect(page.locator('#class-other-tab')).toContainText('Рыцарь смерти');
+ await page.locator('[data-class-tab="spells"]').click();
+ await expect(page.locator('#class-other-tab')).toContainText('Заклинания Чёрного клинка');
+ await page.locator('[data-class-tab="base"]').click();
+ await expect(page.locator('#class-reading')).toBeVisible();
+});
+test('Death Knight reference remains readable on narrow screens',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto('/archive/#classes/death-knight');
+ await expect(page.locator('#class-level-rows tr')).toHaveCount(20);
+ await expect(page.locator('.class-table-scroll')).toBeVisible();
+ await expect(page.locator('#settings-button')).toBeVisible();
+ await page.locator('#settings-button').click();
+ await expect(page.locator('#settings-dialog')).toHaveAttribute('open','');
+ await expect(page.locator('#settings-dialog')).toBeVisible();
 });
