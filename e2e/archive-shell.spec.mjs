@@ -171,3 +171,26 @@ test('Archive compact mobile header stays inside viewport',async({page})=>{
  const width=await page.evaluate(()=>document.documentElement.scrollWidth);
  expect(width).toBeLessThanOrEqual(361);
 });
+
+test('Project menu is anchored below the logo in both apps, not centered on the screen',async({page})=>{
+ for(const width of [1440,390]){
+  await page.setViewportSize({width,height:900});
+  for(const [route,trigger] of [['/','#brand-home'],['/archive/','#project-switch']]){
+   await page.goto(route);
+   const button=page.locator(trigger);
+   await button.click();
+   const menu=page.getByRole('menu',{name:'Приложения Wreck'});
+   await expect(menu).toBeVisible();
+   const anchor=await button.boundingBox();
+   const popup=await menu.boundingBox();
+   expect(anchor).not.toBeNull();
+   expect(popup).not.toBeNull();
+   const expectedX=Math.max(12,Math.min(anchor.x,width-popup.width-12));
+   expect(Math.abs(popup.x-expectedX)).toBeLessThanOrEqual(3);
+   expect(Math.abs(popup.y-(anchor.y+anchor.height+8))).toBeLessThanOrEqual(3);
+   expect(popup.x+popup.width).toBeLessThanOrEqual(width-10);
+   await page.keyboard.press('Escape');
+   await expect(menu).toBeHidden();
+  }
+ }
+});
