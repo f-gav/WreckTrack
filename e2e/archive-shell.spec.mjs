@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 
 test('Archive desktop sidebar and empty catalog routes',async({page})=>{
  await page.goto('/archive/');
- await expect(page.getByRole('navigation',{name:'Навигация справочника'})).toBeVisible();
+ await expect(page.locator('#sidebar')).toBeVisible();
  await expect(page.locator('.category-card')).toHaveCount(9);
  await page.locator('[data-page="spells"]').click();
  await expect(page.locator('#page-title')).toHaveText('Заклинания');
