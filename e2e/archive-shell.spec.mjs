@@ -46,7 +46,7 @@ test('Archive only exposes reference sections and cache-busted assets',async({pa
  await expect(page.locator('#sidebar-nav')).not.toContainText('Инструменты');
  await expect(page.locator('#page-description')).toContainText('World of Warcraft');
  const css=await page.locator('link[rel="stylesheet"]').getAttribute('href');
- const js=await page.locator('script[src]').getAttribute('src');
+ const js=await page.locator('script[src^="./archive."]').getAttribute('src');
  expect(css).toMatch(/archive\.[0-9a-f]{12}\.css$/);
  expect(js).toMatch(/archive\.[0-9a-f]{12}\.js$/);
 });
