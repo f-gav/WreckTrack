@@ -2,7 +2,7 @@
 (() => {
   const brand = document.getElementById('brand-home');
   if (!brand) return;
-  const base = new URL('.', document.baseURI);
+  const base = new URL((location.pathname.match(/^.*?\/WreckTrack\//i) || [])[0] || '/', location.origin);
   const wrapper = document.createElement('div');
   wrapper.className = 'project-switcher';
   brand.parentNode.insertBefore(wrapper, brand);
@@ -15,6 +15,7 @@
   menu.setAttribute('role', 'menu');
   menu.setAttribute('aria-label', 'Приложения Wreck');
   menu.hidden = true;
+  menu.setAttribute('popover', 'manual');
   const items = [
     ['WreckTrack', 'Основное приложение', base.href, 'track'],
     ['WreckArchive', 'Справочник D&D 2024', new URL('archive/', base).href, 'archive']
@@ -41,10 +42,22 @@
     menu.style.left = Math.max(12, Math.min(rect.left, window.innerWidth - width - 12)) + 'px';
     menu.style.top = Math.min(rect.bottom + 10, window.innerHeight - 12) + 'px';
   };
-  const open = () => { positionMenu(); menu.hidden = false; brand.setAttribute('aria-expanded', 'true'); };
+  const open = () => {
+    menu.hidden = false;
+    if (typeof menu.showPopover === 'function') menu.showPopover();
+    positionMenu();
+    brand.setAttribute('aria-expanded', 'true');
+  };
+  menu.addEventListener('toggle', () => {
+    if (!menu.matches(':popover-open') && !menu.hidden) close();
+  });
   window.addEventListener('resize', () => { if (!menu.hidden) positionMenu(); });
   window.addEventListener('scroll', () => { if (!menu.hidden) positionMenu(); }, true);
-  const close = () => { menu.hidden = true; brand.setAttribute('aria-expanded', 'false'); };
+  const close = () => {
+    if (menu.matches(':popover-open')) menu.hidePopover();
+    menu.hidden = true;
+    brand.setAttribute('aria-expanded', 'false');
+  };
   brand.addEventListener('click', event => {
     event.preventDefault();
     event.stopImmediatePropagation();
