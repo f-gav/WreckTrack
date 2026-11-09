@@ -42,3 +42,5 @@
 .class-reading[hidden],.class-other-tab[hidden],.class-subtabs[hidden]{display:none!important}
 @media(max-width:950px){.class-columns{grid-template-columns:1fr}.class-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.class-facts section{margin:0}.class-attribution{grid-column:1/-1}}
 @media(max-width:600px){#detail-panel{padding:15px;margin:0 -8px}.class-facts{grid-template-columns:1fr}.class-tabs button,.class-subtabs button{font-size:12px;padding:8px}.class-level-table{font-size:12px}.class-feature h3{font-size:18px}.class-feature p{font-size:14px}}
+
+#detail-panel .class-overview{font:15px/1.7 system-ui,sans-serif;color:#625750;margin:0 0 16px;max-width:85ch}
