@@ -43,32 +43,27 @@ test('section navigation updates URL and direct route survives reload',async({pa
   await expect(page.locator('main h1')).toHaveText('Настройки');
 
   await page.locator('#brand-home').click();
-  const menu=page.getByRole('menu',{name:'Приложения Wreck'});
-  await expect(menu).toBeVisible();
-  await expect(menu.getByRole('menuitem')).toHaveCount(2);
-  await expect(menu.getByText('WreckLib')).toHaveCount(0);
-  await menu.getByRole('menuitem',{name:/WreckTrack/}).click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.locator('main h1')).toHaveText('WreckTrack');
+  await expect(page.locator('.project-switcher-menu')).toHaveCount(0);
 });
 
-test('project switcher opens the independent WreckArchive shell and returns to WreckTrack',async({page})=>{
-  await page.goto('/');
-  const trigger=page.locator('#brand-home');
-  await trigger.click();
-  await expect(trigger).toHaveAttribute('aria-expanded','true');
-  await page.keyboard.press('Escape');
-  await expect(trigger).toHaveAttribute('aria-expanded','false');
+test('clicking the logo or title returns to WreckTrack home from every section',async({page})=>{
+  for(const path of ['/bestiary/','/rooms/','/library/','/tokenator/','/settings/']){
+    await page.goto(path);
+    const brand=page.locator('#brand-home');
+    await expect(brand.locator('.brand-mark img')).toBeVisible();
+    await expect(brand.locator('.brand-name')).toHaveText('WreckTrack');
+    await brand.locator('.brand-mark').click();
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.locator('main h1')).toHaveText('WreckTrack');
 
-  await trigger.click();
-  await page.getByRole('menu',{name:'Приложения Wreck'})
-    .getByRole('menuitem',{name:/WreckArchive/}).click();
-  await expect(page).toHaveURL(/\/archive\/$/);
-  await expect(page.locator('main h1')).toHaveText('Справочник D&D');
-  await expect(page.locator('.category-card')).toHaveCount(9);
-  await expect(page.getByRole('menuitem',{name:/WreckLib/})).toHaveCount(0);
-  await page.locator('#project-switch').click();
-  await page.locator('.project-switcher-menu a').filter({hasText:'WreckTrack'}).click();
-  await expect(page).toHaveURL(/\/$/);
-  await expect(page.locator('main h1')).toHaveText('WreckTrack');
+    await page.goto(path);
+    await brand.locator('.brand-name').click();
+    await expect(page).toHaveURL(/\/$/);
+    await expect(page.locator('main h1')).toHaveText('WreckTrack');
+  }
+  await expect(page.locator('#wreck-project-menu')).toHaveCount(0);
+  await expect(page.locator('.project-switcher')).toHaveCount(0);
+  await expect(page.locator('a[href*="/archive/"]')).toHaveCount(0);
 });

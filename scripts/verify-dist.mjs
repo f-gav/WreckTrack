@@ -41,6 +41,9 @@ for(const route of ['rooms','bestiary','library','tokenator','settings']){
 assert.match(sw,/wrecktrack-static-[0-9a-f]{12}/);
 assert.ok(sw.includes(css[1]),'service worker does not precache built CSS');
 assert.ok(sw.includes(js[1]),'service worker does not precache built JS');
+assert.ok(!fs.existsSync(path.join(dist,'archive')),'WreckArchive must not exist in build output');
+assert.doesNotMatch(fs.readFileSync(jsPath,'utf8'),/WreckArchive|project-switcher/,'removed app switcher must not survive in JS');
+assert.doesNotMatch(fs.readFileSync(cssPath,'utf8'),/project-switcher/,'removed app switcher must not survive in CSS');
 assert.equal(manifest.name,'WreckTrack');
 assert.equal(manifest.short_name,'WreckTrack');
 
