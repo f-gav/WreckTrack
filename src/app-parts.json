@@ -28,6 +28,5 @@
   "features/data.js",
   "features/data-events.js",
   "features/wrecksnake.js",
-  "app.js",
-  "ui/project-switcher.js"
+  "app.js"
 ]
