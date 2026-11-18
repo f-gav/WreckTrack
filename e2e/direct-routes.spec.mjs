@@ -59,7 +59,11 @@ test('clicking the logo or title returns to WreckTrack home from every section',
     await expect(page.locator('main h1')).toHaveText('WreckTrack');
 
     await page.goto(path);
-    await brand.locator('.brand-name').click();
+    // The compact mobile header may hide the text label; the enclosing brand
+    // button remains clickable and accessible at every breakpoint.
+    const title=brand.locator('.brand-name');
+    if(await title.isVisible())await title.click();
+    else await brand.click();
     await expect(page).toHaveURL(/\/$/);
     await expect(page.locator('main h1')).toHaveText('WreckTrack');
   }
